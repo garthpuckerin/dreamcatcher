@@ -57,25 +57,43 @@ Stop losing valuable insights across multiple AI chat threads. Dreamcatcher cons
 
 ## Quick Start
 
-### Installation
+### Option 1: With Supabase (Cloud Storage) ☁️ **Recommended**
+
+1. **Create Supabase Project** at [supabase.com](https://supabase.com)
+2. **Set up environment variables**:
+   ```bash
+   # Create .env.local in root directory
+   VITE_SUPABASE_URL=https://your-project.supabase.co
+   VITE_SUPABASE_ANON_KEY=your-anon-key-here
+   ```
+3. **Run database migrations**: Copy SQL from `supabase/migrations/` folder and run in Supabase SQL Editor
+4. **Install and start**:
+   ```bash
+   npm install
+   npm run dev
+   ```
+
+📖 **Detailed guide**: [docs/setup/SUPABASE_SETUP.md](docs/setup/SUPABASE_SETUP.md)
+
+### Option 2: LocalStorage Only (No Cloud) 💾
+
+For quick testing without authentication:
 
 ```bash
 npm install
-```
-
-### Development
-
-```bash
 npm run dev
 ```
 
-App will open at `http://localhost:3100`
+**Note**: Without Supabase, data only persists in your browser's localStorage.
 
-### Build for Production
+### Production Build
 
 ```bash
 npm run build
+npm run preview
 ```
+
+App runs on `http://localhost:3100`
 
 ## How to Use
 
@@ -107,10 +125,18 @@ npm run build
 
 ## Data Storage
 
-- Data is stored in browser **localStorage**
-- Persists between sessions
-- Export regularly for backup
-- JSON format for portability
+### With Supabase (v2.3+)
+- ☁️ **Cloud Storage** - PostgreSQL database
+- 🔐 **Secure** - Row-level security policies
+- 🔄 **Real-time** - Automatic sync across devices
+- 👥 **Multi-user** - User authentication and isolation
+- 💾 **Persistent** - Never lose your data
+
+### Without Supabase (LocalStorage)
+- 💾 **Browser Storage** - Data stored locally
+- 📤 **Export/Import** - JSON backup and restore
+- 🔒 **Private** - Data never leaves your device
+- ⚠️ **Limited** - ~10MB storage limit per domain
 
 ## Project Structure
 
