@@ -1,6 +1,6 @@
 # ✨ Dreamcatcher
 
-[![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/yourusername/dreamcatcher)
+[![Version](https://img.shields.io/badge/version-2.4.0-blue.svg)](https://github.com/yourusername/dreamcatcher)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![React](https://img.shields.io/badge/react-18.2.0-61dafb.svg)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/vite-5.0.8-646cff.svg)](https://vitejs.dev/)
@@ -49,31 +49,45 @@ Stop losing valuable insights across multiple AI chat threads. Dreamcatcher cons
 - 🏷️ **Tag System** - Flexible tagging and filtering
 - 📈 **Status Tracking** - Idea, Planning, In Progress, Paused, Completed, Abandoned
 
+### AI-Powered Features 🤖
+- 📄 **Document Parsing** - Upload docs, extract todos/deadlines automatically
+- 🏷️ **Smart Tag Suggestions** - AI-powered tag recommendations
+- 📝 **Auto-Summarization** - Generate dream summaries from fragments
+- 💡 **Fragment Highlights** - Extract key points from conversations
+- 🔍 **Semantic Search** - Natural language search beyond keywords
+- 🎯 **Project Detection** - Auto-detect project names from conversations
+
 ### Data & Integration
 - 💾 **LocalStorage** - Instant persistence (v2.0-2.1)
-- ☁️ **Cloud Sync** - Supabase backend (coming in v2.2)
+- ☁️ **Cloud Sync** - Supabase backend (v2.3+)
 - 📤 **Import/Export** - JSON backup and restore
 - 🔄 **Browser Extension** - Auto-capture from AI platforms (separate repo)
 
 ## Quick Start
 
-### Option 1: With Supabase (Cloud Storage) ☁️ **Recommended**
+### Option 1: With Supabase + AI Features ☁️ **Recommended**
 
 1. **Create Supabase Project** at [supabase.com](https://supabase.com)
-2. **Set up environment variables**:
+2. **Get OpenAI API Key** at [platform.openai.com](https://platform.openai.com/api-keys)
+3. **Set up environment variables**:
    ```bash
    # Create .env.local in root directory
    VITE_SUPABASE_URL=https://your-project.supabase.co
    VITE_SUPABASE_ANON_KEY=your-anon-key-here
+   VITE_OPENAI_API_KEY=your-openai-api-key-here
+   VITE_AI_MODEL=gpt-4-turbo-preview
+   VITE_AI_ENABLED=true
    ```
-3. **Run database migrations**: Copy SQL from `supabase/migrations/` folder and run in Supabase SQL Editor
-4. **Install and start**:
+4. **Run database migrations**: Copy SQL from `supabase/migrations/` folder and run in Supabase SQL Editor
+5. **Install and start**:
    ```bash
    npm install
    npm run dev
    ```
 
-📖 **Detailed guide**: [docs/setup/SUPABASE_SETUP.md](docs/setup/SUPABASE_SETUP.md)
+📖 **Detailed guides**: 
+- [AI Integration Guide](AI_INTEGRATION_GUIDE.md)
+- [Supabase Setup](docs/setup/SUPABASE_SETUP.md)
 
 ### Option 2: LocalStorage Only (No Cloud) 💾
 
@@ -84,7 +98,7 @@ npm install
 npm run dev
 ```
 
-**Note**: Without Supabase, data only persists in your browser's localStorage.
+**Note**: Without Supabase, data only persists in your browser's localStorage. AI features require OpenAI API key.
 
 ### Production Build
 
@@ -234,21 +248,40 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ## 📋 Roadmap
 
-### v2.2 (Q4 2025) - Cloud Sync
-- [ ] Supabase backend integration
-- [ ] User authentication  
-- [ ] Cross-device sync
-- [ ] Collaborative features
+### v2.4.0 (Current) - AI Features ✅
+- ✅ OpenAI GPT-4 integration
+- ✅ Document upload and parsing
+- ✅ Smart tag suggestions
+- ✅ Auto-summarization
+- ✅ Fragment highlights
+- ✅ Semantic search
+- ✅ Comprehensive documentation
 
-### v2.3 (Q1 2026) - AI Features
-- [ ] AI-powered document parsing
-- [ ] Auto-categorization of todos
-- [ ] Smart suggestions
+### v2.5.0 (Next) - Business Model & Production
+- [ ] AI-included pricing model
+- [ ] Usage tracking and limits
+- [ ] Stripe billing integration
+- [ ] Cost optimization
+- [ ] Complete Supabase testing
+- [ ] Browser extension integration
+- [ ] Quality assurance
+- [ ] Production deployment
 
-### v3.0 (Q2 2026) - Platform Expansion
-- [ ] Desktop app (Electron)
+### v2.6.0 (Future) - Enhanced AI Features
+- [ ] Natural language todo creation
+- [ ] Smart dependencies detection
+- [ ] Automated progress updates
+- [ ] Voice-to-todo integration
+- [ ] Advanced document parsing
+- [ ] Custom AI models
+
+### v3.0.0 (Future) - Platform Expansion
+- [ ] Desktop app (Electron/Tauri)
 - [ ] Mobile apps (React Native)
-- [ ] Team workspaces
+- [ ] Team collaboration
+- [ ] Advanced analytics
+- [ ] API marketplace
+- [ ] Third-party integrations
 
 See [PROJECT_PLAN.md](docs/planning/PROJECT_PLAN.md) for complete roadmap.
 
@@ -294,6 +327,6 @@ MIT License © 2025 - See [LICENSE](LICENSE) file for details
 
 [![Star on GitHub](https://img.shields.io/github/stars/yourusername/dreamcatcher?style=social)](https://github.com/yourusername/dreamcatcher)
 
-*Currently in active development - v2.1.0*
+*Currently in active development - v2.4.0*
 
 </div>
