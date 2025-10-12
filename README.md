@@ -224,16 +224,26 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 - [ ] Mobile apps (React Native)
 - [ ] Team workspaces
 
-See [PROJECT_PLAN.md](PROJECT_PLAN.md) for complete roadmap.
+See [PROJECT_PLAN.md](docs/planning/PROJECT_PLAN.md) for complete roadmap.
 
 ## 📚 Documentation
 
-- [Contributing Guidelines](CONTRIBUTING.md)
-- [Changelog](CHANGELOG.md)
-- [Project Plan](PROJECT_PLAN.md)
-- [Supabase Migration Plan](SUPABASE_MIGRATION_PLAN.md)
-- [Brand Structure](BRAND_STRUCTURE.md)
-- [Ecosystem Vision](ECOSYSTEM_VISION.md)
+All documentation is organized in the [`docs/`](docs/) directory:
+
+### Quick Links
+- **[Documentation Hub](docs/README.md)** - Complete documentation index
+- **[Contributing Guidelines](CONTRIBUTING.md)** - How to contribute
+- **[Changelog](CHANGELOG.md)** - Version history
+
+### Documentation Categories
+- **[📋 Planning](docs/planning/)** - Roadmaps, feature specs, migration plans
+- **[🔧 Setup](docs/setup/)** - Installation guides, troubleshooting
+- **[🏗️ Architecture](docs/architecture/)** - System design, ecosystem vision
+- **[📢 Marketing](docs/marketing/)** - Brand strategy, launch plans
+- **[📝 Sessions](docs/sessions/)** - Development logs
+
+### Scripts
+- **[Script Documentation](scripts/README.md)** - All utility scripts
 
 ## 🐛 Bug Reports & Feature Requests
 
