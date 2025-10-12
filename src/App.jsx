@@ -6,13 +6,25 @@
  */
 
 import React from 'react'
+import { supabase } from './lib/supabase'
 import { useAuth } from './hooks/useAuth'
 import { useDreams } from './hooks/useDreams'
 import Auth from './components/Auth'
 import Dreamcatcher from './Dreamcatcher'
+import DreamcatcherUI from './App_new'
 import { Loader2 } from 'lucide-react'
 
 export default function App() {
+  // Check if Supabase is configured
+  const isSupabaseConfigured = supabase !== null
+
+  // If Supabase is not configured, run in LocalStorage mode
+  if (!isSupabaseConfigured) {
+    console.log('🔵 Running in LocalStorage mode (no authentication)')
+    return <DreamcatcherUI />
+  }
+
+  // Supabase mode - use hooks
   const auth = useAuth()
   const dreamsData = useDreams()
 

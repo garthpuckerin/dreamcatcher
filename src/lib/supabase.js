@@ -12,30 +12,27 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 const debugMode = import.meta.env.VITE_DEBUG_MODE === 'true'
 
-// Validate environment variables
-if (!supabaseUrl) {
-  console.error('Missing VITE_SUPABASE_URL environment variable')
-  throw new Error('Supabase URL is required. Please check your .env.local file.')
-}
+// Create Supabase client (optional - null if not configured)
+export const supabase = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+      },
+      global: {
+        headers: {
+          'x-dreamcatcher-version': '2.3.0'
+        }
+      }
+    })
+  : null
 
-if (!supabaseAnonKey) {
-  console.error('Missing VITE_SUPABASE_ANON_KEY environment variable')
-  throw new Error('Supabase Anon Key is required. Please check your .env.local file.')
+// Log configuration status
+if (!supabase) {
+  console.warn('⚠️ Supabase not configured - running in LocalStorage mode')
+  console.warn('💡 To enable cloud storage, set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.local')
 }
-
-// Create Supabase client
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
-  },
-  global: {
-    headers: {
-      'x-dreamcatcher-version': '2.2.0'
-    }
-  }
-})
 
 // Debug logging (only in development)
 if (debugMode && import.meta.env.DEV) {
