@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Edit2, Trash2, Save, X, Upload, Download, Calendar, Layers, Grid3x3, SortAsc, Filter, Home, Clock, CheckSquare, ListTodo, Briefcase, FileText, AlertCircle, TrendingUp } from 'lucide-react';
+import { Search, Plus, Edit2, Trash2, Save, X, Upload, Download, Calendar, Layers, Grid3x3, SortAsc, Filter, Home, Clock, CheckSquare, ListTodo, Briefcase, FileText, AlertCircle, TrendingUp, Sparkles } from 'lucide-react';
+import DocumentUpload from './components/DocumentUpload';
+import AIAssistant from './components/AIAssistant';
+import { useAI } from './hooks/useAI';
 
 export default function Dreamcatcher({ initialDreams = null, supabaseOperations = null }) {
   const [dreams, setDreams] = useState(initialDreams || []);
@@ -19,6 +22,9 @@ export default function Dreamcatcher({ initialDreams = null, supabaseOperations 
   
   // Use Supabase if available, otherwise fallback to localStorage
   const useSupabase = supabaseOperations !== null;
+
+  // Initialize AI features hook
+  const { aiAvailable, performSemanticSearch } = useAI();
 
   // Update dreams when initialDreams changes (Supabase real-time updates)
   useEffect(() => {
