@@ -1,332 +1,281 @@
-# ✨ Dreamcatcher
+# Dreamcatcher
 
-[![Version](https://img.shields.io/badge/version-2.4.0-blue.svg)](https://github.com/yourusername/dreamcatcher)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![React](https://img.shields.io/badge/react-18.2.0-61dafb.svg)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/vite-5.0.8-646cff.svg)](https://vitejs.dev/)
+**Version:** 2.0.0  
+**Status:** Dual-Track Strategy (PipelineOS Integration + Standalone Freemium)  
+**Purpose:** AI conversation capture and organization platform
 
-> **Transform scattered AI conversations into organized, actionable projects**
+---
 
-Dreamcatcher is a powerful project management tool designed for AI-assisted development. Capture, organize, and manage ideas from ChatGPT, Claude, and other AI platforms into structured projects with full task management capabilities.
+## 🎯 **Overview**
 
-## ✨ What is Dreamcatcher?
+Dreamcatcher is an AI-powered conversation capture and organization platform that helps developers turn AI conversations into actionable projects. It operates on a **dual-track strategy**:
 
-Stop losing valuable insights across multiple AI chat threads. Dreamcatcher consolidates your conversations into **Dreams** (projects) made up of **Fragments** (conversation pieces), complete with todos, deadlines, and progress tracking.
+1. **PipelineOS Integration**: Enterprise conversation capture module
+2. **Standalone Freemium**: Personal AI conversation organizer
 
-**Perfect for:**
-- 👨‍💻 Developers managing AI-assisted projects
-- 🚀 Entrepreneurs organizing product ideas
-- 📝 Researchers tracking conversation-based insights
-- 🎨 Creators managing multi-platform projects
+---
 
-## 🚀 Features
+## 🚀 **Features**
 
-### Core Functionality
-- 🗂️ **Dreams & Fragments** - Organize projects with conversation pieces
-- 📋 **Project Management** - Full todo system with deadlines and categories
-- 📊 **Progress Tracking** - Visual progress bars, completion metrics
-- 🏢 **Brand Organization** - Group projects by brand/company
-- 🔍 **Advanced Search** - Find content across all dreams instantly
-- 🏷️ **Smart Filtering** - Filter by status, brand, tags, and more
+### **Core Features**
+- **AI Conversation Capture**: Automatically capture ChatGPT and Claude conversations
+- **Smart Organization**: Organize conversations into "dreams" and "fragments"
+- **Project Detection**: Auto-detect project names and context
+- **Code Extraction**: Extract code snippets and features
+- **Real-Time Sync**: Bidirectional sync with PipelineOS (when enabled)
 
-### Views & Visualization
-- 📈 **Summary View** - Key metrics, alerts, and progress dashboard
-- ✅ **Todos View** - Complete task management interface
-- 📑 **Consolidated View** - All fragments merged together
-- ⏱️ **Timeline View** - Chronological development history
-- 🗃️ **Fragments View** - Grid view of individual pieces
+### **AI-Powered Features**
+- **Smart Summarization**: AI-generated dream summaries
+- **Auto-Tagging**: Intelligent tag suggestions
+- **Content Analysis**: Extract features and requirements
+- **Project Name Detection**: AI-powered project identification
 
-### Task Management
-- ✅ **Todo System** - Add, edit, complete, and delete tasks
-- 📅 **Deadline Tracking** - Visual indicators for overdue/upcoming tasks
-- 🎯 **Task Categories** - Coding, Admin, Design, Marketing, DevOps, Strategy
-- 🚨 **Smart Alerts** - Overdue warnings and upcoming deadline notifications
-- 📊 **Progress Metrics** - Track completion percentages
+### **Integration Features**
+- **PipelineOS Integration**: Send dreams to PipelineOS for implementation
+- **GitHub Integration**: Connect to repositories
+- **Export Options**: Export to various formats
+- **API Access**: RESTful API for integrations
 
-### Organization
-- 🏢 **5 Brand Types** - BC Innovations, BC Studio, MPGWorldwide, Accordingto, Personal
-- 🎨 **Color-Coded Icons** - Visual brand and category identification
-- 🏷️ **Tag System** - Flexible tagging and filtering
-- 📈 **Status Tracking** - Idea, Planning, In Progress, Paused, Completed, Abandoned
+---
 
-### AI-Powered Features 🤖
-- 📄 **Document Parsing** - Upload docs, extract todos/deadlines automatically
-- 🏷️ **Smart Tag Suggestions** - AI-powered tag recommendations
-- 📝 **Auto-Summarization** - Generate dream summaries from fragments
-- 💡 **Fragment Highlights** - Extract key points from conversations
-- 🔍 **Semantic Search** - Natural language search beyond keywords
-- 🎯 **Project Detection** - Auto-detect project names from conversations
+## 🏗️ **Architecture**
 
-### Data & Integration
-- 💾 **LocalStorage** - Instant persistence (v2.0-2.1)
-- ☁️ **Cloud Sync** - Supabase backend (v2.3+)
-- 📤 **Import/Export** - JSON backup and restore
-- 🔄 **Browser Extension** - Auto-capture from AI platforms (separate repo)
+### **Dual-Mode Operation**
 
-## Quick Start
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Dreamcatcher Ecosystem                  │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌─────────────────────┐    ┌─────────────────────────┐   │
+│  │   PipelineOS        │    │    Standalone            │   │
+│  │   Integration       │    │    Freemium              │   │
+│  │                     │    │                         │   │
+│  │  • Enterprise       │    │  • Personal Use         │   │
+│  │  • Conversation →    │    │  • Community Adoption  │   │
+│  │    Implementation    │    │  • Freemium Model       │   │
+│  │  • AI Agents         │    │  • Local Storage       │   │
+│  │  • Project Mgmt      │    │  • Basic Features       │   │
+│  └─────────────────────┘    └─────────────────────────┘   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
 
-### Option 1: With Supabase + AI Features ☁️ **Recommended**
+### **Technology Stack**
+- **Frontend**: React 18, Vite 5, Tailwind CSS
+- **Backend**: Supabase (PostgreSQL, Storage, Auth, Realtime)
+- **AI**: OpenAI GPT-4 Turbo, GPT-3.5 Turbo
+- **Extension**: Chrome Extension Manifest V3
+- **Storage**: LocalStorage + Supabase Cloud Sync
 
-1. **Create Supabase Project** at [supabase.com](https://supabase.com)
-2. **Get OpenAI API Key** at [platform.openai.com](https://platform.openai.com/api-keys)
-3. **Set up environment variables**:
+---
+
+## 🚀 **Quick Start**
+
+### **Standalone Mode**
+
+1. **Install Extension**
    ```bash
-   # Create .env.local in root directory
-   VITE_SUPABASE_URL=https://your-project.supabase.co
-   VITE_SUPABASE_ANON_KEY=your-anon-key-here
-   VITE_OPENAI_API_KEY=your-openai-api-key-here
-   VITE_AI_MODEL=gpt-4-turbo-preview
-   VITE_AI_ENABLED=true
+   # Load unpacked extension in Chrome
+   # Navigate to chrome://extensions/
+   # Enable "Developer mode"
+   # Click "Load unpacked" and select dreamcatcher-extension folder
    ```
-4. **Run database migrations**: Copy SQL from `supabase/migrations/` folder and run in Supabase SQL Editor
-5. **Install and start**:
+
+2. **Start Web App**
    ```bash
+   cd dreamcatcher
    npm install
    npm run dev
    ```
 
-📖 **Detailed guides**: 
-- [AI Integration Guide](AI_INTEGRATION_GUIDE.md)
-- [Supabase Setup](docs/setup/SUPABASE_SETUP.md)
+3. **Configure AI (Optional)**
+   ```bash
+   # Create .env.local file
+   VITE_OPENAI_API_KEY=your_openai_api_key
+   VITE_AI_ENABLED=true
+   VITE_AI_MODEL=gpt-4-turbo-preview
+   ```
 
-### Option 2: LocalStorage Only (No Cloud) 💾
+4. **Start Capturing**
+   - Visit ChatGPT or Claude.ai
+   - Click the Dreamcatcher capture button
+   - Organize your conversations into dreams
 
-For quick testing without authentication:
+### **PipelineOS Integration Mode**
 
-```bash
-npm install
-npm run dev
-```
+1. **Configure PipelineOS**
+   ```javascript
+   // In extension popup
+   const config = {
+     mode: 'pipelineos',
+     pipelineOS: {
+       enabled: true,
+       apiUrl: 'https://your-pipelineos-instance.com',
+       apiKey: 'your_api_key'
+     }
+   };
+   ```
 
-**Note**: Without Supabase, data only persists in your browser's localStorage. AI features require OpenAI API key.
-
-### Production Build
-
-```bash
-npm run build
-npm run preview
-```
-
-App runs on `http://localhost:3100`
-
-## How to Use
-
-### 1. Create a Dream
-- Click "New Dream" in the sidebar
-- Give it a title, description, status, and tags
-- Start adding fragments
-
-### 2. Add Fragments
-- Select a dream
-- Click "+ Add Fragment" 
-- Paste conversation excerpts, notes, or ideas
-- Tag features mentioned in the fragment
-
-### 3. View Your Progress
-- **Consolidated View**: See all fragments merged together
-- **Timeline View**: Track how the project evolved over time
-- **Fragments View**: Browse all pieces in a grid
-
-### 4. Import from Extension
-- Use the Dreamcatcher browser extension to capture conversations
-- Export from extension
-- Import the JSON file into the web app
-
-### 5. Export & Backup
-- Click the download icon to export all data
-- Save the JSON file for backup
-- Import later to restore
-
-## Data Storage
-
-### With Supabase (v2.3+)
-- ☁️ **Cloud Storage** - PostgreSQL database
-- 🔐 **Secure** - Row-level security policies
-- 🔄 **Real-time** - Automatic sync across devices
-- 👥 **Multi-user** - User authentication and isolation
-- 💾 **Persistent** - Never lose your data
-
-### Without Supabase (LocalStorage)
-- 💾 **Browser Storage** - Data stored locally
-- 📤 **Export/Import** - JSON backup and restore
-- 🔒 **Private** - Data never leaves your device
-- ⚠️ **Limited** - ~10MB storage limit per domain
-
-## Project Structure
-
-```
-dreamcatcher/
-├── src/
-│   ├── App.jsx           # Main application component
-│   ├── main.jsx          # React entry point
-│   └── index.css         # Global styles
-├── index.html            # HTML entry point
-├── vite.config.js        # Vite configuration
-├── package.json          # Dependencies
-└── README.md             # This file
-```
-
-## Tech Stack
-
-- **React 18** - UI framework
-- **Vite** - Build tool and dev server
-- **Lucide React** - Icon library
-- **LocalStorage** - Data persistence
-
-## Future Features (MVP Roadmap)
-
-- [ ] Desktop app (Electron/Tauri) - Phase 3
-- [ ] Cloud sync (optional) - Phase 4
-- [ ] Advanced search with filters - Phase 5
-- [ ] AI-powered summarization - Phase 5
-- [ ] Export to Markdown/PDF - Phase 5
-- [ ] Integration with note-taking apps - Phase 5
-- [ ] Native mobile apps (iOS/Android) - Phase 6
-- [ ] Voice-to-text capture - Phase 6
-- [ ] Share extensions for mobile - Phase 6
-- [ ] Real-time collaboration - Future
-
-## Integration with Browser Extension
-
-The Dreamcatcher browser extension captures conversations from ChatGPT and Claude.ai. The web app provides a full-featured dashboard for viewing and organizing those captures.
-
-**Workflow:**
-1. Use extension to capture AI conversations
-2. Export data from extension
-3. Import into web app for advanced management
-4. Or: Access extension data directly (future feature)
-
-## Development
-
-### Port Configuration
-
-The app runs on port **3100** by default (following project convention to avoid port 5000 and increment by 100).
-
-### Adding Features
-
-The app is structured as a single React component with multiple sub-components:
-- `ConsolidatedView` - Merged fragments view
-- `TimelineView` - Chronological timeline
-- `FragmentsView` - Grid of fragments
-- `FragmentView` - Single fragment detail
-- `DreamForm` - Create/edit dreams
-- `FragmentForm` - Create/edit fragments
-- `Modal` - Reusable modal wrapper
-
-### Storage Format
-
-```javascript
-{
-  id: number,
-  title: string,
-  description: string,
-  status: 'idea' | 'planning' | 'in-progress' | 'paused' | 'completed' | 'abandoned',
-  tags: string[],
-  created: ISO8601,
-  updated: ISO8601,
-  fragments: [
-    {
-      id: number,
-      title: string,
-      content: string,
-      source: string,
-      date: ISO8601,
-      features: string[],
-      codeSnippets: string[]
-    }
-  ]
-}
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details on:
-- Development workflow and branching strategy
-- Code standards and best practices
-- Commit message guidelines
-- Pull request process
-
-## 📋 Roadmap
-
-### v2.4.0 (Current) - AI Features ✅
-- ✅ OpenAI GPT-4 integration
-- ✅ Document upload and parsing
-- ✅ Smart tag suggestions
-- ✅ Auto-summarization
-- ✅ Fragment highlights
-- ✅ Semantic search
-- ✅ Comprehensive documentation
-
-### v2.5.0 (Next) - Business Model & Production
-- [ ] AI-included pricing model
-- [ ] Usage tracking and limits
-- [ ] Stripe billing integration
-- [ ] Cost optimization
-- [ ] Complete Supabase testing
-- [ ] Browser extension integration
-- [ ] Quality assurance
-- [ ] Production deployment
-
-### v2.6.0 (Future) - Enhanced AI Features
-- [ ] Natural language todo creation
-- [ ] Smart dependencies detection
-- [ ] Automated progress updates
-- [ ] Voice-to-todo integration
-- [ ] Advanced document parsing
-- [ ] Custom AI models
-
-### v3.0.0 (Future) - Platform Expansion
-- [ ] Desktop app (Electron/Tauri)
-- [ ] Mobile apps (React Native)
-- [ ] Team collaboration
-- [ ] Advanced analytics
-- [ ] API marketplace
-- [ ] Third-party integrations
-
-See [PROJECT_PLAN.md](docs/planning/PROJECT_PLAN.md) for complete roadmap.
-
-## 📚 Documentation
-
-All documentation is organized in the [`docs/`](docs/) directory:
-
-### Quick Links
-- **[Documentation Hub](docs/README.md)** - Complete documentation index
-- **[Contributing Guidelines](CONTRIBUTING.md)** - How to contribute
-- **[Changelog](CHANGELOG.md)** - Version history
-
-### Documentation Categories
-- **[📋 Planning](docs/planning/)** - Roadmaps, feature specs, migration plans
-- **[🔧 Setup](docs/setup/)** - Installation guides, troubleshooting
-- **[🏗️ Architecture](docs/architecture/)** - System design, ecosystem vision
-- **[📢 Marketing](docs/marketing/)** - Brand strategy, launch plans
-- **[📝 Sessions](docs/sessions/)** - Development logs
-
-### Scripts
-- **[Script Documentation](scripts/README.md)** - All utility scripts
-
-## 🐛 Bug Reports & Feature Requests
-
-Use our issue templates:
-- [Report a Bug](.github/ISSUE_TEMPLATE/bug_report.md)
-- [Request a Feature](.github/ISSUE_TEMPLATE/feature_request.md)
-
-## Related Projects
-
-- **[dreamcatcher-extension](../dreamcatcher-extension)** - Browser extension for auto-capturing conversations
-- **Future:** Desktop app (Phase 3), cloud service (Phase 4), mobile apps (Phase 6)
-
-## 📄 License
-
-MIT License © 2025 - See [LICENSE](LICENSE) file for details
+2. **Enable Sync**
+   - Extension automatically syncs with PipelineOS
+   - Dreams become projects in PipelineOS
+   - Receive implementation updates
 
 ---
 
-<div align="center">
+## 📊 **Business Model**
 
-**Built with ❤️ for the AI-powered development community**
+### **PipelineOS Integration**
+- **Revenue Model**: Included in PipelineOS subscription
+- **Target Market**: Enterprise customers
+- **Value Proposition**: Conversation-to-implementation workflow
+- **Pricing**: $50-200/month per user (via PipelineOS)
 
-[![Star on GitHub](https://img.shields.io/github/stars/yourusername/dreamcatcher?style=social)](https://github.com/yourusername/dreamcatcher)
+### **Standalone Freemium**
+- **Revenue Model**: Freemium with premium features
+- **Target Market**: Individual developers and small teams
+- **Value Proposition**: Personal AI conversation organization
+- **Pricing**: 
+  - **Free**: Basic features, local storage
+  - **Premium**: $5-10/month, AI features, cloud sync
 
-*Currently in active development - v2.4.0*
+---
 
-</div>
+## 🔧 **Development**
+
+### **Prerequisites**
+- Node.js 20+
+- Chrome browser
+- OpenAI API key (optional)
+
+### **Local Development**
+
+```bash
+# Clone repository
+git clone https://github.com/your-org/dreamcatcher.git
+cd dreamcatcher
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+### **Extension Development**
+
+```bash
+# Navigate to extension directory
+cd dreamcatcher-extension
+
+# Load in Chrome
+# 1. Go to chrome://extensions/
+# 2. Enable "Developer mode"
+# 3. Click "Load unpacked"
+# 4. Select dreamcatcher-extension folder
+```
+
+---
+
+## 📚 **Documentation**
+
+### **Strategic Documentation**
+- [PipelineOS Integration Strategy](docs/strategic/PIPELINEOS_INTEGRATION_STRATEGY.md)
+- [Dual-Track Roadmap](docs/strategic/DUAL_TRACK_ROADMAP.md)
+- [Strategic Analysis](docs/strategic/STRATEGIC_ANALYSIS.md)
+
+### **Architecture Documentation**
+- [Microservices Architecture](docs/architecture/MICROSERVICES_ARCHITECTURE.md)
+- [System Design](docs/architecture/SYSTEM_DESIGN.md)
+- [Database Schema](docs/architecture/DATABASE_SCHEMA.md)
+
+### **Technical Documentation**
+- [AI Integration Guide](docs/technical/AI_INTEGRATION_GUIDE.md)
+- [API Documentation](docs/technical/API_DOCUMENTATION.md)
+- [Extension Development](docs/technical/EXTENSION_DEVELOPMENT.md)
+
+### **User Documentation**
+- [Getting Started](docs/user/GETTING_STARTED.md)
+- [User Guide](docs/user/USER_GUIDE.md)
+- [FAQ](docs/user/FAQ.md)
+
+---
+
+## 🤝 **Contributing**
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### **Development Workflow**
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+### **Code Standards**
+- ESLint for code quality
+- Prettier for formatting
+- Jest for testing
+- TypeScript for type safety
+
+---
+
+## 📄 **License**
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🎯 **Roadmap**
+
+### **Phase 1: Foundation (Q1 2025)**
+- [ ] Extension dual-mode operation
+- [ ] PipelineOS sync mechanism
+- [ ] Standalone freemium launch
+- [ ] 1K+ users across both tracks
+
+### **Phase 2: Enhancement (Q2 2025)**
+- [ ] Advanced AI features
+- [ ] Mobile companion app
+- [ ] Enterprise features
+- [ ] 5K+ users, $100K ARR
+
+### **Phase 3: Scale (Q3 2025)**
+- [ ] Market expansion
+- [ ] Strategic partnerships
+- [ ] Advanced analytics
+- [ ] 15K+ users, $300K ARR
+
+### **Phase 4: Domination (Q4 2025)**
+- [ ] Market leadership
+- [ ] Platform evolution
+- [ ] Innovation labs
+- [ ] 50K+ users, $1M ARR
+
+---
+
+## 🔗 **Links**
+
+- **Website**: [dreamcatcher.dev](https://dreamcatcher.dev)
+- **Documentation**: [docs.dreamcatcher.dev](https://docs.dreamcatcher.dev)
+- **Chrome Extension**: [Chrome Web Store](https://chrome.google.com/webstore)
+- **GitHub**: [github.com/your-org/dreamcatcher](https://github.com/your-org/dreamcatcher)
+
+---
+
+## 📞 **Support**
+
+- **Email**: support@dreamcatcher.dev
+- **Discord**: [Discord Server](https://discord.gg/dreamcatcher)
+- **GitHub Issues**: [Report Issues](https://github.com/your-org/dreamcatcher/issues)
+
+---
+
+**Dreamcatcher - Turn AI conversations into actionable projects.**
