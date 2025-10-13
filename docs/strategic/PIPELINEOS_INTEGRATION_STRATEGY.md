@@ -453,8 +453,8 @@ cp dreamcatcher-extension/* pipelineos/extensions/dreamcatcher/
 ### **Standalone Freemium Benefits**
 
 #### **For Individual Users**
-- **Free Tier**: Basic capture and organization
-- **Local Storage**: Privacy and control
+- **Free Tier**: LocalStorage with 50 dream limit
+- **Premium Tier**: Supabase cloud sync, unlimited dreams
 - **Simple Interface**: Easy to use
 - **Optional Sync**: Upgrade path to PipelineOS
 
@@ -463,6 +463,7 @@ cp dreamcatcher-extension/* pipelineos/extensions/dreamcatcher/
 - **Lead Generation**: Freemium to premium conversion
 - **Brand Awareness**: Extension visibility
 - **Revenue Diversification**: Multiple revenue streams
+- **Cost Efficiency**: Supabase vs PostgreSQL ($0-25 vs $55+/month)
 
 ---
 

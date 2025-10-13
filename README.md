@@ -66,7 +66,7 @@ Dreamcatcher is an AI-powered conversation capture and organization platform tha
 - **Backend**: Supabase (PostgreSQL, Storage, Auth, Realtime)
 - **AI**: OpenAI GPT-4 Turbo, GPT-3.5 Turbo
 - **Extension**: Chrome Extension Manifest V3
-- **Storage**: LocalStorage + Supabase Cloud Sync
+- **Storage**: LocalStorage (Free) + Supabase Cloud Sync (Premium)
 
 ---
 
@@ -137,8 +137,8 @@ Dreamcatcher is an AI-powered conversation capture and organization platform tha
 - **Target Market**: Individual developers and small teams
 - **Value Proposition**: Personal AI conversation organization
 - **Pricing**: 
-  - **Free**: Basic features, local storage
-  - **Premium**: $5-10/month, AI features, cloud sync
+  - **Free**: LocalStorage, 50 dreams, basic features
+  - **Premium**: $5-10/month, Supabase cloud sync, unlimited dreams
 
 ---
 
@@ -189,6 +189,7 @@ cd dreamcatcher-extension
 ### **Strategic Documentation**
 - [PipelineOS Integration Strategy](docs/strategic/PIPELINEOS_INTEGRATION_STRATEGY.md)
 - [Dual-Track Roadmap](docs/strategic/DUAL_TRACK_ROADMAP.md)
+- [Freemium Storage Strategy](docs/strategic/FREEMIUM_STORAGE_STRATEGY.md)
 - [Strategic Analysis](docs/strategic/STRATEGIC_ANALYSIS.md)
 
 ### **Architecture Documentation**
