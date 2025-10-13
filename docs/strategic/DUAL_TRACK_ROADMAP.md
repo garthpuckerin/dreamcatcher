@@ -156,6 +156,7 @@ Dreamcatcher is implementing a **dual-track strategy** to maximize market reach 
 
 #### **Week 1: Basic Capture**
 - [ ] Chrome extension for AI conversation capture
+- [ ] VS Code extension for in-editor capture
 - [ ] LocalStorage implementation with 50 dream limit
 - [ ] Basic dream and fragment management
 - [ ] Simple search and filtering

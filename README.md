@@ -23,6 +23,7 @@ Dreamcatcher is an AI-powered conversation capture and organization platform tha
 - **Project Detection**: Auto-detect project names and context
 - **Code Extraction**: Extract code snippets and features
 - **Real-Time Sync**: Bidirectional sync with PipelineOS (when enabled)
+- **VS Code Integration**: Capture conversations directly in VS Code/Cursor
 
 ### **AI-Powered Features**
 - **Smart Summarization**: AI-generated dream summaries
@@ -32,6 +33,8 @@ Dreamcatcher is an AI-powered conversation capture and organization platform tha
 
 ### **Integration Features**
 - **PipelineOS Integration**: Send dreams to PipelineOS for implementation
+- **VS Code Extension**: Capture conversations directly in VS Code/Cursor
+- **Browser Extension**: Capture from ChatGPT, Claude, and other AI tools
 - **GitHub Integration**: Connect to repositories
 - **Export Options**: Export to various formats
 - **API Access**: RESTful API for integrations
@@ -196,6 +199,10 @@ cd dreamcatcher-extension
 - [Microservices Architecture](docs/architecture/MICROSERVICES_ARCHITECTURE.md)
 - [System Design](docs/architecture/SYSTEM_DESIGN.md)
 - [Database Schema](docs/architecture/DATABASE_SCHEMA.md)
+
+### **Extension Documentation**
+- [VS Code Extension](docs/extensions/VSCODE_EXTENSION.md)
+- [Browser Extension](docs/extensions/BROWSER_EXTENSION.md)
 
 ### **Technical Documentation**
 - [AI Integration Guide](docs/technical/AI_INTEGRATION_GUIDE.md)
