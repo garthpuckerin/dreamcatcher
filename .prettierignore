@@ -1,0 +1,9 @@
+dist/
+node_modules/
+*.config.js
+package-lock.json
+CHANGELOG.md
+coverage/
+build/
+.vscode/
+.git/

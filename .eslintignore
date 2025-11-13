@@ -1,0 +1,9 @@
+dist/
+node_modules/
+*.config.js
+packages/*/dist/
+extensions/*/out/
+build/
+coverage/
+.vscode/
+.git/
