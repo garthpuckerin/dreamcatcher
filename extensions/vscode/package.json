@@ -1,0 +1,213 @@
+{
+  "name": "dreamcatcher-vscode",
+  "displayName": "Dreamcatcher",
+  "description": "Capture AI conversations and turn them into actionable projects",
+  "version": "2.0.0",
+  "publisher": "dreamcatcher",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Snippets",
+    "Productivity"
+  ],
+  "keywords": [
+    "ai",
+    "conversation",
+    "capture",
+    "project",
+    "development",
+    "productivity"
+  ],
+  "activationEvents": [
+    "onCommand:dreamcatcher.captureConversation",
+    "onCommand:dreamcatcher.openDashboard",
+    "onCommand:dreamcatcher.syncWithPipelineOS"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "dreamcatcher.captureConversation",
+        "title": "Capture AI Conversation",
+        "category": "Dreamcatcher",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "dreamcatcher.openDashboard",
+        "title": "Open Dreamcatcher Dashboard",
+        "category": "Dreamcatcher",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "dreamcatcher.syncWithPipelineOS",
+        "title": "Sync with PipelineOS",
+        "category": "Dreamcatcher",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "dreamcatcher.createDreamFromSelection",
+        "title": "Create Dream from Selection",
+        "category": "Dreamcatcher",
+        "icon": "$(lightbulb)"
+      },
+      {
+        "command": "dreamcatcher.quickCapture",
+        "title": "Quick Capture",
+        "category": "Dreamcatcher",
+        "icon": "$(zap)"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "dreamcatcher.createDreamFromSelection",
+          "when": "editorHasSelection",
+          "group": "dreamcatcher"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "dreamcatcher.captureConversation",
+          "when": "true"
+        },
+        {
+          "command": "dreamcatcher.openDashboard",
+          "when": "true"
+        },
+        {
+          "command": "dreamcatcher.syncWithPipelineOS",
+          "when": "true"
+        },
+        {
+          "command": "dreamcatcher.createDreamFromSelection",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "dreamcatcher.quickCapture",
+          "when": "true"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "dreamcatcher.captureConversation",
+        "key": "ctrl+shift+c",
+        "mac": "cmd+shift+c",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "dreamcatcher.quickCapture",
+        "key": "ctrl+shift+q",
+        "mac": "cmd+shift+q",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "dreamcatcher.createDreamFromSelection",
+        "key": "ctrl+shift+d",
+        "mac": "cmd+shift+d",
+        "when": "editorHasSelection"
+      }
+    ],
+    "configuration": {
+      "title": "Dreamcatcher",
+      "properties": {
+        "dreamcatcher.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Dreamcatcher extension"
+        },
+        "dreamcatcher.autoCapture": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically capture AI conversations"
+        },
+        "dreamcatcher.pipelineOS.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable PipelineOS integration"
+        },
+        "dreamcatcher.pipelineOS.apiUrl": {
+          "type": "string",
+          "default": "",
+          "description": "PipelineOS API URL"
+        },
+        "dreamcatcher.pipelineOS.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "PipelineOS API Key"
+        },
+        "dreamcatcher.storage.type": {
+          "type": "string",
+          "enum": ["local", "supabase"],
+          "default": "local",
+          "description": "Storage type for dreams"
+        },
+        "dreamcatcher.supabase.url": {
+          "type": "string",
+          "default": "",
+          "description": "Supabase URL"
+        },
+        "dreamcatcher.supabase.key": {
+          "type": "string",
+          "default": "",
+          "description": "Supabase API Key"
+        },
+        "dreamcatcher.limits.maxDreams": {
+          "type": "number",
+          "default": 50,
+          "description": "Maximum number of dreams (free tier)"
+        },
+        "dreamcatcher.features.autoTagging": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable automatic tagging"
+        },
+        "dreamcatcher.features.autoSummarization": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable automatic summarization"
+        }
+      }
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "dreamcatcher-dreams",
+          "name": "Dreams",
+          "when": "dreamcatcher.enabled"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "dreamcatcher",
+          "title": "Dreamcatcher",
+          "icon": "$(lightbulb)"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "@dreamcatcher/shared": "file:../../packages/shared",
+    "@dreamcatcher/types": "file:../../packages/types"
+  }
+}

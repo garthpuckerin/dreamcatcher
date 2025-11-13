@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Edit2, Trash2, Save, X, Upload, Download, Calendar, Layers, Grid3x3, SortAsc, Filter, Home, Clock, CheckSquare, ListTodo, Briefcase, FileText, AlertCircle, TrendingUp } from 'lucide-react';
+import { Search, Plus, Edit2, Trash2, Save, X, Upload, Download, Calendar, Layers, Grid3x3, SortAsc, Filter, Home, Clock, CheckSquare, ListTodo, Briefcase, FileText, AlertCircle, TrendingUp, Sparkles } from 'lucide-react';
+import DocumentUpload from './components/DocumentUpload';
+import AIAssistant from './components/AIAssistant';
+import { useAI } from './hooks/useAI';
 
-export default function Dreamcatcher() {
-  const [dreams, setDreams] = useState([]);
+export default function Dreamcatcher({ initialDreams = null, supabaseOperations = null }) {
+  const [dreams, setDreams] = useState(initialDreams || []);
   const [selectedDream, setSelectedDream] = useState(null);
   const [selectedFragment, setSelectedFragment] = useState(null);
   const [mainView, setMainView] = useState('all-dreams'); // all-dreams, dream-detail, fragment-detail
@@ -16,10 +19,25 @@ export default function Dreamcatcher() {
   const [showNewFragment, setShowNewFragment] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [recentDreams, setRecentDreams] = useState([]);
+  
+  // Use Supabase if available, otherwise fallback to localStorage
+  const useSupabase = supabaseOperations !== null;
+
+  // Initialize AI features hook
+  const { aiAvailable, performSemanticSearch } = useAI();
+
+  // Update dreams when initialDreams changes (Supabase real-time updates)
+  useEffect(() => {
+    if (initialDreams) {
+      setDreams(initialDreams);
+    }
+  }, [initialDreams]);
 
   useEffect(() => {
-    loadDreams();
-  }, []);
+    if (!useSupabase) {
+      loadDreams();
+    }
+  }, [useSupabase]);
 
   const loadDreams = () => {
     const stored = localStorage.getItem('dreamcatcher-dreams');

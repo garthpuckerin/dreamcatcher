@@ -9,9 +9,116 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Planned
 - Browser extension integration
-- Cloud sync with Supabase (v2.2)
-- AI-powered document parsing
-- Drag-and-drop file attachments
+- Local AI models (Ollama integration)
+- Natural language todo creation
+- Automated progress updates from git commits
+
+## [2.4.0] - 2025-10-12
+
+### Added - AI-Powered Features 🤖
+- **OpenAI Integration**: Full GPT-4 Turbo integration for intelligent features
+- **Document Upload & Parsing**: Upload TXT, MD, DOCX files and automatically extract tasks, deadlines, and categories
+- **Smart Tag Suggestions**: AI-powered tag recommendations based on dream content
+- **Auto-Summarization**: Generate concise summaries of dreams from their fragments
+- **Fragment Highlights**: Extract key points and decisions from conversation fragments
+- **Project Name Detection**: Automatically detect project names from conversation content
+- **Semantic Search**: Natural language search beyond keyword matching (e.g., "web apps with databases")
+- **Document Management**: Full document lifecycle (upload, parse, store, delete)
+
+### Components
+- `DocumentUpload`: Drag-and-drop document upload with AI parsing
+- `AIAssistant`: Reusable AI suggestion component for tags and summaries
+- New hooks: `useAI()`, `useDocuments()`
+- New utilities: `src/lib/ai.js`, `src/lib/documentParser.js`
+
+### Dependencies
+- `openai@^4.20.1` - OpenAI API client
+- `mammoth@^1.6.0` - DOCX file parsing
+- `pdf-parse@^1.1.1` - PDF file parsing (backend only)
+
+### Configuration
+- New environment variables:
+  - `VITE_OPENAI_API_KEY` - OpenAI API key (required for AI features)
+  - `VITE_AI_MODEL` - AI model selection (default: gpt-4-turbo-preview)
+  - `VITE_AI_ENABLED` - Toggle AI features on/off
+
+### Features
+- **Document Parser**: Extracts todos, deadlines, categories, summaries, and key points from documents
+- **Tag Suggester**: Analyzes dream content and suggests 5-8 relevant tags
+- **Summary Generator**: Creates 2-3 sentence summaries of dreams based on fragments
+- **Highlight Extractor**: Identifies 3-5 key highlights from fragment conversations
+- **Semantic Search Engine**: Understands search intent and ranks results by relevance
+- **Project Detector**: Identifies project names mentioned in conversations
+- **File Support**: TXT, MD, DOCX (PDF requires backend)
+- **Validation**: File type and size validation (max 10MB)
+- **Error Handling**: Graceful fallbacks when AI unavailable or errors occur
+
+### UI/UX Improvements
+- Drag-and-drop document upload with visual feedback
+- Real-time parsing status with loading animations
+- AI suggestion buttons with sparkle icons
+- Inline tag suggestions (click to apply individual tags)
+- Summary preview before applying
+- AI availability indicator
+- Semantic search toggle (AI vs basic text search)
+
+### Technical Details
+- Client-side OpenAI integration (development only - requires backend proxy for production)
+- Fallback to basic functionality when AI unavailable
+- Optional AI features (app works without OpenAI key)
+- JSON-based AI responses for reliability
+- Temperature and token controls for quality/cost balance
+- Rate limiting considerations documented
+- Security warnings for production deployment
+
+### Documentation
+- `AI_INTEGRATION_GUIDE.md`: Complete integration and usage guide
+- `AI_TEST_PLAN.md`: Comprehensive testing procedures
+- `.env.example`: Updated with AI configuration
+- README updated with AI features section
+
+### Performance
+- Tag suggestions: ~3-5 seconds
+- Dream summaries: ~5-10 seconds
+- Document parsing: ~10-15 seconds (depends on document size)
+- Semantic search: ~5-8 seconds
+- All operations include loading states and progress indicators
+
+### Security Considerations
+- ⚠️ Development mode uses browser-based OpenAI client
+- Production requires backend API proxy (guide included)
+- API key validation and error handling
+- File upload validation (type and size)
+- No API key exposure in DOM or logs (except debug mode)
+
+### Cost Management
+- Estimated cost: $5-20/month for moderate use
+- Cost optimization tips documented
+- Option to use GPT-3.5 for lower costs
+- Result caching recommended
+- Batch operations supported
+
+### Known Limitations
+- PDF parsing requires backend implementation
+- Browser-based API calls not recommended for production
+- No caching implemented yet (results re-generated each time)
+- No rate limiting on frontend (should be added in production)
+- Large documents (>10MB) not supported
+
+### Migration Notes
+- Fully backward compatible with v2.3.0
+- AI features optional - app works without them
+- No breaking changes to existing functionality
+- New dependencies required (`npm install`)
+- Environment configuration required for AI features
+
+### Future Enhancements (Planned for v2.5+)
+- Natural language todo creation ("remind me to deploy on Friday")
+- Smart dependencies detection
+- Automated progress updates from git commits
+- Voice-to-todo using Whisper API
+- Local AI models (Ollama) for offline operation
+- Custom fine-tuned models for project-specific detection
 
 ## [2.1.0] - 2025-10-11
 
@@ -191,6 +298,9 @@ No changes to dream/fragment data structure. Fully backward compatible.
 
 ---
 
-[Unreleased]: https://github.com/yourusername/dreamcatcher/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/yourusername/dreamcatcher/compare/v2.4.0...HEAD
+[2.4.0]: https://github.com/yourusername/dreamcatcher/compare/v2.3.0...v2.4.0
+[2.3.0]: https://github.com/yourusername/dreamcatcher/compare/v2.1.0...v2.3.0
+[2.1.0]: https://github.com/yourusername/dreamcatcher/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/yourusername/dreamcatcher/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/yourusername/dreamcatcher/releases/tag/v1.0.0
