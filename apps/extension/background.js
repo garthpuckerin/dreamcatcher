@@ -143,9 +143,22 @@ function updateBadge(count) {
   chrome.action.setBadgeBackgroundColor({ color: '#3B82F6' });
 }
 
-// Generate unique ID
+// Generate unique ID using crypto API
 function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  // Use crypto.randomUUID if available (modern browsers)
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID()
+  }
+
+  // Fallback: Use crypto.getRandomValues for better randomness
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    const array = new Uint8Array(16)
+    crypto.getRandomValues(array)
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('')
+  }
+
+  // Last resort fallback (should never happen in modern browsers)
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 9)
 }
 
 // Show notification
