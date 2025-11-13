@@ -1,0 +1,24 @@
+{
+  "name": "@dreamcatcher/shared",
+  "version": "2.4.0",
+  "description": "Shared utilities and API client for Dreamcatcher",
+  "main": "src/api.ts",
+  "types": "src/api.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "keywords": [
+    "dreamcatcher",
+    "shared",
+    "api"
+  ],
+  "author": "Dreamcatcher Team",
+  "license": "MIT",
+  "dependencies": {
+    "@dreamcatcher/types": "file:../types"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
+}
