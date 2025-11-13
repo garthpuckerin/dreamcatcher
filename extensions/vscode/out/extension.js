@@ -30,8 +30,12 @@ const dreamcatcher_provider_1 = require("./dreamcatcher-provider");
 const conversation_capture_1 = require("./conversation-capture");
 const pipelineos_integration_1 = require("./pipelineos-integration");
 const storage_manager_1 = require("./storage-manager");
+// Store context globally for helper functions
+let extensionContext;
 function activate(context) {
     console.log('Dreamcatcher extension is now active!');
+    // Store context for use in helper functions
+    extensionContext = context;
     // Initialize components
     const storageManager = new storage_manager_1.StorageManager(context);
     const conversationCapture = new conversation_capture_1.ConversationCapture(storageManager);
@@ -156,7 +160,7 @@ function showQuickActionForSelection(selection) {
 }
 async function showDreamSelection() {
     // Show list of existing dreams to add content to
-    const storageManager = new storage_manager_1.StorageManager(vscode.workspace.workspaceFolders?.[0]?.uri || vscode.Uri.file(''));
+    const storageManager = new storage_manager_1.StorageManager(extensionContext);
     const dreams = await storageManager.getDreams();
     const quickPick = vscode.window.createQuickPick();
     quickPick.items = dreams.map(dream => ({
