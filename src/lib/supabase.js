@@ -35,16 +35,18 @@ if (!supabase) {
 }
 
 // Debug logging (only in development)
-if (debugMode && import.meta.env.DEV) {
+if (debugMode && import.meta.env.DEV && supabase && supabaseAnonKey) {
   console.log('🔌 Supabase client initialized')
   console.log('📍 URL:', supabaseUrl)
   console.log('🔑 Anon Key:', supabaseAnonKey.substring(0, 20) + '...')
-  
+
   // Log auth state changes
   supabase.auth.onAuthStateChange((event, session) => {
     console.log('🔐 Auth event:', event)
     console.log('👤 User:', session?.user?.email || 'Not signed in')
   })
+} else if (debugMode && import.meta.env.DEV) {
+  console.log('🔌 Supabase client not configured - running in LocalStorage mode')
 }
 
 // Export helper to check if Supabase is configured
