@@ -1,0 +1,246 @@
+// src/extension.ts
+import * as vscode from 'vscode';
+import { DreamcatcherAPI } from '@dreamcatcher/shared';
+import { Dream, Fragment, PipelineOSConfig } from '@dreamcatcher/types';
+import { DreamcatcherProvider } from './dreamcatcher-provider';
+import { ConversationCapture } from './conversation-capture';
+import { PipelineOSIntegration } from './pipelineos-integration';
+import { StorageManager } from './storage-manager';
+
+export function activate(context: vscode.ExtensionContext) {
+    console.log('Dreamcatcher extension is now active!');
+
+    // Initialize components
+    const storageManager = new StorageManager(context);
+    const conversationCapture = new ConversationCapture(storageManager);
+    const pipelineOSIntegration = new PipelineOSIntegration(context);
+    const dreamcatcherProvider = new DreamcatcherProvider(storageManager);
+
+    // Register commands
+    const captureCommand = vscode.commands.registerCommand('dreamcatcher.captureConversation', async () => {
+        await conversationCapture.captureConversation();
+    });
+
+    const dashboardCommand = vscode.commands.registerCommand('dreamcatcher.openDashboard', async () => {
+        await openDashboard();
+    });
+
+    const syncCommand = vscode.commands.registerCommand('dreamcatcher.syncWithPipelineOS', async () => {
+        await pipelineOSIntegration.syncDreams();
+    });
+
+    const createDreamCommand = vscode.commands.registerCommand('dreamcatcher.createDreamFromSelection', async () => {
+        await createDreamFromSelection(conversationCapture);
+    });
+
+    const quickCaptureCommand = vscode.commands.registerCommand('dreamcatcher.quickCapture', async () => {
+        await quickCapture(conversationCapture);
+    });
+
+    // Register tree data provider
+    vscode.window.createTreeView('dreamcatcher-dreams', {
+        treeDataProvider: dreamcatcherProvider,
+        showCollapseAll: true
+    });
+
+    // Register status bar item
+    const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    statusBarItem.text = "$(lightbulb) Dreamcatcher";
+    statusBarItem.tooltip = "Dreamcatcher: Capture AI conversations";
+    statusBarItem.command = 'dreamcatcher.captureConversation';
+    statusBarItem.show();
+
+    // Register configuration change listener
+    const configChangeListener = vscode.workspace.onDidChangeConfiguration(event => {
+        if (event.affectsConfiguration('dreamcatcher')) {
+            updateConfiguration();
+        }
+    });
+
+    // Register text selection change listener
+    const selectionChangeListener = vscode.window.onDidChangeTextEditorSelection(event => {
+        const selection = event.selections[0];
+        if (!selection.isEmpty) {
+            // Show quick action for selected text
+            showQuickActionForSelection(selection);
+        }
+    });
+
+    // Register document change listener for auto-capture
+    const documentChangeListener = vscode.workspace.onDidChangeTextDocument(event => {
+        if (vscode.workspace.getConfiguration('dreamcatcher').get('autoCapture')) {
+            handleDocumentChange(event);
+        }
+    });
+
+    // Add to subscriptions
+    context.subscriptions.push(
+        captureCommand,
+        dashboardCommand,
+        syncCommand,
+        createDreamCommand,
+        quickCaptureCommand,
+        statusBarItem,
+        configChangeListener,
+        selectionChangeListener,
+        documentChangeListener
+    );
+
+    // Initialize configuration
+    updateConfiguration();
+
+    // Show welcome message
+    showWelcomeMessage();
+}
+
+export function deactivate() {
+    console.log('Dreamcatcher extension is now deactivated');
+}
+
+async function openDashboard() {
+    // Open Dreamcatcher web dashboard
+    const dashboardUrl = vscode.workspace.getConfiguration('dreamcatcher').get('dashboardUrl', 'http://localhost:3000');
+    vscode.env.openExternal(vscode.Uri.parse(dashboardUrl));
+}
+
+async function createDreamFromSelection(conversationCapture: ConversationCapture) {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+        vscode.window.showWarningMessage('No active editor');
+        return;
+    }
+
+    const selection = editor.selection;
+    if (selection.isEmpty) {
+        vscode.window.showWarningMessage('No text selected');
+        return;
+    }
+
+    const selectedText = editor.document.getText(selection);
+    await conversationCapture.captureFromText(selectedText, editor.document.fileName);
+}
+
+async function quickCapture(conversationCapture: ConversationCapture) {
+    // Quick capture from clipboard or current document
+    const clipboardText = await vscode.env.clipboard.readText();
+    if (clipboardText) {
+        await conversationCapture.captureFromText(clipboardText, 'clipboard');
+    } else {
+        vscode.window.showWarningMessage('Clipboard is empty');
+    }
+}
+
+function showQuickActionForSelection(selection: vscode.Selection) {
+    // Show quick action for selected text
+    const quickPick = vscode.window.createQuickPick();
+    quickPick.items = [
+        {
+            label: '$(lightbulb) Create Dream from Selection',
+            description: 'Capture selected text as a new dream',
+            detail: 'Turn this code or text into an actionable project'
+        },
+        {
+            label: '$(comment-discussion) Add to Existing Dream',
+            description: 'Add selected text to an existing dream',
+            detail: 'Append this content to a dream you\'re working on'
+        }
+    ];
+
+    quickPick.onDidChangeSelection(selection => {
+        if (selection[0]) {
+            if (selection[0].label.includes('Create Dream')) {
+                vscode.commands.executeCommand('dreamcatcher.createDreamFromSelection');
+            } else if (selection[0].label.includes('Add to Existing')) {
+                // Show dream selection
+                showDreamSelection();
+            }
+        }
+        quickPick.hide();
+    });
+
+    quickPick.show();
+}
+
+async function showDreamSelection() {
+    // Show list of existing dreams to add content to
+    const storageManager = new StorageManager(vscode.workspace.workspaceFolders?.[0]?.uri || vscode.Uri.file(''));
+    const dreams = await storageManager.getDreams();
+    
+    const quickPick = vscode.window.createQuickPick();
+    quickPick.items = dreams.map(dream => ({
+        label: dream.title,
+        description: dream.description,
+        detail: `${dream.fragments.length} fragments, ${dream.status}`
+    }));
+
+    quickPick.onDidChangeSelection(selection => {
+        if (selection[0]) {
+            // Add selected text to chosen dream
+            const editor = vscode.window.activeTextEditor;
+            if (editor) {
+                const selectedText = editor.document.getText(editor.selection);
+                // Implementation for adding to existing dream
+            }
+        }
+        quickPick.hide();
+    });
+
+    quickPick.show();
+}
+
+function updateConfiguration() {
+    const config = vscode.workspace.getConfiguration('dreamcatcher');
+    
+    // Update storage manager configuration
+    const storageType = config.get('storage.type', 'local');
+    const maxDreams = config.get('limits.maxDreams', 50);
+    
+    // Update PipelineOS configuration
+    const pipelineOSEnabled = config.get('pipelineOS.enabled', false);
+    const pipelineOSUrl = config.get('pipelineOS.apiUrl', '');
+    const pipelineOSKey = config.get('pipelineOS.apiKey', '');
+    
+    // Update Supabase configuration
+    const supabaseUrl = config.get('supabase.url', '');
+    const supabaseKey = config.get('supabase.key', '');
+    
+    console.log('Dreamcatcher configuration updated:', {
+        storageType,
+        maxDreams,
+        pipelineOSEnabled,
+        supabaseUrl: supabaseUrl ? 'configured' : 'not configured'
+    });
+}
+
+function showWelcomeMessage() {
+    const config = vscode.workspace.getConfiguration('dreamcatcher');
+    const hasShownWelcome = config.get('hasShownWelcome', false);
+    
+    if (!hasShownWelcome) {
+        vscode.window.showInformationMessage(
+            'Welcome to Dreamcatcher! Use Ctrl+Shift+C to capture AI conversations.',
+            'Open Dashboard',
+            'Configure'
+        ).then(selection => {
+            if (selection === 'Open Dashboard') {
+                vscode.commands.executeCommand('dreamcatcher.openDashboard');
+            } else if (selection === 'Configure') {
+                vscode.commands.executeCommand('workbench.action.openSettings', 'dreamcatcher');
+            }
+        });
+        
+        // Mark welcome as shown
+        config.update('hasShownWelcome', true, vscode.ConfigurationTarget.Global);
+    }
+}
+
+function handleDocumentChange(event: vscode.TextDocumentChangeEvent) {
+    // Auto-capture logic for AI conversations
+    const changes = event.contentChanges;
+    for (const change of changes) {
+        if (change.text.includes('```') || change.text.includes('def ') || change.text.includes('function ')) {
+            // Potential code or AI conversation detected
+            // Implement auto-capture logic
+        }
+    }
+}
