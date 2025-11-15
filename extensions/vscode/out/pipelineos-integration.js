@@ -54,6 +54,7 @@ class PipelineOSIntegration {
             return;
         }
         try {
+            let syncedCount = 0;
             await vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
                 title: "Syncing with PipelineOS...",
@@ -67,7 +68,6 @@ class PipelineOSIntegration {
                 const unsyncedDreams = dreams.filter(dream => !dream.syncedWithPipelineOS);
                 progress.report({ increment: 50 });
                 // Sync each dream
-                let syncedCount = 0;
                 for (const dream of unsyncedDreams) {
                     try {
                         await this.api.importDream(dream);

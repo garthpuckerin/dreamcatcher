@@ -70,6 +70,7 @@ class ConversationCapture {
     }
     async captureFromText(text, source) {
         try {
+            let dream;
             // Show progress
             await vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
@@ -78,13 +79,15 @@ class ConversationCapture {
             }, async (progress) => {
                 progress.report({ increment: 0 });
                 // Create dream
-                const dream = await this.createDream(text, source);
+                dream = await this.createDream(text, source);
                 progress.report({ increment: 50 });
                 // Save to storage
                 await this.storageManager.saveDream(dream);
                 progress.report({ increment: 100 });
             });
-            vscode.window.showInformationMessage(`✅ Dream "${dream.title}" captured successfully!`);
+            if (dream) {
+                vscode.window.showInformationMessage(`✅ Dream "${dream.title}" captured successfully!`);
+            }
             // Refresh the tree view
             vscode.commands.executeCommand('dreamcatcher-dreams.refresh');
         }

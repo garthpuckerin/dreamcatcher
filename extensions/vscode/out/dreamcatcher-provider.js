@@ -43,11 +43,11 @@ class DreamcatcherProvider {
             // Root level - show dreams
             return this.getDreams();
         }
-        else if (element.type === 'dream') {
+        else if (element.type === 'dream' && element.dream) {
             // Dream level - show fragments
             return this.getFragments(element.dream);
         }
-        else if (element.type === 'fragment') {
+        else if (element.type === 'fragment' && element.fragment) {
             // Fragment level - show details
             return this.getFragmentDetails(element.fragment);
         }

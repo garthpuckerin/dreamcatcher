@@ -1,7 +1,7 @@
 // src/pipelineos-integration.ts
 import * as vscode from 'vscode';
 import { DreamcatcherAPI } from '@dreamcatcher/shared';
-import { PipelineOSConfig } from '@dreamcatcher/types';
+import { Dream, PipelineOSConfig } from '@dreamcatcher/types';
 
 export class PipelineOSIntegration {
     private context: vscode.ExtensionContext;
@@ -37,6 +37,8 @@ export class PipelineOSIntegration {
         }
 
         try {
+            let syncedCount = 0;
+
             await vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
                 title: "Syncing with PipelineOS...",
@@ -53,7 +55,6 @@ export class PipelineOSIntegration {
                 progress.report({ increment: 50 });
 
                 // Sync each dream
-                let syncedCount = 0;
                 for (const dream of unsyncedDreams) {
                     try {
                         await this.api!.importDream(dream);
@@ -182,13 +183,13 @@ export class PipelineOSIntegration {
         }
 
         try {
-            const ws = new WebSocket(`${wsUrl}/ws/dreamcatcher/${apiKey}`);
-            
+            const ws: WebSocket = new WebSocket(`${wsUrl}/ws/dreamcatcher/${apiKey}`);
+
             ws.onopen = () => {
                 console.log('Connected to PipelineOS WebSocket');
             };
 
-            ws.onmessage = (event) => {
+            ws.onmessage = (event: MessageEvent) => {
                 try {
                     const message = JSON.parse(event.data);
                     this.handleWebSocketMessage(message);
@@ -203,7 +204,7 @@ export class PipelineOSIntegration {
                 setTimeout(() => this.connectWebSocket(), 5000);
             };
 
-            ws.onerror = (error) => {
+            ws.onerror = (error: Event) => {
                 console.error('WebSocket error:', error);
             };
 

@@ -10,7 +10,9 @@
       "Bash(npm run compile:*)",
       "Bash(git push:*)",
       "Bash(gh pr create:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr edit:*)"
     ],
     "deny": [],
     "ask": []
