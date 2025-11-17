@@ -5,7 +5,7 @@ import React from 'react';
  * @param {React.ReactNode} children - Content to display in the modal
  * @param {Function} onClose - Callback when clicking outside the modal
  */
-export default function Modal({ children, onClose }) {
+const Modal = React.memo(function Modal({ children, onClose }) {
   return (
     <div
       style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '2rem' }}
@@ -19,4 +19,6 @@ export default function Modal({ children, onClose }) {
       </div>
     </div>
   );
-}
+});
+
+export default Modal;

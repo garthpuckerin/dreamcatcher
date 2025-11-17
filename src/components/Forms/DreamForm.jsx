@@ -8,7 +8,7 @@ import { Save, X } from 'lucide-react';
  * @param {Function} onCancel - Callback when form is cancelled
  * @param {Array} statuses - Available status options
  */
-export default function DreamForm({ dream, onSave, onCancel, statuses }) {
+const DreamForm = React.memo(function DreamForm({ dream, onSave, onCancel, statuses }) {
   const [formData, setFormData] = useState(dream || {
     title: '',
     description: '',
@@ -105,4 +105,6 @@ export default function DreamForm({ dream, onSave, onCancel, statuses }) {
       </div>
     </div>
   );
-}
+});
+
+export default DreamForm;

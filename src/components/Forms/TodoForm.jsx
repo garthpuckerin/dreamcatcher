@@ -8,7 +8,7 @@ import { Save } from 'lucide-react';
  * @param {Function} onCancel - Callback when form is cancelled
  * @param {Array} taskCategories - Available task category options
  */
-export default function TodoForm({ todo, onSave, onCancel, taskCategories }) {
+const TodoForm = React.memo(function TodoForm({ todo, onSave, onCancel, taskCategories }) {
   const [formData, setFormData] = useState(todo || {
     title: '',
     category: 'coding',
@@ -87,4 +87,6 @@ export default function TodoForm({ todo, onSave, onCancel, taskCategories }) {
       </div>
     </div>
   );
-}
+});
+
+export default TodoForm;

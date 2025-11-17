@@ -6,7 +6,7 @@ import { Save, X } from 'lucide-react';
  * @param {Function} onSave - Callback when form is submitted
  * @param {Function} onCancel - Callback when form is cancelled
  */
-export default function FragmentForm({ onSave, onCancel }) {
+const FragmentForm = React.memo(function FragmentForm({ onSave, onCancel }) {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -104,4 +104,6 @@ export default function FragmentForm({ onSave, onCancel }) {
       </div>
     </div>
   );
-}
+});
+
+export default FragmentForm;
