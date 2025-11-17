@@ -1,0 +1,250 @@
+/**
+ * Content Script Styles
+ * Injected into ChatGPT and Claude pages
+ */
+
+/* Capture Button */
+.dreamcatcher-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+  transition: all 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  z-index: 9999;
+}
+
+.dreamcatcher-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+}
+
+.dreamcatcher-btn:active {
+  transform: translateY(0);
+}
+
+.dreamcatcher-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dreamcatcher-btn svg {
+  flex-shrink: 0;
+}
+
+/* Capture Modal */
+.dreamcatcher-capture-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.dreamcatcher-modal-content {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.dreamcatcher-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.dreamcatcher-modal-header h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0;
+}
+
+.dreamcatcher-close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #f7fafc;
+  border-radius: 6px;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  color: #718096;
+  transition: all 0.2s;
+}
+
+.dreamcatcher-close-btn:hover {
+  background: #edf2f7;
+  color: #2d3748;
+}
+
+.dreamcatcher-modal-body {
+  padding: 24px;
+}
+
+.capture-summary {
+  padding: 16px;
+  background: #f7fafc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.capture-summary p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #4a5568;
+}
+
+.capture-summary strong {
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.dreamcatcher-input,
+.dreamcatcher-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.dreamcatcher-input:focus,
+.dreamcatcher-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.dreamcatcher-btn-primary {
+  flex: 1;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.dreamcatcher-btn-secondary {
+  flex: 1;
+  background: #edf2f7;
+  color: #4a5568;
+}
+
+.dreamcatcher-btn-ghost {
+  background: transparent;
+  color: #718096;
+}
+
+.dreamcatcher-btn-ghost:hover {
+  background: #f7fafc;
+}
+
+/* Notification */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Scrollbar styling */
+.dreamcatcher-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dreamcatcher-modal-content::-webkit-scrollbar-track {
+  background: #f7fafc;
+}
+
+.dreamcatcher-modal-content::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+.dreamcatcher-modal-content::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}

@@ -1,52 +1,56 @@
 {
   "manifest_version": 3,
-  "name": "PipelineOS Capture",
-  "version": "2.0.0",
-  "description": "Capture AI conversations for PipelineOS implementation",
+  "name": "Dreamcatcher - AI Chat Capture",
+  "version": "1.0.0",
+  "description": "Capture ChatGPT and Claude conversations directly into your Dreamcatcher dreams",
   "permissions": [
     "storage",
     "activeTab",
-    "scripting",
-    "background",
-    "notifications",
-    "contextMenus",
-    "alarms"
+    "scripting"
   ],
   "host_permissions": [
     "https://chat.openai.com/*",
     "https://claude.ai/*",
-    "https://*.pipelineos.dev/*"
+    "https://chat.anthropic.com/*"
   ],
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
-    }
-  },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/background.js"
   },
   "content_scripts": [
     {
       "matches": [
         "https://chat.openai.com/*",
-        "https://claude.ai/*"
+        "https://claude.ai/*",
+        "https://chat.anthropic.com/*"
       ],
-      "js": ["content.js"],
-      "css": ["content.css"]
+      "js": ["src/content.js"],
+      "css": ["src/styles.css"],
+      "run_at": "document_end"
     }
   ],
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
   "icons": {
     "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
   "web_accessible_resources": [
     {
-      "resources": ["icons/*"],
-      "matches": ["https://chat.openai.com/*", "https://claude.ai/*"]
+      "resources": ["src/capture-ui.html"],
+      "matches": [
+        "https://chat.openai.com/*",
+        "https://claude.ai/*",
+        "https://chat.anthropic.com/*"
+      ]
     }
   ]
 }
