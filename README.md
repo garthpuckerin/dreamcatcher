@@ -17,6 +17,83 @@ Dreamcatcher is an AI-powered conversation capture and organization platform tha
 
 ## 🚀 **Features**
 
+### **✨ NEW: Commercial SaaS Features**
+Transform Dreamcatcher into a full-featured commercial product with these enterprise-ready capabilities:
+
+#### **1. Real-Time Collaboration** (Teams Tier)
+- **Live co-editing**: Multiple users can work on dreams simultaneously
+- **Presence tracking**: See who's viewing/editing what
+- **Live cursors**: Real-time cursor position updates
+- **Conflict resolution**: Operational Transform for seamless collaboration
+- **WebSocket infrastructure**: Sub-second latency with Redis scaling
+
+#### **2. AI Chat Integration Extension** (Pro Tier)
+- **One-click capture**: Save ChatGPT & Claude conversations instantly
+- **Offline queue**: Capture even without internet, sync later
+- **Auto-detection**: Automatically detect project context
+- **Context menu**: Right-click to save selected text
+- **Chrome extension**: Seamless browser integration
+
+#### **3. Advanced AI Assistant** (Pro Tier)
+- **Task prioritization**: AI tells you "what to work on next"
+- **Progress summaries**: Auto-generate weekly/monthly progress reports
+- **Similarity detection**: Find related past projects
+- **Task breakdown**: Dream → Epic → Stories → Tasks
+- **Risk detection**: Analyze for scope creep and blockers
+- **Meeting parser**: Extract action items from meeting notes
+- **Code analysis**: Detect features in code snippets
+
+#### **4. Timeline & Retrospectives** (Pro Tier)
+- **Visual timeline**: See dream evolution over time
+- **Activity heatmap**: Track productivity patterns
+- **Auto-milestones**: Detect launches, pivots, blockers
+- **Retrospectives**: 4 formats (Start-Stop-Continue, 4Ls, Sailboat, Mad-Sad-Glad)
+- **AI suggestions**: AI-powered retrospective insights
+- **Export to PDF**: Share timelines and retrospectives
+
+#### **5. Integration Ecosystem** (Teams Tier)
+- **GitHub**: Commits → fragments, PRs → fragments, Issues → todos
+- **Slack**: Thread capture, notifications, bot commands
+- **Google Calendar**: Auto-sync todo deadlines
+- **OAuth 2.0**: Secure third-party authentication
+- **Webhooks**: Real-time integration updates
+
+#### **6. Portfolio Builder** (Pro Tier)
+- **Public showcase**: Create beautiful portfolio pages
+- **AI case studies**: Auto-generate 7-section case studies
+- **Custom themes**: 4 professional themes + custom branding
+- **Skills tracking**: Auto-extract skills from dreams
+- **Custom domain**: Connect your own domain (Pro feature)
+- **SEO optimized**: Get discovered on search engines
+
+#### **7. Analytics Dashboard** (Pro Tier)
+- **Dream velocity**: Track idea → launch time
+- **Productivity trends**: Visualize fragments & tasks over time
+- **AI usage stats**: Monitor AI assistant usage
+- **Insights**: Automated recommendations
+- **Export**: Download metrics as CSV
+
+#### **8. Smart Templates & Marketplace** (All Tiers)
+- **Built-in templates**: MVP Launch, Side Project Starter, etc.
+- **Template marketplace**: Browse 1000+ community templates
+- **Monetization**: Sell your templates (70% revenue share)
+- **One-click apply**: Instant dream creation from templates
+- **Ratings & reviews**: Community-driven quality
+
+#### **9. Mobile App** (All Tiers)
+- **Quick capture**: Add ideas on the go
+- **Offline support**: Full offline functionality
+- **Auto-sync**: Seamless cloud synchronization
+- **Photo capture**: Attach photos to fragments
+- **Push notifications**: Never miss a deadline
+
+#### **10. Version Control for Ideas** (Pro Tier)
+- **Git-inspired**: Snapshot, restore, diff, branch
+- **Time travel**: Restore to any previous version
+- **A/B branching**: Explore alternative directions
+- **Change log**: Track evolution with reasoning
+- **Visual diff**: See what changed between versions
+
 ### **Core Features**
 - **AI Conversation Capture**: Automatically capture ChatGPT and Claude conversations
 - **Smart Organization**: Organize conversations into "dreams" and "fragments"
@@ -135,13 +212,23 @@ Dreamcatcher is an AI-powered conversation capture and organization platform tha
 - **Value Proposition**: Conversation-to-implementation workflow
 - **Pricing**: $50-200/month per user (via PipelineOS)
 
-### **Standalone Freemium**
-- **Revenue Model**: Freemium with premium features
-- **Target Market**: Individual developers and small teams
-- **Value Proposition**: Personal AI conversation organization
-- **Pricing**: 
-  - **Free**: LocalStorage, 50 dreams, basic features
-  - **Premium**: $5-10/month, Supabase cloud sync, unlimited dreams
+### **Standalone SaaS Model**
+- **Revenue Model**: Tiered SaaS subscription
+- **Target Market**: Individual developers, teams, and enterprises
+- **Value Proposition**: Complete AI-powered project management platform
+
+**Pricing Tiers:**
+- **Free**: Core features, 10 dreams, local storage
+- **Pro ($15/mo)**: AI Assistant, Analytics, Portfolio, Templates, Version Control
+- **Teams ($49/mo)**: Everything in Pro + Real-time Collaboration, Integrations, Priority Support
+- **Enterprise (Custom)**: Everything in Teams + SSO, Custom deployment, SLAs, Dedicated support
+
+**Revenue Projections:**
+- Year 1: $408K ARR (500 Pro, 50 Teams, 2 Enterprise)
+- Year 2: $1.866M ARR (2,500 Pro, 300 Teams, 15 Enterprise)
+- Year 3: $7.4M ARR (10,000 Pro, 1,500 Teams, 100 Enterprise)
+
+See [COMMERCIALIZATION.md](docs/COMMERCIALIZATION.md) for complete strategy.
 
 ---
 
