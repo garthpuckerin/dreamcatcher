@@ -88,6 +88,31 @@ class VersioningService {
     }
   }
 
+  // Delete snapshot
+  deleteSnapshot(snapshotId) {
+    for (const [dreamId, snapshots] of this.snapshots.entries()) {
+      const index = snapshots.findIndex((s) => s.id === snapshotId)
+      if (index !== -1) {
+        snapshots.splice(index, 1)
+        if (snapshots.length === 0) {
+          this.snapshots.delete(dreamId)
+        }
+        return true
+      }
+    }
+    return false
+  }
+
+  // Get history for a dream (alias for getSnapshots)
+  getHistory(dreamId) {
+    return this.getSnapshots(dreamId)
+  }
+
+  // Clear history for a dream
+  clearHistory(dreamId) {
+    this.snapshots.delete(dreamId)
+  }
+
   // Branch dream (create A/B version)
   branchDream(dreamId, branchName) {
     const snapshots = this.getSnapshots(dreamId)
