@@ -12,11 +12,11 @@
  * Uses GPT-4 for complex reasoning and embeddings for semantic search
  */
 
-import { openai } from '../lib/ai';
+import { openai } from '../lib/ai'
 
 class AIAssistantService {
   constructor() {
-    this.conversationHistory = [];
+    this.conversationHistory = []
   }
 
   /**
@@ -26,7 +26,7 @@ class AIAssistantService {
    * @returns {Promise<string>} AI response
    */
   async ask(question, context = {}) {
-    const { dreams = [], currentDream = null, recentFragments = [] } = context;
+    const { dreams = [], currentDream = null, recentFragments = [] } = context
 
     const systemPrompt = `You are an intelligent project management assistant for Dreamcatcher,
 a tool that helps users capture and organize project ideas from AI conversations.
@@ -45,39 +45,39 @@ Your role is to:
 4. Detect risks or blockers
 5. Find connections between projects
 
-Be concise, actionable, and specific.`;
+Be concise, actionable, and specific.`
 
     const messages = [
       { role: 'system', content: systemPrompt },
       ...this.conversationHistory,
-      { role: 'user', content: question }
-    ];
+      { role: 'user', content: question },
+    ]
 
     try {
       const response = await openai.chat.completions.create({
         model: 'gpt-4',
         messages,
         temperature: 0.7,
-        max_tokens: 500
-      });
+        max_tokens: 500,
+      })
 
-      const answer = response.choices[0].message.content;
+      const answer = response.choices[0].message.content
 
       // Store in conversation history
       this.conversationHistory.push(
         { role: 'user', content: question },
         { role: 'assistant', content: answer }
-      );
+      )
 
       // Keep only last 10 messages to manage token usage
       if (this.conversationHistory.length > 10) {
-        this.conversationHistory = this.conversationHistory.slice(-10);
+        this.conversationHistory = this.conversationHistory.slice(-10)
       }
 
-      return answer;
+      return answer
     } catch (error) {
-      console.error('AI Assistant error:', error);
-      throw new Error('Failed to get AI response');
+      console.error('AI Assistant error:', error)
+      throw new Error('Failed to get AI response')
     }
   }
 
@@ -87,13 +87,13 @@ Be concise, actionable, and specific.`;
    * @returns {Promise<Object>} Prioritization recommendations
    */
   async prioritizeTasks(dreams) {
-    const activeDreams = dreams.filter(d => d.status !== 'completed' && d.status !== 'archived');
+    const activeDreams = dreams.filter(d => d.status !== 'completed' && d.status !== 'archived')
 
     if (activeDreams.length === 0) {
       return {
-        recommendation: "You have no active dreams. Create a new dream to get started!",
-        tasks: []
-      };
+        recommendation: 'You have no active dreams. Create a new dream to get started!',
+        tasks: [],
+      }
     }
 
     const context = {
@@ -104,9 +104,9 @@ Be concise, actionable, and specific.`;
         todos: d.todos || [],
         fragments: (d.fragments || []).length,
         tags: d.tags,
-        updated: d.updated_at
-      }))
-    };
+        updated: d.updated_at,
+      })),
+    }
 
     const question = `Based on my active dreams, what should I work on next? Consider:
 - Deadlines and urgency
@@ -114,14 +114,14 @@ Be concise, actionable, and specific.`;
 - Current momentum (recently updated)
 - Strategic importance
 
-Provide 3-5 specific task recommendations with reasoning.`;
+Provide 3-5 specific task recommendations with reasoning.`
 
-    const response = await this.ask(question, { dreams: activeDreams });
+    const response = await this.ask(question, { dreams: activeDreams })
 
     return {
       recommendation: response,
-      generatedAt: new Date().toISOString()
-    };
+      generatedAt: new Date().toISOString(),
+    }
   }
 
   /**
@@ -134,19 +134,19 @@ Provide 3-5 specific task recommendations with reasoning.`;
     const periodMap = {
       week: 7,
       month: 30,
-      all: 365 * 10
-    };
+      all: 365 * 10,
+    }
 
-    const days = periodMap[period] || 7;
-    const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    const days = periodMap[period] || 7
+    const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
 
-    const recentFragments = (dream.fragments || []).filter(f =>
-      new Date(f.date || f.created_at) > cutoffDate
-    );
+    const recentFragments = (dream.fragments || []).filter(
+      f => new Date(f.date || f.created_at) > cutoffDate
+    )
 
-    const recentTodos = (dream.todos || []).filter(t =>
-      t.completed && new Date(t.completed_at) > cutoffDate
-    );
+    const recentTodos = (dream.todos || []).filter(
+      t => t.completed && new Date(t.completed_at) > cutoffDate
+    )
 
     const prompt = `Summarize progress on "${dream.title}" over the past ${period}:
 
@@ -158,9 +158,9 @@ ${recentTodos.length > 0 ? `Completed:\n${recentTodos.map(t => `- ${t.title}`).j
 
 Current status: ${dream.status}
 
-Provide a concise 2-3 sentence summary of progress, highlighting key achievements and momentum.`;
+Provide a concise 2-3 sentence summary of progress, highlighting key achievements and momentum.`
 
-    return this.ask(prompt, { currentDream: dream, recentFragments });
+    return this.ask(prompt, { currentDream: dream, recentFragments })
   }
 
   /**
@@ -170,10 +170,10 @@ Provide a concise 2-3 sentence summary of progress, highlighting key achievement
    * @returns {Promise<Array>} Similar dreams with reasoning
    */
   async findSimilarProjects(dream, allDreams) {
-    const otherDreams = allDreams.filter(d => d.id !== dream.id);
+    const otherDreams = allDreams.filter(d => d.id !== dream.id)
 
     if (otherDreams.length === 0) {
-      return [];
+      return []
     }
 
     const prompt = `Find projects similar to "${dream.title}":
@@ -183,16 +183,16 @@ Tags: ${dream.tags.join(', ')}
 Other projects:
 ${otherDreams.map((d, i) => `${i + 1}. ${d.title} (${d.status}) - ${d.description || 'No description'} [Tags: ${d.tags.join(', ')}]`).join('\n')}
 
-Identify the 3 most similar projects and explain why they're similar. Include project number, title, and 1-sentence reasoning.`;
+Identify the 3 most similar projects and explain why they're similar. Include project number, title, and 1-sentence reasoning.`
 
-    const response = await this.ask(prompt, { dreams: otherDreams, currentDream: dream });
+    const response = await this.ask(prompt, { dreams: otherDreams, currentDream: dream })
 
     // Parse response to extract similar projects
     // This is a simplified version - production would use structured output
     return {
       similar: response,
-      timestamp: new Date().toISOString()
-    };
+      timestamp: new Date().toISOString(),
+    }
   }
 
   /**
@@ -211,15 +211,15 @@ Existing Todos: ${(dream.todos || []).length}
 Create 5-10 specific tasks following this format:
 - Task title (category: coding/design/marketing/admin, estimated time)
 
-Make tasks SMART (Specific, Measurable, Achievable, Relevant, Time-bound).`;
+Make tasks SMART (Specific, Measurable, Achievable, Relevant, Time-bound).`
 
-    const response = await this.ask(prompt, { currentDream: dream });
+    const response = await this.ask(prompt, { currentDream: dream })
 
     return {
       tasks: response,
       generatedAt: new Date().toISOString(),
-      source: 'ai-breakdown'
-    };
+      source: 'ai-breakdown',
+    }
   }
 
   /**
@@ -231,11 +231,11 @@ Make tasks SMART (Specific, Measurable, Achievable, Relevant, Time-bound).`;
     if (!dream.fragments || dream.fragments.length === 0) {
       return {
         risks: [],
-        severity: 'none'
-      };
+        severity: 'none',
+      }
     }
 
-    const recentFragments = dream.fragments.slice(-10);
+    const recentFragments = dream.fragments.slice(-10)
 
     const prompt = `Analyze these conversation fragments for potential risks or concerns:
 
@@ -248,15 +248,15 @@ Identify:
 4. Timeline concerns
 5. Unclear requirements
 
-List any risks found with severity (low/medium/high) and mitigation suggestions.`;
+List any risks found with severity (low/medium/high) and mitigation suggestions.`
 
-    const response = await this.ask(prompt, { currentDream: dream, recentFragments });
+    const response = await this.ask(prompt, { currentDream: dream, recentFragments })
 
     return {
       analysis: response,
       fragmentsAnalyzed: recentFragments.length,
-      timestamp: new Date().toISOString()
-    };
+      timestamp: new Date().toISOString(),
+    }
   }
 
   /**
@@ -277,26 +277,30 @@ List any risks found with severity (low/medium/high) and mitigation suggestions.
 Meeting content:
 ${content}
 
-Format as structured data.`;
+Format as structured data.`
 
     const response = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        { role: 'system', content: 'You are a meeting notes parser. Extract structured information from meeting transcripts.' },
-        { role: 'user', content: prompt }
+        {
+          role: 'system',
+          content:
+            'You are a meeting notes parser. Extract structured information from meeting transcripts.',
+        },
+        { role: 'user', content: prompt },
       ],
       temperature: 0.3,
-      max_tokens: 800
-    });
+      max_tokens: 800,
+    })
 
-    const parsed = response.choices[0].message.content;
+    const parsed = response.choices[0].message.content
 
     return {
       parsed,
       dreamId,
       timestamp: new Date().toISOString(),
-      source: 'meeting-minutes'
-    };
+      source: 'meeting-minutes',
+    }
   }
 
   /**
@@ -305,19 +309,17 @@ Format as structured data.`;
    * @returns {Promise<Object>} Code analysis
    */
   async analyzeCodeSnippets(fragments) {
-    const fragmentsWithCode = fragments.filter(f =>
-      f.code_snippets && f.code_snippets.length > 0
-    );
+    const fragmentsWithCode = fragments.filter(f => f.code_snippets && f.code_snippets.length > 0)
 
     if (fragmentsWithCode.length === 0) {
       return {
         features: [],
         technologies: [],
-        patterns: []
-      };
+        patterns: [],
+      }
     }
 
-    const codeExamples = fragmentsWithCode.flatMap(f => f.code_snippets).slice(0, 5);
+    const codeExamples = fragmentsWithCode.flatMap(f => f.code_snippets).slice(0, 5)
 
     const prompt = `Analyze these code snippets and identify:
 
@@ -329,26 +331,26 @@ Format as structured data.`;
 Code snippets:
 ${codeExamples.map((code, i) => `\`\`\`\n${code}\n\`\`\``).join('\n\n')}
 
-Provide concise analysis.`;
+Provide concise analysis.`
 
-    const response = await this.ask(prompt, { recentFragments: fragmentsWithCode });
+    const response = await this.ask(prompt, { recentFragments: fragmentsWithCode })
 
     return {
       analysis: response,
       snippetsAnalyzed: codeExamples.length,
-      timestamp: new Date().toISOString()
-    };
+      timestamp: new Date().toISOString(),
+    }
   }
 
   /**
    * Clear conversation history
    */
   reset() {
-    this.conversationHistory = [];
+    this.conversationHistory = []
   }
 }
 
 // Singleton instance
-export const aiAssistant = new AIAssistantService();
+export const aiAssistant = new AIAssistantService()
 
-export default aiAssistant;
+export default aiAssistant

@@ -13,14 +13,14 @@
  * - Operational Transform for conflict resolution
  */
 
-import { io } from 'socket.io-client';
+import { io } from 'socket.io-client'
 
 class WebSocketService {
   constructor() {
-    this.socket = null;
-    this.connected = false;
-    this.presenceData = new Map();
-    this.listeners = new Map();
+    this.socket = null
+    this.connected = false
+    this.presenceData = new Map()
+    this.listeners = new Map()
   }
 
   /**
@@ -30,42 +30,42 @@ class WebSocketService {
    */
   connect(userId, token) {
     if (this.socket) {
-      return;
+      return
     }
 
-    const wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:3001';
+    const wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:3001'
 
     this.socket = io(wsUrl, {
       auth: {
         token,
-        userId
+        userId,
       },
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
-      reconnectionAttempts: 5
-    });
+      reconnectionAttempts: 5,
+    })
 
     this.socket.on('connect', () => {
-      console.log('WebSocket connected');
-      this.connected = true;
-      this.emit('connection:status', { connected: true });
-    });
+      console.log('WebSocket connected')
+      this.connected = true
+      this.emit('connection:status', { connected: true })
+    })
 
     this.socket.on('disconnect', () => {
-      console.log('WebSocket disconnected');
-      this.connected = false;
-      this.emit('connection:status', { connected: false });
-    });
+      console.log('WebSocket disconnected')
+      this.connected = false
+      this.emit('connection:status', { connected: false })
+    })
 
-    this.socket.on('error', (error) => {
-      console.error('WebSocket error:', error);
-      this.emit('connection:error', error);
-    });
+    this.socket.on('error', error => {
+      console.error('WebSocket error:', error)
+      this.emit('connection:error', error)
+    })
 
-    this.setupPresenceHandlers();
-    this.setupCollaborationHandlers();
+    this.setupPresenceHandlers()
+    this.setupCollaborationHandlers()
   }
 
   /**
@@ -73,28 +73,28 @@ class WebSocketService {
    */
   setupPresenceHandlers() {
     // User joins a dream
-    this.socket.on('presence:join', (data) => {
-      const { userId, dreamId, userName, userAvatar } = data;
+    this.socket.on('presence:join', data => {
+      const { userId, dreamId, userName, userAvatar } = data
       this.presenceData.set(`${dreamId}:${userId}`, {
         userId,
         userName,
         userAvatar,
-        lastSeen: Date.now()
-      });
-      this.emit('presence:updated', { dreamId, users: this.getPresence(dreamId) });
-    });
+        lastSeen: Date.now(),
+      })
+      this.emit('presence:updated', { dreamId, users: this.getPresence(dreamId) })
+    })
 
     // User leaves a dream
-    this.socket.on('presence:leave', (data) => {
-      const { userId, dreamId } = data;
-      this.presenceData.delete(`${dreamId}:${userId}`);
-      this.emit('presence:updated', { dreamId, users: this.getPresence(dreamId) });
-    });
+    this.socket.on('presence:leave', data => {
+      const { userId, dreamId } = data
+      this.presenceData.delete(`${dreamId}:${userId}`)
+      this.emit('presence:updated', { dreamId, users: this.getPresence(dreamId) })
+    })
 
     // Cursor position updates
-    this.socket.on('presence:cursor', (data) => {
-      this.emit('presence:cursor', data);
-    });
+    this.socket.on('presence:cursor', data => {
+      this.emit('presence:cursor', data)
+    })
   }
 
   /**
@@ -102,19 +102,19 @@ class WebSocketService {
    */
   setupCollaborationHandlers() {
     // Document changes
-    this.socket.on('doc:change', (data) => {
-      this.emit('doc:change', data);
-    });
+    this.socket.on('doc:change', data => {
+      this.emit('doc:change', data)
+    })
 
     // Comments
-    this.socket.on('comment:new', (data) => {
-      this.emit('comment:new', data);
-    });
+    this.socket.on('comment:new', data => {
+      this.emit('comment:new', data)
+    })
 
     // Notifications
-    this.socket.on('notification', (data) => {
-      this.emit('notification', data);
-    });
+    this.socket.on('notification', data => {
+      this.emit('notification', data)
+    })
   }
 
   /**
@@ -123,11 +123,11 @@ class WebSocketService {
    */
   joinDream(dreamId) {
     if (!this.connected) {
-      console.warn('Cannot join dream: not connected');
-      return;
+      console.warn('Cannot join dream: not connected')
+      return
     }
 
-    this.socket.emit('dream:join', { dreamId });
+    this.socket.emit('dream:join', { dreamId })
   }
 
   /**
@@ -136,10 +136,10 @@ class WebSocketService {
    */
   leaveDream(dreamId) {
     if (!this.connected) {
-      return;
+      return
     }
 
-    this.socket.emit('dream:leave', { dreamId });
+    this.socket.emit('dream:leave', { dreamId })
   }
 
   /**
@@ -149,10 +149,10 @@ class WebSocketService {
    */
   updateCursor(dreamId, position) {
     if (!this.connected) {
-      return;
+      return
     }
 
-    this.socket.emit('cursor:update', { dreamId, position });
+    this.socket.emit('cursor:update', { dreamId, position })
   }
 
   /**
@@ -162,10 +162,10 @@ class WebSocketService {
    */
   sendChange(dreamId, change) {
     if (!this.connected) {
-      return;
+      return
     }
 
-    this.socket.emit('doc:change', { dreamId, change });
+    this.socket.emit('doc:change', { dreamId, change })
   }
 
   /**
@@ -175,10 +175,10 @@ class WebSocketService {
    */
   sendComment(dreamId, comment) {
     if (!this.connected) {
-      return;
+      return
     }
 
-    this.socket.emit('comment:create', { dreamId, comment });
+    this.socket.emit('comment:create', { dreamId, comment })
   }
 
   /**
@@ -187,13 +187,13 @@ class WebSocketService {
    * @returns {Array} List of active users
    */
   getPresence(dreamId) {
-    const users = [];
+    const users = []
     for (const [key, value] of this.presenceData.entries()) {
       if (key.startsWith(`${dreamId}:`)) {
-        users.push(value);
+        users.push(value)
       }
     }
-    return users;
+    return users
   }
 
   /**
@@ -204,17 +204,17 @@ class WebSocketService {
    */
   on(event, callback) {
     if (!this.listeners.has(event)) {
-      this.listeners.set(event, []);
+      this.listeners.set(event, [])
     }
-    this.listeners.get(event).push(callback);
+    this.listeners.get(event).push(callback)
 
     return () => {
-      const callbacks = this.listeners.get(event);
-      const index = callbacks.indexOf(callback);
+      const callbacks = this.listeners.get(event)
+      const index = callbacks.indexOf(callback)
       if (index > -1) {
-        callbacks.splice(index, 1);
+        callbacks.splice(index, 1)
       }
-    };
+    }
   }
 
   /**
@@ -223,8 +223,8 @@ class WebSocketService {
    * @param {*} data - Event data
    */
   emit(event, data) {
-    const callbacks = this.listeners.get(event) || [];
-    callbacks.forEach(callback => callback(data));
+    const callbacks = this.listeners.get(event) || []
+    callbacks.forEach(callback => callback(data))
   }
 
   /**
@@ -232,15 +232,15 @@ class WebSocketService {
    */
   disconnect() {
     if (this.socket) {
-      this.socket.disconnect();
-      this.socket = null;
-      this.connected = false;
-      this.presenceData.clear();
+      this.socket.disconnect()
+      this.socket = null
+      this.connected = false
+      this.presenceData.clear()
     }
   }
 }
 
 // Singleton instance
-export const websocketService = new WebSocketService();
+export const websocketService = new WebSocketService()
 
-export default websocketService;
+export default websocketService

@@ -118,7 +118,7 @@ describe('FragmentForm', () => {
     expect(mockOnSave).toHaveBeenCalledWith(
       expect.objectContaining({
         title: 'Fragment Title',
-        content: 'Fragment content'
+        content: 'Fragment content',
       })
     )
   })

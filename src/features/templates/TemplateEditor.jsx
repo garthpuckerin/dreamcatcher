@@ -5,31 +5,33 @@
  * Users can monetize their templates on the marketplace
  */
 
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
 const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
-  const [template, setTemplate] = useState(initialTemplate || {
-    name: '',
-    description: '',
-    category: 'project',
-    price: 0,
-    dream: {
-      title: '',
+  const [template, setTemplate] = useState(
+    initialTemplate || {
+      name: '',
       description: '',
-      tags: []
-    },
-    todos: []
-  });
+      category: 'project',
+      price: 0,
+      dream: {
+        title: '',
+        description: '',
+        tags: [],
+      },
+      todos: [],
+    }
+  )
 
-  const [newTag, setNewTag] = useState('');
+  const [newTag, setNewTag] = useState('')
   const [newTodo, setNewTodo] = useState({
     title: '',
     category: 'admin',
-    notes: ''
-  });
+    notes: '',
+  })
 
-  const categories = ['product', 'project', 'personal', 'business', 'learning'];
-  const todoCategories = ['admin', 'planning', 'coding', 'marketing', 'research'];
+  const categories = ['product', 'project', 'personal', 'business', 'learning']
+  const todoCategories = ['admin', 'planning', 'coding', 'marketing', 'research']
 
   /**
    * Add tag
@@ -40,25 +42,25 @@ const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
         ...template,
         dream: {
           ...template.dream,
-          tags: [...template.dream.tags, newTag.trim()]
-        }
-      });
-      setNewTag('');
+          tags: [...template.dream.tags, newTag.trim()],
+        },
+      })
+      setNewTag('')
     }
-  };
+  }
 
   /**
    * Remove tag
    */
-  const removeTag = (tag) => {
+  const removeTag = tag => {
     setTemplate({
       ...template,
       dream: {
         ...template.dream,
-        tags: template.dream.tags.filter(t => t !== tag)
-      }
-    });
-  };
+        tags: template.dream.tags.filter(t => t !== tag),
+      },
+    })
+  }
 
   /**
    * Add todo
@@ -67,48 +69,50 @@ const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
     if (newTodo.title.trim()) {
       setTemplate({
         ...template,
-        todos: [...template.todos, { ...newTodo }]
-      });
-      setNewTodo({ title: '', category: 'admin', notes: '' });
+        todos: [...template.todos, { ...newTodo }],
+      })
+      setNewTodo({ title: '', category: 'admin', notes: '' })
     }
-  };
+  }
 
   /**
    * Remove todo
    */
-  const removeTodo = (index) => {
+  const removeTodo = index => {
     setTemplate({
       ...template,
-      todos: template.todos.filter((_, i) => i !== index)
-    });
-  };
+      todos: template.todos.filter((_, i) => i !== index),
+    })
+  }
 
   /**
    * Save template
    */
   const handleSave = () => {
     if (!template.name || !template.description || !template.dream.title) {
-      alert('Please fill in all required fields');
-      return;
+      alert('Please fill in all required fields')
+      return
     }
 
     if (template.todos.length === 0) {
-      alert('Please add at least one task to the template');
-      return;
+      alert('Please add at least one task to the template')
+      return
     }
 
-    onSave(template);
-  };
+    onSave(template)
+  }
 
   return (
     <div className="template-editor-modal" onClick={onClose}>
-      <div className="editor-content" onClick={(e) => e.stopPropagation()}>
+      <div className="editor-content" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <div>
             <h2>✨ Create Template</h2>
             <p>Build a reusable template for the marketplace</p>
           </div>
-          <button onClick={onClose} className="close-btn">×</button>
+          <button onClick={onClose} className="close-btn">
+            ×
+          </button>
         </div>
 
         <div className="editor-body">
@@ -121,7 +125,7 @@ const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
               <input
                 type="text"
                 value={template.name}
-                onChange={(e) => setTemplate({ ...template, name: e.target.value })}
+                onChange={e => setTemplate({ ...template, name: e.target.value })}
                 placeholder="e.g., MVP Launch Checklist"
               />
             </div>
@@ -130,7 +134,7 @@ const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
               <label>Description *</label>
               <textarea
                 value={template.description}
-                onChange={(e) => setTemplate({ ...template, description: e.target.value })}
+                onChange={e => setTemplate({ ...template, description: e.target.value })}
                 placeholder="Describe what this template helps with..."
                 rows={3}
               />
@@ -141,7 +145,7 @@ const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
                 <label>Category *</label>
                 <select
                   value={template.category}
-                  onChange={(e) => setTemplate({ ...template, category: e.target.value })}
+                  onChange={e => setTemplate({ ...template, category: e.target.value })}
                 >
                   {categories.map(cat => (
                     <option key={cat} value={cat}>
@@ -158,7 +162,9 @@ const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
                   min="0"
                   step="0.01"
                   value={template.price}
-                  onChange={(e) => setTemplate({ ...template, price: parseFloat(e.target.value) || 0 })}
+                  onChange={e =>
+                    setTemplate({ ...template, price: parseFloat(e.target.value) || 0 })
+                  }
                   placeholder="0"
                 />
                 <small>Leave at $0 for free template</small>
@@ -175,10 +181,12 @@ const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
               <input
                 type="text"
                 value={template.dream.title}
-                onChange={(e) => setTemplate({
-                  ...template,
-                  dream: { ...template.dream, title: e.target.value }
-                })}
+                onChange={e =>
+                  setTemplate({
+                    ...template,
+                    dream: { ...template.dream, title: e.target.value },
+                  })
+                }
                 placeholder="e.g., Launch my product"
               />
             </div>
@@ -187,10 +195,12 @@ const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
               <label>Dream Description</label>
               <textarea
                 value={template.dream.description}
-                onChange={(e) => setTemplate({
-                  ...template,
-                  dream: { ...template.dream, description: e.target.value }
-                })}
+                onChange={e =>
+                  setTemplate({
+                    ...template,
+                    dream: { ...template.dream, description: e.target.value },
+                  })
+                }
                 placeholder="Default description for the dream..."
                 rows={2}
               />
@@ -211,11 +221,13 @@ const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
                   <input
                     type="text"
                     value={newTag}
-                    onChange={(e) => setNewTag(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                    onChange={e => setNewTag(e.target.value)}
+                    onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), addTag())}
                     placeholder="Add tag..."
                   />
-                  <button onClick={addTag} className="btn btn-sm">+ Add</button>
+                  <button onClick={addTag} className="btn btn-sm">
+                    + Add
+                  </button>
                 </div>
               </div>
             </div>
@@ -238,10 +250,7 @@ const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
                         {todo.notes && <span className="todo-note">{todo.notes}</span>}
                       </div>
                     </div>
-                    <button
-                      onClick={() => removeTodo(index)}
-                      className="btn-icon btn-danger"
-                    >
+                    <button onClick={() => removeTodo(index)} className="btn-icon btn-danger">
                       ×
                     </button>
                   </div>
@@ -255,7 +264,7 @@ const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
                 <input
                   type="text"
                   value={newTodo.title}
-                  onChange={(e) => setNewTodo({ ...newTodo, title: e.target.value })}
+                  onChange={e => setNewTodo({ ...newTodo, title: e.target.value })}
                   placeholder="Task title..."
                 />
               </div>
@@ -264,7 +273,7 @@ const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
                 <div className="form-group">
                   <select
                     value={newTodo.category}
-                    onChange={(e) => setNewTodo({ ...newTodo, category: e.target.value })}
+                    onChange={e => setNewTodo({ ...newTodo, category: e.target.value })}
                   >
                     {todoCategories.map(cat => (
                       <option key={cat} value={cat}>
@@ -278,7 +287,7 @@ const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
                   <input
                     type="text"
                     value={newTodo.notes}
-                    onChange={(e) => setNewTodo({ ...newTodo, notes: e.target.value })}
+                    onChange={e => setNewTodo({ ...newTodo, notes: e.target.value })}
                     placeholder="Optional notes..."
                   />
                 </div>
@@ -294,8 +303,12 @@ const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
           {template.price > 0 && (
             <section className="editor-section monetization-info">
               <h4>💰 Monetization</h4>
-              <p>Template price: <strong>${template.price}</strong></p>
-              <p>Your earnings (70%): <strong>${(template.price * 0.7).toFixed(2)}</strong> per sale</p>
+              <p>
+                Template price: <strong>${template.price}</strong>
+              </p>
+              <p>
+                Your earnings (70%): <strong>${(template.price * 0.7).toFixed(2)}</strong> per sale
+              </p>
               <p className="marketplace-fee">Marketplace fee: 30%</p>
             </section>
           )}
@@ -311,7 +324,7 @@ const TemplateEditor = ({ onClose, onSave, initialTemplate = null }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TemplateEditor;
+export default TemplateEditor

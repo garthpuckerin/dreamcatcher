@@ -7,7 +7,7 @@ describe('DreamForm', () => {
   const mockStatuses = [
     { value: 'idea', label: 'Idea' },
     { value: 'in-progress', label: 'In Progress' },
-    { value: 'launched', label: 'Launched' }
+    { value: 'launched', label: 'Launched' },
   ]
 
   const mockOnSave = vi.fn()
@@ -29,10 +29,17 @@ describe('DreamForm', () => {
       title: 'Test Dream',
       description: 'Test description',
       status: 'in-progress',
-      tags: ['test', 'react']
+      tags: ['test', 'react'],
     }
 
-    render(<DreamForm dream={existingDream} onSave={mockOnSave} onCancel={mockOnCancel} statuses={mockStatuses} />)
+    render(
+      <DreamForm
+        dream={existingDream}
+        onSave={mockOnSave}
+        onCancel={mockOnCancel}
+        statuses={mockStatuses}
+      />
+    )
 
     expect(screen.getByPlaceholderText(/my amazing project/i)).toHaveValue('Test Dream')
     expect(screen.getByPlaceholderText(/what's this dream about/i)).toHaveValue('Test description')
@@ -95,10 +102,17 @@ describe('DreamForm', () => {
       title: 'Test',
       description: '',
       status: 'idea',
-      tags: ['existing']
+      tags: ['existing'],
     }
 
-    render(<DreamForm dream={dreamWithTag} onSave={mockOnSave} onCancel={mockOnCancel} statuses={mockStatuses} />)
+    render(
+      <DreamForm
+        dream={dreamWithTag}
+        onSave={mockOnSave}
+        onCancel={mockOnCancel}
+        statuses={mockStatuses}
+      />
+    )
 
     const tagInput = screen.getByPlaceholderText(/add a tag/i)
     const addButton = screen.getByRole('button', { name: /add/i })
@@ -116,10 +130,17 @@ describe('DreamForm', () => {
       title: 'Test',
       description: '',
       status: 'idea',
-      tags: ['tag1', 'tag2']
+      tags: ['tag1', 'tag2'],
     }
 
-    render(<DreamForm dream={dreamWithTags} onSave={mockOnSave} onCancel={mockOnCancel} statuses={mockStatuses} />)
+    render(
+      <DreamForm
+        dream={dreamWithTags}
+        onSave={mockOnSave}
+        onCancel={mockOnCancel}
+        statuses={mockStatuses}
+      />
+    )
 
     const tag1 = screen.getByText('tag1')
     expect(tag1).toBeInTheDocument()
@@ -146,7 +167,7 @@ describe('DreamForm', () => {
 
     expect(mockOnSave).toHaveBeenCalledWith(
       expect.objectContaining({
-        title: 'My Dream'
+        title: 'My Dream',
       })
     )
   })

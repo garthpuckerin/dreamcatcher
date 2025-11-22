@@ -4,9 +4,9 @@
  * Handles template marketplace operations
  */
 
-const express = require('express');
-const router = express.Router();
-const { authenticate } = require('../middleware/auth');
+const express = require('express')
+const router = express.Router()
+const { authenticate } = require('../middleware/auth')
 
 /**
  * GET /api/templates
@@ -14,37 +14,37 @@ const { authenticate } = require('../middleware/auth');
  */
 router.get('/', async (req, res) => {
   try {
-    const { category, search, sortBy = 'rating', page = 1, limit = 20 } = req.query;
+    const { category, search, sortBy = 'rating', page = 1, limit = 20 } = req.query
 
-    const where = { isPublic: true };
+    const where = { isPublic: true }
 
     if (category && category !== 'all') {
-      where.category = category;
+      where.category = category
     }
 
     if (search) {
       where[Op.or] = [
         { name: { [Op.iLike]: `%${search}%` } },
-        { description: { [Op.iLike]: `%${search}%` } }
-      ];
+        { description: { [Op.iLike]: `%${search}%` } },
+      ]
     }
 
-    const order = [];
+    const order = []
     switch (sortBy) {
       case 'rating':
-        order.push(['rating', 'DESC']);
-        break;
+        order.push(['rating', 'DESC'])
+        break
       case 'uses':
-        order.push(['uses', 'DESC']);
-        break;
+        order.push(['uses', 'DESC'])
+        break
       case 'recent':
-        order.push(['createdAt', 'DESC']);
-        break;
+        order.push(['createdAt', 'DESC'])
+        break
       default:
-        order.push(['rating', 'DESC']);
+        order.push(['rating', 'DESC'])
     }
 
-    const offset = (page - 1) * limit;
+    const offset = (page - 1) * limit
 
     const { rows: templates, count } = await req.db.templates.findAndCountAll({
       where,
@@ -55,10 +55,10 @@ router.get('/', async (req, res) => {
         {
           model: req.db.users,
           as: 'author',
-          attributes: ['id', 'username', 'name']
-        }
-      ]
-    });
+          attributes: ['id', 'username', 'name'],
+        },
+      ],
+    })
 
     res.json({
       templates,
@@ -66,14 +66,14 @@ router.get('/', async (req, res) => {
         total: count,
         page: parseInt(page),
         limit: parseInt(limit),
-        pages: Math.ceil(count / limit)
-      }
-    });
+        pages: Math.ceil(count / limit),
+      },
+    })
   } catch (error) {
-    console.error('[API] Error fetching templates:', error);
-    res.status(500).json({ error: 'Failed to fetch templates' });
+    console.error('[API] Error fetching templates:', error)
+    res.status(500).json({ error: 'Failed to fetch templates' })
   }
-});
+})
 
 /**
  * GET /api/templates/:id
@@ -81,32 +81,32 @@ router.get('/', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params
 
     const template = await req.db.templates.findByPk(id, {
       include: [
         {
           model: req.db.users,
           as: 'author',
-          attributes: ['id', 'username', 'name', 'avatar']
-        }
-      ]
-    });
+          attributes: ['id', 'username', 'name', 'avatar'],
+        },
+      ],
+    })
 
     if (!template) {
-      return res.status(404).json({ error: 'Template not found' });
+      return res.status(404).json({ error: 'Template not found' })
     }
 
     if (!template.isPublic && template.authorId !== req.user?.id) {
-      return res.status(403).json({ error: 'Template not accessible' });
+      return res.status(403).json({ error: 'Template not accessible' })
     }
 
-    res.json(template);
+    res.json(template)
   } catch (error) {
-    console.error('[API] Error fetching template:', error);
-    res.status(500).json({ error: 'Failed to fetch template' });
+    console.error('[API] Error fetching template:', error)
+    res.status(500).json({ error: 'Failed to fetch template' })
   }
-});
+})
 
 /**
  * POST /api/templates
@@ -114,11 +114,11 @@ router.get('/:id', async (req, res) => {
  */
 router.post('/', authenticate, async (req, res) => {
   try {
-    const { name, description, category, price, dream, todos, isPublic = false } = req.body;
+    const { name, description, category, price, dream, todos, isPublic = false } = req.body
 
     // Validate required fields
     if (!name || !description || !category || !dream || !todos) {
-      return res.status(400).json({ error: 'Missing required fields' });
+      return res.status(400).json({ error: 'Missing required fields' })
     }
 
     // Create template
@@ -132,15 +132,15 @@ router.post('/', authenticate, async (req, res) => {
       todos,
       isPublic,
       rating: 0,
-      uses: 0
-    });
+      uses: 0,
+    })
 
-    res.status(201).json(template);
+    res.status(201).json(template)
   } catch (error) {
-    console.error('[API] Error creating template:', error);
-    res.status(500).json({ error: 'Failed to create template' });
+    console.error('[API] Error creating template:', error)
+    res.status(500).json({ error: 'Failed to create template' })
   }
-});
+})
 
 /**
  * PUT /api/templates/:id
@@ -148,19 +148,19 @@ router.post('/', authenticate, async (req, res) => {
  */
 router.put('/:id', authenticate, async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params
 
-    const template = await req.db.templates.findByPk(id);
+    const template = await req.db.templates.findByPk(id)
 
     if (!template) {
-      return res.status(404).json({ error: 'Template not found' });
+      return res.status(404).json({ error: 'Template not found' })
     }
 
     if (template.authorId !== req.user.id) {
-      return res.status(403).json({ error: 'Unauthorized' });
+      return res.status(403).json({ error: 'Unauthorized' })
     }
 
-    const { name, description, category, price, dream, todos, isPublic } = req.body;
+    const { name, description, category, price, dream, todos, isPublic } = req.body
 
     await template.update({
       name,
@@ -169,15 +169,15 @@ router.put('/:id', authenticate, async (req, res) => {
       price: parseFloat(price) || 0,
       dream,
       todos,
-      isPublic
-    });
+      isPublic,
+    })
 
-    res.json(template);
+    res.json(template)
   } catch (error) {
-    console.error('[API] Error updating template:', error);
-    res.status(500).json({ error: 'Failed to update template' });
+    console.error('[API] Error updating template:', error)
+    res.status(500).json({ error: 'Failed to update template' })
   }
-});
+})
 
 /**
  * DELETE /api/templates/:id
@@ -185,26 +185,26 @@ router.put('/:id', authenticate, async (req, res) => {
  */
 router.delete('/:id', authenticate, async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params
 
-    const template = await req.db.templates.findByPk(id);
+    const template = await req.db.templates.findByPk(id)
 
     if (!template) {
-      return res.status(404).json({ error: 'Template not found' });
+      return res.status(404).json({ error: 'Template not found' })
     }
 
     if (template.authorId !== req.user.id) {
-      return res.status(403).json({ error: 'Unauthorized' });
+      return res.status(403).json({ error: 'Unauthorized' })
     }
 
-    await template.destroy();
+    await template.destroy()
 
-    res.json({ success: true });
+    res.json({ success: true })
   } catch (error) {
-    console.error('[API] Error deleting template:', error);
-    res.status(500).json({ error: 'Failed to delete template' });
+    console.error('[API] Error deleting template:', error)
+    res.status(500).json({ error: 'Failed to delete template' })
   }
-});
+})
 
 /**
  * POST /api/templates/:id/apply
@@ -212,22 +212,22 @@ router.delete('/:id', authenticate, async (req, res) => {
  */
 router.post('/:id/apply', authenticate, async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params
 
-    const template = await req.db.templates.findByPk(id);
+    const template = await req.db.templates.findByPk(id)
 
     if (!template) {
-      return res.status(404).json({ error: 'Template not found' });
+      return res.status(404).json({ error: 'Template not found' })
     }
 
     // Check if paid template and user has purchased
     if (template.price > 0) {
       const purchase = await req.db.templatePurchases.findOne({
-        where: { userId: req.user.id, templateId: id }
-      });
+        where: { userId: req.user.id, templateId: id },
+      })
 
       if (!purchase && template.authorId !== req.user.id) {
-        return res.status(402).json({ error: 'Payment required' });
+        return res.status(402).json({ error: 'Payment required' })
       }
     }
 
@@ -240,9 +240,9 @@ router.post('/:id/apply', authenticate, async (req, res) => {
       status: 'in-progress',
       metadata: {
         fromTemplate: id,
-        templateName: template.name
-      }
-    });
+        templateName: template.name,
+      },
+    })
 
     // Create todos
     const todos = await Promise.all(
@@ -253,20 +253,20 @@ router.post('/:id/apply', authenticate, async (req, res) => {
           title: todo.title,
           category: todo.category,
           notes: todo.notes,
-          displayOrder: index
+          displayOrder: index,
         })
       )
-    );
+    )
 
     // Increment usage count
-    await template.increment('uses');
+    await template.increment('uses')
 
-    res.json({ dream, todos });
+    res.json({ dream, todos })
   } catch (error) {
-    console.error('[API] Error applying template:', error);
-    res.status(500).json({ error: 'Failed to apply template' });
+    console.error('[API] Error applying template:', error)
+    res.status(500).json({ error: 'Failed to apply template' })
   }
-});
+})
 
 /**
  * POST /api/templates/:id/purchase
@@ -274,30 +274,30 @@ router.post('/:id/apply', authenticate, async (req, res) => {
  */
 router.post('/:id/purchase', authenticate, async (req, res) => {
   try {
-    const { id } = req.params;
-    const { paymentMethodId } = req.body;
+    const { id } = req.params
+    const { paymentMethodId } = req.body
 
-    const template = await req.db.templates.findByPk(id);
+    const template = await req.db.templates.findByPk(id)
 
     if (!template) {
-      return res.status(404).json({ error: 'Template not found' });
+      return res.status(404).json({ error: 'Template not found' })
     }
 
     if (template.price === 0) {
-      return res.status(400).json({ error: 'Template is free' });
+      return res.status(400).json({ error: 'Template is free' })
     }
 
     // Check if already purchased
     const existing = await req.db.templatePurchases.findOne({
-      where: { userId: req.user.id, templateId: id }
-    });
+      where: { userId: req.user.id, templateId: id },
+    })
 
     if (existing) {
-      return res.status(400).json({ error: 'Already purchased' });
+      return res.status(400).json({ error: 'Already purchased' })
     }
 
     // Process payment with Stripe
-    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(template.price * 100), // Convert to cents
@@ -307,9 +307,9 @@ router.post('/:id/purchase', authenticate, async (req, res) => {
       metadata: {
         templateId: id,
         userId: req.user.id,
-        authorId: template.authorId
-      }
-    });
+        authorId: template.authorId,
+      },
+    })
 
     if (paymentIntent.status === 'succeeded') {
       // Record purchase
@@ -317,11 +317,11 @@ router.post('/:id/purchase', authenticate, async (req, res) => {
         userId: req.user.id,
         templateId: id,
         amount: template.price,
-        stripePaymentId: paymentIntent.id
-      });
+        stripePaymentId: paymentIntent.id,
+      })
 
       // Calculate author earnings (70%)
-      const authorEarnings = template.price * 0.7;
+      const authorEarnings = template.price * 0.7
 
       // Record transaction
       await req.db.transactions.create({
@@ -329,18 +329,18 @@ router.post('/:id/purchase', authenticate, async (req, res) => {
         type: 'template_sale',
         amount: authorEarnings,
         templateId: id,
-        buyerId: req.user.id
-      });
+        buyerId: req.user.id,
+      })
 
-      res.json({ success: true, paymentIntent });
+      res.json({ success: true, paymentIntent })
     } else {
-      res.status(400).json({ error: 'Payment failed' });
+      res.status(400).json({ error: 'Payment failed' })
     }
   } catch (error) {
-    console.error('[API] Error purchasing template:', error);
-    res.status(500).json({ error: 'Failed to purchase template' });
+    console.error('[API] Error purchasing template:', error)
+    res.status(500).json({ error: 'Failed to purchase template' })
   }
-});
+})
 
 /**
  * POST /api/templates/:id/rate
@@ -348,44 +348,44 @@ router.post('/:id/purchase', authenticate, async (req, res) => {
  */
 router.post('/:id/rate', authenticate, async (req, res) => {
   try {
-    const { id } = req.params;
-    const { rating } = req.body;
+    const { id } = req.params
+    const { rating } = req.body
 
     if (rating < 1 || rating > 5) {
-      return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+      return res.status(400).json({ error: 'Rating must be between 1 and 5' })
     }
 
-    const template = await req.db.templates.findByPk(id);
+    const template = await req.db.templates.findByPk(id)
 
     if (!template) {
-      return res.status(404).json({ error: 'Template not found' });
+      return res.status(404).json({ error: 'Template not found' })
     }
 
     // Create or update rating
     const [templateRating, created] = await req.db.templateRatings.findOrCreate({
       where: { userId: req.user.id, templateId: id },
-      defaults: { rating }
-    });
+      defaults: { rating },
+    })
 
     if (!created) {
-      await templateRating.update({ rating });
+      await templateRating.update({ rating })
     }
 
     // Recalculate template average rating
     const ratings = await req.db.templateRatings.findAll({
-      where: { templateId: id }
-    });
+      where: { templateId: id },
+    })
 
-    const avgRating = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
+    const avgRating = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length
 
-    await template.update({ rating: avgRating });
+    await template.update({ rating: avgRating })
 
-    res.json({ success: true, rating: avgRating });
+    res.json({ success: true, rating: avgRating })
   } catch (error) {
-    console.error('[API] Error rating template:', error);
-    res.status(500).json({ error: 'Failed to rate template' });
+    console.error('[API] Error rating template:', error)
+    res.status(500).json({ error: 'Failed to rate template' })
   }
-});
+})
 
 /**
  * GET /api/templates/user/:userId
@@ -393,21 +393,21 @@ router.post('/:id/rate', authenticate, async (req, res) => {
  */
 router.get('/user/:userId', async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.params
 
     const templates = await req.db.templates.findAll({
       where: {
         authorId: userId,
-        isPublic: true
+        isPublic: true,
       },
-      order: [['createdAt', 'DESC']]
-    });
+      order: [['createdAt', 'DESC']],
+    })
 
-    res.json(templates);
+    res.json(templates)
   } catch (error) {
-    console.error('[API] Error fetching user templates:', error);
-    res.status(500).json({ error: 'Failed to fetch templates' });
+    console.error('[API] Error fetching user templates:', error)
+    res.status(500).json({ error: 'Failed to fetch templates' })
   }
-});
+})
 
-module.exports = router;
+module.exports = router

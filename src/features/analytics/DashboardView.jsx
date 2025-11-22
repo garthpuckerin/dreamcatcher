@@ -10,42 +10,42 @@
  * - Export functionality
  */
 
-import React, { useState, useEffect } from 'react';
-import { analyticsService } from '../../services/analytics';
-import VelocityChart from './VelocityChart';
-import TrendsChart from './TrendsChart';
-import './analytics.css';
+import React, { useState, useEffect } from 'react'
+import { analyticsService } from '../../services/analytics'
+import VelocityChart from './VelocityChart'
+import TrendsChart from './TrendsChart'
+import './analytics.css'
 
 const DashboardView = ({ user, dreams, fragments }) => {
-  const [metrics, setMetrics] = useState(null);
-  const [timeRange, setTimeRange] = useState('30'); // days
-  const [loading, setLoading] = useState(true);
+  const [metrics, setMetrics] = useState(null)
+  const [timeRange, setTimeRange] = useState('30') // days
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    loadMetrics();
-  }, [dreams, fragments, timeRange]);
+    loadMetrics()
+  }, [dreams, fragments, timeRange])
 
   /**
    * Load dashboard metrics
    */
   const loadMetrics = () => {
-    setLoading(true);
+    setLoading(true)
 
     try {
-      const dashboardData = analyticsService.getDashboardMetrics(dreams, fragments);
-      setMetrics(dashboardData);
+      const dashboardData = analyticsService.getDashboardMetrics(dreams, fragments)
+      setMetrics(dashboardData)
     } catch (error) {
-      console.error('Failed to load metrics:', error);
+      console.error('Failed to load metrics:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   /**
    * Export metrics as CSV
    */
   const exportMetrics = () => {
-    if (!metrics) return;
+    if (!metrics) return
 
     const csv = [
       ['Metric', 'Value'],
@@ -58,24 +58,26 @@ const DashboardView = ({ user, dreams, fragments }) => {
       ['Slowest Dream (days)', metrics.velocity.slowest],
       ['Fragments Per Week', metrics.fragmentFrequency.perWeek.toFixed(1)],
       ['Fragments Per Day', metrics.fragmentFrequency.perDay.toFixed(1)],
-      ['Total AI Usage', metrics.aiUsage.total]
-    ].map(row => row.join(',')).join('\n');
+      ['Total AI Usage', metrics.aiUsage.total],
+    ]
+      .map(row => row.join(','))
+      .join('\n')
 
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `dreamcatcher-analytics-${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `dreamcatcher-analytics-${new Date().toISOString().split('T')[0]}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 
   if (loading) {
-    return <div className="dashboard-loading">Loading analytics...</div>;
+    return <div className="dashboard-loading">Loading analytics...</div>
   }
 
   if (!metrics) {
-    return <div className="dashboard-error">Failed to load metrics</div>;
+    return <div className="dashboard-error">Failed to load metrics</div>
   }
 
   return (
@@ -89,7 +91,7 @@ const DashboardView = ({ user, dreams, fragments }) => {
         <div className="header-controls">
           <select
             value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value)}
+            onChange={e => setTimeRange(e.target.value)}
             className="time-range-select"
           >
             <option value="7">Last 7 days</option>
@@ -112,7 +114,8 @@ const DashboardView = ({ user, dreams, fragments }) => {
             <div className="metric-value">{metrics.activeDreams}</div>
             <div className="metric-label">Active Dreams</div>
             <div className="metric-change positive">
-              {metrics.totalDreams > 0 && `${((metrics.activeDreams / metrics.totalDreams) * 100).toFixed(0)}% of total`}
+              {metrics.totalDreams > 0 &&
+                `${((metrics.activeDreams / metrics.totalDreams) * 100).toFixed(0)}% of total`}
             </div>
           </div>
         </div>
@@ -135,18 +138,14 @@ const DashboardView = ({ user, dreams, fragments }) => {
               {metrics.velocity.average > 0 ? metrics.velocity.average.toFixed(0) : 'N/A'}
             </div>
             <div className="metric-label">Avg Days to Complete</div>
-            <div className="metric-change">
-              Fastest: {metrics.velocity.fastest || 'N/A'} days
-            </div>
+            <div className="metric-change">Fastest: {metrics.velocity.fastest || 'N/A'} days</div>
           </div>
         </div>
 
         <div className="metric-card">
           <div className="metric-icon">✅</div>
           <div className="metric-content">
-            <div className="metric-value">
-              {(metrics.completionRate * 100).toFixed(0)}%
-            </div>
+            <div className="metric-value">{(metrics.completionRate * 100).toFixed(0)}%</div>
             <div className="metric-label">Completion Rate</div>
             <div className="metric-change">
               {dreams.filter(d => d.status === 'completed').length} of {metrics.totalDreams} dreams
@@ -175,7 +174,7 @@ const DashboardView = ({ user, dreams, fragments }) => {
               average: metrics.velocity.average,
               fastest: metrics.velocity.fastest,
               slowest: metrics.velocity.slowest,
-              count: metrics.velocity.count
+              count: metrics.velocity.count,
             }}
           />
         </div>
@@ -213,10 +212,9 @@ const DashboardView = ({ user, dreams, fragments }) => {
         <h3>📊 Dreams by Status</h3>
         <div className="status-grid">
           {['idea', 'in-progress', 'completed', 'launched', 'archived'].map(status => {
-            const count = dreams.filter(d => d.status === status).length;
-            const percentage = metrics.totalDreams > 0
-              ? ((count / metrics.totalDreams) * 100).toFixed(1)
-              : 0;
+            const count = dreams.filter(d => d.status === status).length
+            const percentage =
+              metrics.totalDreams > 0 ? ((count / metrics.totalDreams) * 100).toFixed(1) : 0
 
             return (
               <div key={status} className="status-card">
@@ -233,7 +231,7 @@ const DashboardView = ({ user, dreams, fragments }) => {
                   </span>
                 </div>
               </div>
-            );
+            )
           })}
         </div>
       </div>
@@ -247,7 +245,10 @@ const DashboardView = ({ user, dreams, fragments }) => {
               <div className="insight-icon">🔥</div>
               <div className="insight-content">
                 <strong>High Activity!</strong>
-                <p>You're capturing {metrics.fragmentFrequency.perDay.toFixed(1)} fragments per day. Keep it up!</p>
+                <p>
+                  You're capturing {metrics.fragmentFrequency.perDay.toFixed(1)} fragments per day.
+                  Keep it up!
+                </p>
               </div>
             </div>
           )}
@@ -257,7 +258,10 @@ const DashboardView = ({ user, dreams, fragments }) => {
               <div className="insight-icon">⚡</div>
               <div className="insight-content">
                 <strong>Fast Execution</strong>
-                <p>Your average dream completion time is {metrics.velocity.average.toFixed(0)} days. You're moving quickly!</p>
+                <p>
+                  Your average dream completion time is {metrics.velocity.average.toFixed(0)} days.
+                  You're moving quickly!
+                </p>
               </div>
             </div>
           )}
@@ -267,7 +271,10 @@ const DashboardView = ({ user, dreams, fragments }) => {
               <div className="insight-icon">⚠️</div>
               <div className="insight-content">
                 <strong>Too Many Active Dreams</strong>
-                <p>You have {metrics.activeDreams} active dreams. Consider focusing on fewer projects for better results.</p>
+                <p>
+                  You have {metrics.activeDreams} active dreams. Consider focusing on fewer projects
+                  for better results.
+                </p>
               </div>
             </div>
           )}
@@ -277,7 +284,10 @@ const DashboardView = ({ user, dreams, fragments }) => {
               <div className="insight-icon">🎯</div>
               <div className="insight-content">
                 <strong>Low Completion Rate</strong>
-                <p>Only {(metrics.completionRate * 100).toFixed(0)}% of dreams are completed. Focus on finishing existing dreams.</p>
+                <p>
+                  Only {(metrics.completionRate * 100).toFixed(0)}% of dreams are completed. Focus
+                  on finishing existing dreams.
+                </p>
               </div>
             </div>
           )}
@@ -294,7 +304,7 @@ const DashboardView = ({ user, dreams, fragments }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DashboardView;
+export default DashboardView

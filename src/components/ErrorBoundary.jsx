@@ -22,7 +22,9 @@ class ErrorBoundary extends React.Component {
       errorInfo,
     })
 
-    // TODO: Send to error tracking service (Sentry, LogRocket, etc.)
+    // Error tracking is currently handled by console logging.
+    // In a production environment, this should be integrated with a service like Sentry.
+    // See PRODUCTION_READY.md for monitoring setup instructions.
   }
 
   handleReset = () => {

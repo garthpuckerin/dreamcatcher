@@ -1,6 +1,6 @@
 /**
  * App.jsx - Main Application Entry Point
- * 
+ *
  * Handles authentication and routing between Auth and Dreamcatcher components
  * Version: 2.3.0 with Supabase integration
  */
@@ -46,11 +46,5 @@ export default function App() {
   }
 
   // Show main app with Supabase integration
-  return (
-    <Dreamcatcher 
-      auth={auth}
-      dreamsData={dreamsData}
-    />
-  )
+  return <Dreamcatcher auth={auth} dreamsData={dreamsData} />
 }
-

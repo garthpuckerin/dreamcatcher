@@ -5,54 +5,54 @@
  * Supports edit, delete, and detail view
  */
 
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
 const MilestoneMarker = ({ milestone, position, index, onEdit, onDelete }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState(milestone);
-  const [showTooltip, setShowTooltip] = useState(false);
+  const [isEditing, setIsEditing] = useState(false)
+  const [editData, setEditData] = useState(milestone)
+  const [showTooltip, setShowTooltip] = useState(false)
 
   const handleSave = () => {
-    onEdit(editData);
-    setIsEditing(false);
-  };
+    onEdit(editData)
+    setIsEditing(false)
+  }
 
   const handleCancel = () => {
-    setEditData(milestone);
-    setIsEditing(false);
-  };
+    setEditData(milestone)
+    setIsEditing(false)
+  }
 
   // Milestone type styles
-  const getTypeStyle = (type) => {
+  const getTypeStyle = type => {
     const styles = {
       started: {
         background: '#3b82f6',
-        color: '#fff'
+        color: '#fff',
       },
       launched: {
         background: '#10b981',
-        color: '#fff'
+        color: '#fff',
       },
       pivoted: {
         background: '#f59e0b',
-        color: '#fff'
+        color: '#fff',
       },
       milestone: {
         background: '#8b5cf6',
-        color: '#fff'
+        color: '#fff',
       },
       blocker: {
         background: '#ef4444',
-        color: '#fff'
+        color: '#fff',
       },
       completed: {
         background: '#14b8a6',
-        color: '#fff'
-      }
-    };
+        color: '#fff',
+      },
+    }
 
-    return styles[type] || styles.milestone;
-  };
+    return styles[type] || styles.milestone
+  }
 
   return (
     <>
@@ -60,15 +60,13 @@ const MilestoneMarker = ({ milestone, position, index, onEdit, onDelete }) => {
         className="milestone-marker"
         style={{
           left: `${position}%`,
-          ...getTypeStyle(milestone.type)
+          ...getTypeStyle(milestone.type),
         }}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
         onClick={() => setIsEditing(true)}
       >
-        <div className="milestone-marker-icon">
-          {milestone.icon}
-        </div>
+        <div className="milestone-marker-icon">{milestone.icon}</div>
         <div className="milestone-marker-line" />
 
         {/* Tooltip */}
@@ -83,22 +81,27 @@ const MilestoneMarker = ({ milestone, position, index, onEdit, onDelete }) => {
               {new Date(milestone.date).toLocaleDateString('en-US', {
                 month: 'long',
                 day: 'numeric',
-                year: 'numeric'
+                year: 'numeric',
               })}
             </div>
             <div className="tooltip-actions">
-              <button onClick={(e) => {
-                e.stopPropagation();
-                setIsEditing(true);
-              }}>
+              <button
+                onClick={e => {
+                  e.stopPropagation()
+                  setIsEditing(true)
+                }}
+              >
                 ✏️ Edit
               </button>
-              <button onClick={(e) => {
-                e.stopPropagation();
-                if (confirm('Delete this milestone?')) {
-                  onDelete();
-                }
-              }} className="btn-danger">
+              <button
+                onClick={e => {
+                  e.stopPropagation()
+                  if (confirm('Delete this milestone?')) {
+                    onDelete()
+                  }
+                }}
+                className="btn-danger"
+              >
                 🗑️ Delete
               </button>
             </div>
@@ -109,7 +112,7 @@ const MilestoneMarker = ({ milestone, position, index, onEdit, onDelete }) => {
       {/* Edit Modal */}
       {isEditing && (
         <div className="milestone-edit-modal" onClick={() => setIsEditing(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h3>Edit Milestone</h3>
               <button onClick={() => setIsEditing(false)}>×</button>
@@ -120,7 +123,7 @@ const MilestoneMarker = ({ milestone, position, index, onEdit, onDelete }) => {
                 <label>Type</label>
                 <select
                   value={editData.type}
-                  onChange={(e) => setEditData({ ...editData, type: e.target.value })}
+                  onChange={e => setEditData({ ...editData, type: e.target.value })}
                 >
                   <option value="started">Started</option>
                   <option value="launched">Launched</option>
@@ -136,7 +139,7 @@ const MilestoneMarker = ({ milestone, position, index, onEdit, onDelete }) => {
                 <input
                   type="text"
                   value={editData.icon}
-                  onChange={(e) => setEditData({ ...editData, icon: e.target.value })}
+                  onChange={e => setEditData({ ...editData, icon: e.target.value })}
                   placeholder="🎯"
                 />
               </div>
@@ -146,7 +149,7 @@ const MilestoneMarker = ({ milestone, position, index, onEdit, onDelete }) => {
                 <input
                   type="text"
                   value={editData.title}
-                  onChange={(e) => setEditData({ ...editData, title: e.target.value })}
+                  onChange={e => setEditData({ ...editData, title: e.target.value })}
                 />
               </div>
 
@@ -154,7 +157,7 @@ const MilestoneMarker = ({ milestone, position, index, onEdit, onDelete }) => {
                 <label>Description</label>
                 <textarea
                   value={editData.description}
-                  onChange={(e) => setEditData({ ...editData, description: e.target.value })}
+                  onChange={e => setEditData({ ...editData, description: e.target.value })}
                   rows={3}
                 />
               </div>
@@ -164,7 +167,7 @@ const MilestoneMarker = ({ milestone, position, index, onEdit, onDelete }) => {
                 <input
                   type="date"
                   value={editData.date.split('T')[0]}
-                  onChange={(e) => setEditData({ ...editData, date: e.target.value })}
+                  onChange={e => setEditData({ ...editData, date: e.target.value })}
                 />
               </div>
             </div>
@@ -181,7 +184,7 @@ const MilestoneMarker = ({ milestone, position, index, onEdit, onDelete }) => {
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default MilestoneMarker;
+export default MilestoneMarker

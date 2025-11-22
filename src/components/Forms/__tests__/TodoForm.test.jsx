@@ -7,7 +7,7 @@ describe('TodoForm', () => {
   const mockTaskCategories = [
     { value: 'coding', label: 'Coding', icon: '💻' },
     { value: 'design', label: 'Design', icon: '🎨' },
-    { value: 'marketing', label: 'Marketing', icon: '📢' }
+    { value: 'marketing', label: 'Marketing', icon: '📢' },
   ]
 
   const mockOnSave = vi.fn()
@@ -18,7 +18,9 @@ describe('TodoForm', () => {
   })
 
   it('renders empty form with default values', () => {
-    render(<TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />)
+    render(
+      <TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />
+    )
 
     expect(screen.getByPlaceholderText(/what needs to be done/i)).toHaveValue('')
     expect(screen.getByRole('combobox')).toHaveValue('coding')
@@ -33,10 +35,17 @@ describe('TodoForm', () => {
       title: 'Test Todo',
       category: 'design',
       deadline: '2025-12-31',
-      notes: 'Test notes'
+      notes: 'Test notes',
     }
 
-    render(<TodoForm todo={existingTodo} onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />)
+    render(
+      <TodoForm
+        todo={existingTodo}
+        onSave={mockOnSave}
+        onCancel={mockOnCancel}
+        taskCategories={mockTaskCategories}
+      />
+    )
 
     expect(screen.getByPlaceholderText(/what needs to be done/i)).toHaveValue('Test Todo')
     expect(screen.getByRole('combobox')).toHaveValue('design')
@@ -46,7 +55,9 @@ describe('TodoForm', () => {
 
   it('allows user to input title', async () => {
     const user = userEvent.setup()
-    render(<TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />)
+    render(
+      <TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />
+    )
 
     const titleInput = screen.getByPlaceholderText(/what needs to be done/i)
     await user.type(titleInput, 'New task')
@@ -56,7 +67,9 @@ describe('TodoForm', () => {
 
   it('allows user to change category', async () => {
     const user = userEvent.setup()
-    render(<TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />)
+    render(
+      <TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />
+    )
 
     const categorySelect = screen.getByRole('combobox')
     await user.selectOptions(categorySelect, 'marketing')
@@ -66,7 +79,9 @@ describe('TodoForm', () => {
 
   it('allows user to change deadline', async () => {
     const user = userEvent.setup()
-    render(<TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />)
+    render(
+      <TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />
+    )
 
     const deadlineInput = screen.getByLabelText(/deadline/i)
     await user.clear(deadlineInput)
@@ -77,7 +92,9 @@ describe('TodoForm', () => {
 
   it('allows user to input notes', async () => {
     const user = userEvent.setup()
-    render(<TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />)
+    render(
+      <TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />
+    )
 
     const notesInput = screen.getByPlaceholderText(/additional details/i)
     await user.type(notesInput, 'Important notes here')
@@ -87,7 +104,9 @@ describe('TodoForm', () => {
 
   it('calls onSave when form is submitted with valid data', async () => {
     const user = userEvent.setup()
-    render(<TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />)
+    render(
+      <TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />
+    )
 
     const titleInput = screen.getByPlaceholderText(/what needs to be done/i)
     await user.type(titleInput, 'Complete task')
@@ -98,14 +117,16 @@ describe('TodoForm', () => {
     expect(mockOnSave).toHaveBeenCalledWith(
       expect.objectContaining({
         title: 'Complete task',
-        category: 'coding'
+        category: 'coding',
       })
     )
   })
 
   it('does not call onSave when title is empty', async () => {
     const user = userEvent.setup()
-    render(<TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />)
+    render(
+      <TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />
+    )
 
     const saveButton = screen.getByRole('button', { name: /save todo/i })
     await user.click(saveButton)
@@ -115,7 +136,9 @@ describe('TodoForm', () => {
 
   it('calls onCancel when cancel button is clicked', async () => {
     const user = userEvent.setup()
-    render(<TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />)
+    render(
+      <TodoForm onSave={mockOnSave} onCancel={mockOnCancel} taskCategories={mockTaskCategories} />
+    )
 
     const cancelButton = screen.getByRole('button', { name: /cancel/i })
     await user.click(cancelButton)

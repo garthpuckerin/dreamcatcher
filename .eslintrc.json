@@ -3,7 +3,9 @@
   "env": {
     "browser": true,
     "es2022": true,
-    "node": true
+    "node": true,
+    "webextensions": true,
+    "jest": true
   },
   "extends": [
     "eslint:recommended",
@@ -36,7 +38,11 @@
     "no-console": [
       "warn",
       {
-        "allow": ["warn", "error"]
+        "allow": [
+          "warn",
+          "error",
+          "log"
+        ]
       }
     ],
     "prettier/prettier": [
@@ -46,5 +52,10 @@
       }
     ]
   },
-  "ignorePatterns": ["dist", "node_modules", "*.config.js", "out"]
+  "ignorePatterns": [
+    "dist",
+    "node_modules",
+    "*.config.js",
+    "out"
+  ]
 }

@@ -10,12 +10,16 @@
 
 // Detect which AI platform we're on
 const PLATFORM = (() => {
-  if (window.location.hostname.includes('openai.com')) return 'chatgpt';
-  if (window.location.hostname.includes('claude.ai') || window.location.hostname.includes('anthropic.com')) return 'claude';
-  return 'unknown';
-})();
+  if (window.location.hostname.includes('openai.com')) return 'chatgpt'
+  if (
+    window.location.hostname.includes('claude.ai') ||
+    window.location.hostname.includes('anthropic.com')
+  )
+    return 'claude'
+  return 'unknown'
+})()
 
-console.log('[Dreamcatcher] Extension loaded on', PLATFORM);
+console.log('[Dreamcatcher] Extension loaded on', PLATFORM)
 
 // Platform-specific selectors
 const SELECTORS = {
@@ -24,44 +28,46 @@ const SELECTORS = {
     userMessage: '[data-message-author-role="user"]',
     assistantMessage: '[data-message-author-role="assistant"]',
     conversationTitle: 'h1',
-    messageText: '.markdown'
+    messageText: '.markdown',
   },
   claude: {
     messages: '[data-test-render-count]',
     userMessage: '.font-user-message',
     assistantMessage: '.font-claude-message',
     conversationTitle: 'title',
-    messageText: '.prose'
-  }
-};
+    messageText: '.prose',
+  },
+}
 
 /**
  * Extract conversation from current page
  */
 function extractConversation() {
-  const selectors = SELECTORS[PLATFORM];
-  if (!selectors) return null;
+  const selectors = SELECTORS[PLATFORM]
+  if (!selectors) return null
 
-  const messages = [];
-  const messageElements = document.querySelectorAll(selectors.messages);
+  const messages = []
+  const messageElements = document.querySelectorAll(selectors.messages)
 
   messageElements.forEach((el, index) => {
-    const isUser = el.matches(selectors.userMessage);
-    const textElement = el.querySelector(selectors.messageText);
+    const isUser = el.matches(selectors.userMessage)
+    const textElement = el.querySelector(selectors.messageText)
 
     if (textElement) {
       messages.push({
         role: isUser ? 'user' : 'assistant',
         content: textElement.innerText || textElement.textContent,
         timestamp: new Date().toISOString(),
-        index
-      });
+        index,
+      })
     }
-  });
+  })
 
   // Get conversation title
-  const titleElement = document.querySelector(selectors.conversationTitle);
-  const title = titleElement ? titleElement.innerText : `${PLATFORM} Conversation ${new Date().toLocaleDateString()}`;
+  const titleElement = document.querySelector(selectors.conversationTitle)
+  const title = titleElement
+    ? titleElement.innerText
+    : `${PLATFORM} Conversation ${new Date().toLocaleDateString()}`
 
   return {
     title,
@@ -69,35 +75,35 @@ function extractConversation() {
     url: window.location.href,
     messages,
     capturedAt: new Date().toISOString(),
-    messageCount: messages.length
-  };
+    messageCount: messages.length,
+  }
 }
 
 /**
  * Detect project/topic from conversation
  */
 function detectProjectContext(conversation) {
-  if (!conversation || conversation.messages.length === 0) return null;
+  if (!conversation || conversation.messages.length === 0) return null
 
-  const firstUserMessage = conversation.messages.find(m => m.role === 'user');
-  if (!firstUserMessage) return null;
+  const firstUserMessage = conversation.messages.find(m => m.role === 'user')
+  if (!firstUserMessage) return null
 
-  const content = firstUserMessage.content.toLowerCase();
+  const content = firstUserMessage.content.toLowerCase()
 
   // Common project indicators
   const indicators = {
-    'build': 'building',
-    'create': 'creating',
-    'develop': 'development',
-    'implement': 'implementation',
-    'design': 'design',
-    'feature': 'feature',
-    'project': 'project',
-    'app': 'application',
-    'website': 'website',
-    'api': 'api',
-    'startup': 'startup'
-  };
+    build: 'building',
+    create: 'creating',
+    develop: 'development',
+    implement: 'implementation',
+    design: 'design',
+    feature: 'feature',
+    project: 'project',
+    app: 'application',
+    website: 'website',
+    api: 'api',
+    startup: 'startup',
+  }
 
   for (const [keyword, context] of Object.entries(indicators)) {
     if (content.includes(keyword)) {
@@ -105,30 +111,30 @@ function detectProjectContext(conversation) {
         detected: true,
         context,
         keyword,
-        confidence: 'medium'
-      };
+        confidence: 'medium',
+      }
     }
   }
 
-  return { detected: false };
+  return { detected: false }
 }
 
 /**
  * Format conversation as markdown
  */
 function formatAsMarkdown(conversation) {
-  let markdown = `# ${conversation.title}\n\n`;
-  markdown += `**Platform:** ${conversation.platform}\n`;
-  markdown += `**Date:** ${new Date(conversation.capturedAt).toLocaleString()}\n`;
-  markdown += `**URL:** ${conversation.url}\n\n`;
-  markdown += `---\n\n`;
+  let markdown = `# ${conversation.title}\n\n`
+  markdown += `**Platform:** ${conversation.platform}\n`
+  markdown += `**Date:** ${new Date(conversation.capturedAt).toLocaleString()}\n`
+  markdown += `**URL:** ${conversation.url}\n\n`
+  markdown += `---\n\n`
 
   conversation.messages.forEach(msg => {
-    const role = msg.role === 'user' ? '👤 You' : '🤖 Assistant';
-    markdown += `## ${role}\n\n${msg.content}\n\n`;
-  });
+    const role = msg.role === 'user' ? '👤 You' : '🤖 Assistant'
+    markdown += `## ${role}\n\n${msg.content}\n\n`
+  })
 
-  return markdown;
+  return markdown
 }
 
 /**
@@ -136,11 +142,11 @@ function formatAsMarkdown(conversation) {
  */
 function addCaptureButton() {
   // Check if button already exists
-  if (document.getElementById('dreamcatcher-capture-btn')) return;
+  if (document.getElementById('dreamcatcher-capture-btn')) return
 
-  const button = document.createElement('button');
-  button.id = 'dreamcatcher-capture-btn';
-  button.className = 'dreamcatcher-btn';
+  const button = document.createElement('button')
+  button.id = 'dreamcatcher-capture-btn'
+  button.className = 'dreamcatcher-btn'
   button.innerHTML = `
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
@@ -148,29 +154,29 @@ function addCaptureButton() {
       <polyline points="7 3 7 8 15 8"/>
     </svg>
     Save to Dreamcatcher
-  `;
-  button.title = 'Save this conversation to Dreamcatcher';
+  `
+  button.title = 'Save this conversation to Dreamcatcher'
 
-  button.addEventListener('click', handleCaptureClick);
+  button.addEventListener('click', handleCaptureClick)
 
   // Platform-specific positioning
   if (PLATFORM === 'chatgpt') {
     // Add to ChatGPT's top nav area
-    const nav = document.querySelector('nav') || document.querySelector('header');
+    const nav = document.querySelector('nav') || document.querySelector('header')
     if (nav) {
-      button.style.position = 'fixed';
-      button.style.top = '10px';
-      button.style.right = '10px';
-      button.style.zIndex = '10000';
-      document.body.appendChild(button);
+      button.style.position = 'fixed'
+      button.style.top = '10px'
+      button.style.right = '10px'
+      button.style.zIndex = '10000'
+      document.body.appendChild(button)
     }
   } else if (PLATFORM === 'claude') {
     // Add to Claude's interface
-    button.style.position = 'fixed';
-    button.style.bottom = '20px';
-    button.style.right = '20px';
-    button.style.zIndex = '10000';
-    document.body.appendChild(button);
+    button.style.position = 'fixed'
+    button.style.bottom = '20px'
+    button.style.right = '20px'
+    button.style.zIndex = '10000'
+    document.body.appendChild(button)
   }
 }
 
@@ -178,20 +184,20 @@ function addCaptureButton() {
  * Handle capture button click
  */
 async function handleCaptureClick() {
-  const button = document.getElementById('dreamcatcher-capture-btn');
-  button.disabled = true;
-  button.innerHTML = '⏳ Capturing...';
+  const button = document.getElementById('dreamcatcher-capture-btn')
+  button.disabled = true
+  button.innerHTML = '⏳ Capturing...'
 
   try {
-    const conversation = extractConversation();
+    const conversation = extractConversation()
 
     if (!conversation || conversation.messages.length === 0) {
-      showNotification('No conversation found to capture', 'error');
-      return;
+      showNotification('No conversation found to capture', 'error')
+      return
     }
 
-    const projectContext = detectProjectContext(conversation);
-    const markdown = formatAsMarkdown(conversation);
+    const projectContext = detectProjectContext(conversation)
+    const markdown = formatAsMarkdown(conversation)
 
     // Store in chrome.storage for popup to access
     await chrome.storage.local.set({
@@ -199,20 +205,19 @@ async function handleCaptureClick() {
         conversation,
         markdown,
         projectContext,
-        timestamp: Date.now()
-      }
-    });
+        timestamp: Date.now(),
+      },
+    })
 
     // Open popup or show inline UI
-    showCaptureUI(conversation, projectContext);
+    showCaptureUI(conversation, projectContext)
 
-    showNotification(`Captured ${conversation.messages.length} messages`, 'success');
-
+    showNotification(`Captured ${conversation.messages.length} messages`, 'success')
   } catch (error) {
-    console.error('[Dreamcatcher] Capture error:', error);
-    showNotification('Failed to capture conversation', 'error');
+    console.error('[Dreamcatcher] Capture error:', error)
+    showNotification('Failed to capture conversation', 'error')
   } finally {
-    button.disabled = false;
+    button.disabled = false
     button.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
@@ -220,7 +225,7 @@ async function handleCaptureClick() {
         <polyline points="7 3 7 8 15 8"/>
       </svg>
       Save to Dreamcatcher
-    `;
+    `
   }
 }
 
@@ -229,12 +234,12 @@ async function handleCaptureClick() {
  */
 function showCaptureUI(conversation, projectContext) {
   // Remove existing UI if present
-  const existing = document.getElementById('dreamcatcher-capture-ui');
-  if (existing) existing.remove();
+  const existing = document.getElementById('dreamcatcher-capture-ui')
+  if (existing) existing.remove()
 
-  const ui = document.createElement('div');
-  ui.id = 'dreamcatcher-capture-ui';
-  ui.className = 'dreamcatcher-capture-modal';
+  const ui = document.createElement('div')
+  ui.id = 'dreamcatcher-capture-ui'
+  ui.className = 'dreamcatcher-capture-modal'
   ui.innerHTML = `
     <div class="dreamcatcher-modal-content">
       <div class="dreamcatcher-modal-header">
@@ -290,21 +295,25 @@ function showCaptureUI(conversation, projectContext) {
         </div>
       </div>
     </div>
-  `;
+  `
 
-  document.body.appendChild(ui);
+  document.body.appendChild(ui)
 
   // Setup event listeners
-  document.getElementById('dream-select').addEventListener('change', (e) => {
-    const newDreamFields = document.getElementById('new-dream-fields');
-    newDreamFields.style.display = e.target.value === 'new' ? 'block' : 'none';
-  });
+  document.getElementById('dream-select').addEventListener('change', e => {
+    const newDreamFields = document.getElementById('new-dream-fields')
+    newDreamFields.style.display = e.target.value === 'new' ? 'block' : 'none'
+  })
 
-  document.getElementById('save-online-btn').addEventListener('click', () => handleSaveOnline(conversation));
-  document.getElementById('save-offline-btn').addEventListener('click', () => handleSaveOffline(conversation));
+  document
+    .getElementById('save-online-btn')
+    .addEventListener('click', () => handleSaveOnline(conversation))
+  document
+    .getElementById('save-offline-btn')
+    .addEventListener('click', () => handleSaveOffline(conversation))
 
   // Load existing dreams
-  loadDreamsToSelect();
+  loadDreamsToSelect()
 }
 
 /**
@@ -312,19 +321,19 @@ function showCaptureUI(conversation, projectContext) {
  */
 async function loadDreamsToSelect() {
   try {
-    const { dreams } = await chrome.storage.local.get(['dreams']);
-    const select = document.getElementById('dream-select');
+    const { dreams } = await chrome.storage.local.get(['dreams'])
+    const select = document.getElementById('dream-select')
 
     if (dreams && dreams.length > 0) {
       dreams.forEach(dream => {
-        const option = document.createElement('option');
-        option.value = dream.id;
-        option.textContent = dream.title;
-        select.appendChild(option);
-      });
+        const option = document.createElement('option')
+        option.value = dream.id
+        option.textContent = dream.title
+        select.appendChild(option)
+      })
     }
   } catch (error) {
-    console.error('[Dreamcatcher] Failed to load dreams:', error);
+    console.error('[Dreamcatcher] Failed to load dreams:', error)
   }
 }
 
@@ -332,48 +341,48 @@ async function loadDreamsToSelect() {
  * Save conversation online (requires auth)
  */
 async function handleSaveOnline(conversation) {
-  const dreamSelect = document.getElementById('dream-select').value;
-  const dreamTitle = document.getElementById('dream-title').value;
-  const dreamTags = document.getElementById('dream-tags').value;
-  const fragmentTitle = document.getElementById('fragment-title').value;
+  const dreamSelect = document.getElementById('dream-select').value
+  const dreamTitle = document.getElementById('dream-title').value
+  const dreamTags = document.getElementById('dream-tags').value
+  const fragmentTitle = document.getElementById('fragment-title').value
 
   // Get auth token from storage
-  const { authToken } = await chrome.storage.local.get(['authToken']);
+  const { authToken } = await chrome.storage.local.get(['authToken'])
 
   if (!authToken) {
-    showNotification('Please log in to Dreamcatcher first', 'error');
-    return;
+    showNotification('Please log in to Dreamcatcher first', 'error')
+    return
   }
 
   try {
-    const markdown = formatAsMarkdown(conversation);
+    const markdown = formatAsMarkdown(conversation)
 
     // Create new dream if needed
-    let dreamId = dreamSelect;
+    let dreamId = dreamSelect
     if (dreamSelect === 'new') {
       const dreamResponse = await fetch('https://api.dreamcatcher.app/dreams', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${authToken}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${authToken}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           title: dreamTitle,
           tags: dreamTags.split(',').map(t => t.trim()),
-          status: 'in-progress'
-        })
-      });
+          status: 'in-progress',
+        }),
+      })
 
-      const dream = await dreamResponse.json();
-      dreamId = dream.id;
+      const dream = await dreamResponse.json()
+      dreamId = dream.id
     }
 
     // Create fragment
     await fetch(`https://api.dreamcatcher.app/dreams/${dreamId}/fragments`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${authToken}`,
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         title: fragmentTitle,
@@ -382,17 +391,16 @@ async function handleSaveOnline(conversation) {
         metadata: {
           platform: conversation.platform,
           messageCount: conversation.messages.length,
-          sourceUrl: conversation.url
-        }
-      })
-    });
+          sourceUrl: conversation.url,
+        },
+      }),
+    })
 
-    showNotification('✅ Saved to Dreamcatcher!', 'success');
-    document.getElementById('dreamcatcher-capture-ui').remove();
-
+    showNotification('✅ Saved to Dreamcatcher!', 'success')
+    document.getElementById('dreamcatcher-capture-ui').remove()
   } catch (error) {
-    console.error('[Dreamcatcher] Save error:', error);
-    showNotification('Failed to save online. Try offline mode.', 'error');
+    console.error('[Dreamcatcher] Save error:', error)
+    showNotification('Failed to save online. Try offline mode.', 'error')
   }
 }
 
@@ -401,12 +409,12 @@ async function handleSaveOnline(conversation) {
  */
 async function handleSaveOffline(conversation) {
   try {
-    const { offlineQueue = [] } = await chrome.storage.local.get(['offlineQueue']);
+    const { offlineQueue = [] } = await chrome.storage.local.get(['offlineQueue'])
 
-    const dreamTitle = document.getElementById('dream-title').value;
-    const dreamTags = document.getElementById('dream-tags').value;
-    const fragmentTitle = document.getElementById('fragment-title').value;
-    const markdown = formatAsMarkdown(conversation);
+    const dreamTitle = document.getElementById('dream-title').value
+    const dreamTags = document.getElementById('dream-tags').value
+    const fragmentTitle = document.getElementById('fragment-title').value
+    const markdown = formatAsMarkdown(conversation)
 
     offlineQueue.push({
       id: `offline-${Date.now()}`,
@@ -415,17 +423,16 @@ async function handleSaveOffline(conversation) {
       dreamTitle,
       dreamTags: dreamTags.split(',').map(t => t.trim()),
       fragmentTitle,
-      timestamp: Date.now()
-    });
+      timestamp: Date.now(),
+    })
 
-    await chrome.storage.local.set({ offlineQueue });
+    await chrome.storage.local.set({ offlineQueue })
 
-    showNotification(`✅ Saved offline (${offlineQueue.length} pending)`, 'success');
-    document.getElementById('dreamcatcher-capture-ui').remove();
-
+    showNotification(`✅ Saved offline (${offlineQueue.length} pending)`, 'success')
+    document.getElementById('dreamcatcher-capture-ui').remove()
   } catch (error) {
-    console.error('[Dreamcatcher] Offline save error:', error);
-    showNotification('Failed to save offline', 'error');
+    console.error('[Dreamcatcher] Offline save error:', error)
+    showNotification('Failed to save offline', 'error')
   }
 }
 
@@ -433,9 +440,9 @@ async function handleSaveOffline(conversation) {
  * Show notification
  */
 function showNotification(message, type = 'info') {
-  const notification = document.createElement('div');
-  notification.className = `dreamcatcher-notification dreamcatcher-notification-${type}`;
-  notification.textContent = message;
+  const notification = document.createElement('div')
+  notification.className = `dreamcatcher-notification dreamcatcher-notification-${type}`
+  notification.textContent = message
   notification.style.cssText = `
     position: fixed;
     top: 20px;
@@ -447,54 +454,54 @@ function showNotification(message, type = 'info') {
     font-weight: 500;
     z-index: 10001;
     animation: slideIn 0.3s ease-out;
-  `;
+  `
 
-  document.body.appendChild(notification);
+  document.body.appendChild(notification)
 
   setTimeout(() => {
-    notification.style.animation = 'slideOut 0.3s ease-out';
-    setTimeout(() => notification.remove(), 300);
-  }, 3000);
+    notification.style.animation = 'slideOut 0.3s ease-out'
+    setTimeout(() => notification.remove(), 300)
+  }, 3000)
 }
 
 /**
  * Monitor for new messages and update capture button
  */
-let lastMessageCount = 0;
+let lastMessageCount = 0
 
 function monitorConversation() {
-  const conversation = extractConversation();
+  const conversation = extractConversation()
   if (conversation && conversation.messages.length !== lastMessageCount) {
-    lastMessageCount = conversation.messages.length;
+    lastMessageCount = conversation.messages.length
 
-    const button = document.getElementById('dreamcatcher-capture-btn');
+    const button = document.getElementById('dreamcatcher-capture-btn')
     if (button) {
       // Pulse animation to indicate new content
-      button.style.animation = 'pulse 0.5s ease-out';
-      setTimeout(() => button.style.animation = '', 500);
+      button.style.animation = 'pulse 0.5s ease-out'
+      setTimeout(() => (button.style.animation = ''), 500)
     }
   }
 }
 
 // Initialize
 function init() {
-  addCaptureButton();
+  addCaptureButton()
 
   // Monitor for new messages
-  setInterval(monitorConversation, 2000);
+  setInterval(monitorConversation, 2000)
 
   // Listen for messages from popup
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'extractConversation') {
-      const conversation = extractConversation();
-      sendResponse({ conversation });
+      const conversation = extractConversation()
+      sendResponse({ conversation })
     }
-  });
+  })
 }
 
 // Wait for page to be fully loaded
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', init)
 } else {
-  init();
+  init()
 }

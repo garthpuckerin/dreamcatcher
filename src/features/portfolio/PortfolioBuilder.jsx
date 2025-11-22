@@ -11,54 +11,54 @@
  * - Export options (PDF, HTML)
  */
 
-import React, { useState, useEffect } from 'react';
-import CaseStudyGenerator from './CaseStudyGenerator';
-import PublicShowcase from './PublicShowcase';
-import './portfolio.css';
+import React, { useState, useEffect } from 'react'
+import CaseStudyGenerator from './CaseStudyGenerator'
+import PublicShowcase from './PublicShowcase'
+import './portfolio.css'
 
 const THEMES = {
   minimal: {
     name: 'Minimal',
-    colors: { primary: '#1a202c', secondary: '#718096', accent: '#667eea' }
+    colors: { primary: '#1a202c', secondary: '#718096', accent: '#667eea' },
   },
   vibrant: {
     name: 'Vibrant',
-    colors: { primary: '#9333ea', secondary: '#ec4899', accent: '#f59e0b' }
+    colors: { primary: '#9333ea', secondary: '#ec4899', accent: '#f59e0b' },
   },
   professional: {
     name: 'Professional',
-    colors: { primary: '#1e40af', secondary: '#64748b', accent: '#0891b2' }
+    colors: { primary: '#1e40af', secondary: '#64748b', accent: '#0891b2' },
   },
   dark: {
     name: 'Dark Mode',
-    colors: { primary: '#f9fafb', secondary: '#9ca3af', accent: '#8b5cf6' }
-  }
-};
+    colors: { primary: '#f9fafb', secondary: '#9ca3af', accent: '#8b5cf6' },
+  },
+}
 
 const PortfolioBuilder = ({ user, dreams }) => {
-  const [portfolio, setPortfolio] = useState(null);
-  const [selectedDreams, setSelectedDreams] = useState([]);
-  const [theme, setTheme] = useState('minimal');
-  const [showCaseStudyGenerator, setShowCaseStudyGenerator] = useState(false);
-  const [selectedDreamForCase, setSelectedDreamForCase] = useState(null);
-  const [showPreview, setShowPreview] = useState(false);
+  const [portfolio, setPortfolio] = useState(null)
+  const [selectedDreams, setSelectedDreams] = useState([])
+  const [theme, setTheme] = useState('minimal')
+  const [showCaseStudyGenerator, setShowCaseStudyGenerator] = useState(false)
+  const [selectedDreamForCase, setSelectedDreamForCase] = useState(null)
+  const [showPreview, setShowPreview] = useState(false)
 
   useEffect(() => {
-    loadPortfolio();
-  }, [user]);
+    loadPortfolio()
+  }, [user])
 
   /**
    * Load existing portfolio or create new
    */
   const loadPortfolio = async () => {
     try {
-      const response = await fetch(`/api/portfolio/${user.id}`);
+      const response = await fetch(`/api/portfolio/${user.id}`)
 
       if (response.ok) {
-        const data = await response.json();
-        setPortfolio(data);
-        setSelectedDreams(data.dreams || []);
-        setTheme(data.theme || 'minimal');
+        const data = await response.json()
+        setPortfolio(data)
+        setSelectedDreams(data.dreams || [])
+        setTheme(data.theme || 'minimal')
       } else {
         // Create new portfolio
         setPortfolio({
@@ -69,13 +69,13 @@ const PortfolioBuilder = ({ user, dreams }) => {
           dreams: [],
           theme: 'minimal',
           customDomain: null,
-          isPublic: false
-        });
+          isPublic: false,
+        })
       }
     } catch (error) {
-      console.error('Failed to load portfolio:', error);
+      console.error('Failed to load portfolio:', error)
     }
-  };
+  }
 
   /**
    * Save portfolio
@@ -88,102 +88,101 @@ const PortfolioBuilder = ({ user, dreams }) => {
         body: JSON.stringify({
           ...portfolio,
           dreams: selectedDreams,
-          theme
-        })
-      });
+          theme,
+        }),
+      })
 
       if (response.ok) {
-        alert('Portfolio saved successfully!');
+        alert('Portfolio saved successfully!')
       }
     } catch (error) {
-      console.error('Failed to save portfolio:', error);
-      alert('Failed to save portfolio');
+      console.error('Failed to save portfolio:', error)
+      alert('Failed to save portfolio')
     }
-  };
+  }
 
   /**
    * Toggle dream selection
    */
-  const toggleDream = (dream) => {
+  const toggleDream = dream => {
     if (selectedDreams.find(d => d.id === dream.id)) {
-      setSelectedDreams(selectedDreams.filter(d => d.id !== dream.id));
+      setSelectedDreams(selectedDreams.filter(d => d.id !== dream.id))
     } else {
-      setSelectedDreams([...selectedDreams, dream]);
+      setSelectedDreams([...selectedDreams, dream])
     }
-  };
+  }
 
   /**
    * Update dream display order
    */
   const reorderDreams = (fromIndex, toIndex) => {
-    const updated = [...selectedDreams];
-    const [moved] = updated.splice(fromIndex, 1);
-    updated.splice(toIndex, 0, moved);
-    setSelectedDreams(updated);
-  };
+    const updated = [...selectedDreams]
+    const [moved] = updated.splice(fromIndex, 1)
+    updated.splice(toIndex, 0, moved)
+    setSelectedDreams(updated)
+  }
 
   /**
    * Extract skills from dreams
    */
   const extractSkills = () => {
-    const skillSet = new Set();
+    const skillSet = new Set()
 
     selectedDreams.forEach(dream => {
-      dream.tags?.forEach(tag => skillSet.add(tag));
+      dream.tags?.forEach(tag => skillSet.add(tag))
       // Could also extract from fragments, todos, etc.
-    });
+    })
 
-    return Array.from(skillSet);
-  };
+    return Array.from(skillSet)
+  }
 
   /**
    * Generate case study for dream
    */
-  const handleGenerateCaseStudy = (dream) => {
-    setSelectedDreamForCase(dream);
-    setShowCaseStudyGenerator(true);
-  };
+  const handleGenerateCaseStudy = dream => {
+    setSelectedDreamForCase(dream)
+    setShowCaseStudyGenerator(true)
+  }
 
   /**
    * Publish/Unpublish portfolio
    */
   const togglePublish = async () => {
-    const updated = { ...portfolio, isPublic: !portfolio.isPublic };
-    setPortfolio(updated);
+    const updated = { ...portfolio, isPublic: !portfolio.isPublic }
+    setPortfolio(updated)
 
     try {
       await fetch(`/api/portfolio/${user.id}/publish`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isPublic: updated.isPublic })
-      });
+        body: JSON.stringify({ isPublic: updated.isPublic }),
+      })
 
-      alert(updated.isPublic ? 'Portfolio published!' : 'Portfolio unpublished');
+      alert(updated.isPublic ? 'Portfolio published!' : 'Portfolio unpublished')
     } catch (error) {
-      console.error('Failed to update publish status:', error);
+      console.error('Failed to update publish status:', error)
     }
-  };
+  }
 
   /**
    * Copy portfolio URL
    */
   const copyPortfolioURL = () => {
-    const url = portfolio.customDomain ||
-                `https://dreamcatcher.app/${user.username}`;
-    navigator.clipboard.writeText(url);
-    alert('Portfolio URL copied to clipboard!');
-  };
+    const url = portfolio.customDomain || `https://dreamcatcher.app/${user.username}`
+    navigator.clipboard.writeText(url)
+    alert('Portfolio URL copied to clipboard!')
+  }
 
   /**
    * Export portfolio as PDF
    */
   const exportAsPDF = () => {
     // Would use jsPDF or similar
-    alert('PDF export coming soon!');
-  };
+    alert('PDF export coming soon!')
+  }
 
   if (!portfolio) {
-    return <div className="loading">Loading portfolio...</div>;
+    return <div className="loading">Loading portfolio...</div>
   }
 
   return (
@@ -195,16 +194,10 @@ const PortfolioBuilder = ({ user, dreams }) => {
         </div>
 
         <div className="header-actions">
-          <button
-            onClick={() => setShowPreview(true)}
-            className="btn btn-secondary"
-          >
+          <button onClick={() => setShowPreview(true)} className="btn btn-secondary">
             👁️ Preview
           </button>
-          <button
-            onClick={savePortfolio}
-            className="btn btn-primary"
-          >
+          <button onClick={savePortfolio} className="btn btn-primary">
             💾 Save
           </button>
           <button
@@ -227,7 +220,7 @@ const PortfolioBuilder = ({ user, dreams }) => {
               <input
                 type="text"
                 value={portfolio.title}
-                onChange={(e) => setPortfolio({ ...portfolio, title: e.target.value })}
+                onChange={e => setPortfolio({ ...portfolio, title: e.target.value })}
                 placeholder="My Portfolio"
               />
             </div>
@@ -236,7 +229,7 @@ const PortfolioBuilder = ({ user, dreams }) => {
               <label>Bio</label>
               <textarea
                 value={portfolio.bio}
-                onChange={(e) => setPortfolio({ ...portfolio, bio: e.target.value })}
+                onChange={e => setPortfolio({ ...portfolio, bio: e.target.value })}
                 placeholder="Tell visitors about yourself..."
                 rows={4}
               />
@@ -247,7 +240,7 @@ const PortfolioBuilder = ({ user, dreams }) => {
               <input
                 type="text"
                 value={portfolio.customDomain || ''}
-                onChange={(e) => setPortfolio({ ...portfolio, customDomain: e.target.value })}
+                onChange={e => setPortfolio({ ...portfolio, customDomain: e.target.value })}
                 placeholder="portfolio.yourdomain.com"
               />
               <small>Pro feature: Connect your own domain</small>
@@ -256,9 +249,7 @@ const PortfolioBuilder = ({ user, dreams }) => {
             <div className="form-group">
               <label>Portfolio URL</label>
               <div className="url-display">
-                <code>
-                  {portfolio.customDomain || `dreamcatcher.app/${user.username}`}
-                </code>
+                <code>{portfolio.customDomain || `dreamcatcher.app/${user.username}`}</code>
                 <button onClick={copyPortfolioURL} className="btn-sm">
                   📋 Copy
                 </button>
@@ -295,7 +286,10 @@ const PortfolioBuilder = ({ user, dreams }) => {
                 </span>
               ))}
             </div>
-            <button className="btn btn-sm btn-secondary" style={{ width: '100%', marginTop: '8px' }}>
+            <button
+              className="btn btn-sm btn-secondary"
+              style={{ width: '100%', marginTop: '8px' }}
+            >
               + Add Custom Skill
             </button>
           </div>
@@ -316,55 +310,55 @@ const PortfolioBuilder = ({ user, dreams }) => {
           </div>
 
           <div className="dreams-grid">
-            {dreams.filter(d => d.status === 'completed' || d.status === 'launched').map(dream => {
-              const isSelected = selectedDreams.find(d => d.id === dream.id);
+            {dreams
+              .filter(d => d.status === 'completed' || d.status === 'launched')
+              .map(dream => {
+                const isSelected = selectedDreams.find(d => d.id === dream.id)
 
-              return (
-                <div
-                  key={dream.id}
-                  className={`dream-card ${isSelected ? 'selected' : ''}`}
-                  onClick={() => toggleDream(dream)}
-                >
-                  <div className="dream-card-header">
-                    <div className="selection-checkbox">
-                      {isSelected && '✓'}
+                return (
+                  <div
+                    key={dream.id}
+                    className={`dream-card ${isSelected ? 'selected' : ''}`}
+                    onClick={() => toggleDream(dream)}
+                  >
+                    <div className="dream-card-header">
+                      <div className="selection-checkbox">{isSelected && '✓'}</div>
+                      <h4>{dream.title}</h4>
                     </div>
-                    <h4>{dream.title}</h4>
-                  </div>
 
-                  <p className="dream-description">
-                    {dream.description || 'No description'}
-                  </p>
+                    <p className="dream-description">{dream.description || 'No description'}</p>
 
-                  <div className="dream-meta">
-                    <span>{dream.fragments?.length || 0} fragments</span>
-                    <span>·</span>
-                    <span>{dream.todos?.filter(t => t.completed).length || 0} tasks done</span>
-                  </div>
-
-                  {dream.tags && (
-                    <div className="dream-tags">
-                      {dream.tags.slice(0, 3).map(tag => (
-                        <span key={tag} className="tag">{tag}</span>
-                      ))}
+                    <div className="dream-meta">
+                      <span>{dream.fragments?.length || 0} fragments</span>
+                      <span>·</span>
+                      <span>{dream.todos?.filter(t => t.completed).length || 0} tasks done</span>
                     </div>
-                  )}
 
-                  {isSelected && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleGenerateCaseStudy(dream);
-                      }}
-                      className="btn btn-sm btn-primary"
-                      style={{ marginTop: '12px', width: '100%' }}
-                    >
-                      📝 Generate Case Study
-                    </button>
-                  )}
-                </div>
-              );
-            })}
+                    {dream.tags && (
+                      <div className="dream-tags">
+                        {dream.tags.slice(0, 3).map(tag => (
+                          <span key={tag} className="tag">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {isSelected && (
+                      <button
+                        onClick={e => {
+                          e.stopPropagation()
+                          handleGenerateCaseStudy(dream)
+                        }}
+                        className="btn btn-sm btn-primary"
+                        style={{ marginTop: '12px', width: '100%' }}
+                      >
+                        📝 Generate Case Study
+                      </button>
+                    )}
+                  </div>
+                )
+              })}
           </div>
 
           {selectedDreams.length === 0 && (
@@ -388,16 +382,10 @@ const PortfolioBuilder = ({ user, dreams }) => {
                       <span>{dream.status}</span>
                     </div>
                     <div className="dream-actions">
-                      <button
-                        onClick={() => handleGenerateCaseStudy(dream)}
-                        className="btn-sm"
-                      >
+                      <button onClick={() => handleGenerateCaseStudy(dream)} className="btn-sm">
                         📝 Case Study
                       </button>
-                      <button
-                        onClick={() => toggleDream(dream)}
-                        className="btn-sm btn-danger"
-                      >
+                      <button onClick={() => toggleDream(dream)} className="btn-sm btn-danger">
                         ×
                       </button>
                     </div>
@@ -414,15 +402,13 @@ const PortfolioBuilder = ({ user, dreams }) => {
         <CaseStudyGenerator
           dream={selectedDreamForCase}
           onClose={() => setShowCaseStudyGenerator(false)}
-          onSave={(caseStudy) => {
+          onSave={caseStudy => {
             // Update dream with case study
             const updated = selectedDreams.map(d =>
-              d.id === selectedDreamForCase.id
-                ? { ...d, caseStudy }
-                : d
-            );
-            setSelectedDreams(updated);
-            setShowCaseStudyGenerator(false);
+              d.id === selectedDreamForCase.id ? { ...d, caseStudy } : d
+            )
+            setSelectedDreams(updated)
+            setShowCaseStudyGenerator(false)
           }}
         />
       )}
@@ -430,7 +416,7 @@ const PortfolioBuilder = ({ user, dreams }) => {
       {/* Preview Modal */}
       {showPreview && (
         <div className="preview-modal" onClick={() => setShowPreview(false)}>
-          <div className="modal-content-large" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content-large" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Portfolio Preview</h2>
               <button onClick={() => setShowPreview(false)}>×</button>
@@ -445,7 +431,7 @@ const PortfolioBuilder = ({ user, dreams }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default PortfolioBuilder;
+export default PortfolioBuilder

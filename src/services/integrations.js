@@ -16,8 +16,8 @@
 
 class IntegrationService {
   constructor() {
-    this.connections = new Map();
-    this.webhookHandlers = new Map();
+    this.connections = new Map()
+    this.webhookHandlers = new Map()
   }
 
   // ====================
@@ -35,20 +35,20 @@ class IntegrationService {
       const tokenResponse = await fetch('/api/integrations/github/oauth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code })
-      });
+        body: JSON.stringify({ code }),
+      })
 
-      const { access_token, scope } = await tokenResponse.json();
+      const { access_token, scope } = await tokenResponse.json()
 
       // Get user info
       const userResponse = await fetch('https://api.github.com/user', {
         headers: {
-          'Authorization': `Bearer ${access_token}`,
-          'Accept': 'application/vnd.github.v3+json'
-        }
-      });
+          Authorization: `Bearer ${access_token}`,
+          Accept: 'application/vnd.github.v3+json',
+        },
+      })
 
-      const user = await userResponse.json();
+      const user = await userResponse.json()
 
       const connection = {
         provider: 'github',
@@ -56,15 +56,15 @@ class IntegrationService {
         username: user.login,
         accessToken: access_token,
         scope,
-        connectedAt: new Date().toISOString()
-      };
+        connectedAt: new Date().toISOString(),
+      }
 
-      this.connections.set('github', connection);
+      this.connections.set('github', connection)
 
-      return connection;
+      return connection
     } catch (error) {
-      console.error('GitHub connection error:', error);
-      throw new Error('Failed to connect GitHub account');
+      console.error('GitHub connection error:', error)
+      throw new Error('Failed to connect GitHub account')
     }
   }
 
@@ -75,13 +75,13 @@ class IntegrationService {
    * @returns {Promise<Object>} Link details
    */
   async linkGitHubRepo(dreamId, repoFullName) {
-    const connection = this.connections.get('github');
+    const connection = this.connections.get('github')
     if (!connection) {
-      throw new Error('GitHub not connected');
+      throw new Error('GitHub not connected')
     }
 
     // Set up webhook for this repo
-    const webhook = await this.createGitHubWebhook(repoFullName, connection.accessToken);
+    const webhook = await this.createGitHubWebhook(repoFullName, connection.accessToken)
 
     return {
       dreamId,
@@ -89,8 +89,8 @@ class IntegrationService {
       resourceType: 'repository',
       resourceId: repoFullName,
       webhookId: webhook.id,
-      linkedAt: new Date().toISOString()
-    };
+      linkedAt: new Date().toISOString(),
+    }
   }
 
   /**
@@ -100,14 +100,14 @@ class IntegrationService {
    * @returns {Promise<Object>} Webhook details
    */
   async createGitHubWebhook(repoFullName, accessToken) {
-    const webhookUrl = `${window.location.origin}/api/webhooks/github`;
+    const webhookUrl = `${window.location.origin}/api/webhooks/github`
 
     const response = await fetch(`https://api.github.com/repos/${repoFullName}/hooks`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${accessToken}`,
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         name: 'web',
@@ -116,12 +116,12 @@ class IntegrationService {
         config: {
           url: webhookUrl,
           content_type: 'json',
-          insecure_ssl: '0'
-        }
-      })
-    });
+          insecure_ssl: '0',
+        },
+      }),
+    })
 
-    return response.json();
+    return response.json()
   }
 
   /**
@@ -130,23 +130,23 @@ class IntegrationService {
    * @returns {Promise<void>}
    */
   async handleGitHubWebhook(payload) {
-    const { action, repository, commits, pull_request, issue } = payload;
+    const { action, repository, commits, pull_request, issue } = payload
 
     // Handle push events (commits)
     if (commits && commits.length > 0) {
       for (const commit of commits) {
-        await this.createFragmentFromCommit(commit, repository);
+        await this.createFragmentFromCommit(commit, repository)
       }
     }
 
     // Handle pull request events
     if (pull_request) {
-      await this.createFragmentFromPR(pull_request, repository, action);
+      await this.createFragmentFromPR(pull_request, repository, action)
     }
 
     // Handle issue events
     if (issue) {
-      await this.syncIssueToTodo(issue, repository, action);
+      await this.syncIssueToTodo(issue, repository, action)
     }
   }
 
@@ -162,14 +162,14 @@ class IntegrationService {
       source: `GitHub: ${repository.full_name}`,
       url: commit.url,
       features: [],
-      code_snippets: []
-    };
+      code_snippets: [],
+    }
 
     // Auto-detect dream based on repository link
     // This would be implemented with database lookup
-    console.log('Creating fragment from commit:', fragment);
+    console.log('Creating fragment from commit:', fragment)
 
-    return fragment;
+    return fragment
   }
 
   /**
@@ -185,12 +185,12 @@ class IntegrationService {
       source: `GitHub PR #${pr.number}`,
       url: pr.html_url,
       features: pr.labels.map(l => l.name),
-      code_snippets: []
-    };
+      code_snippets: [],
+    }
 
-    console.log('Creating fragment from PR:', fragment);
+    console.log('Creating fragment from PR:', fragment)
 
-    return fragment;
+    return fragment
   }
 
   /**
@@ -206,12 +206,12 @@ class IntegrationService {
       category: 'coding',
       source: `github-issue-${issue.number}`,
       completed: issue.state === 'closed',
-      notes: `GitHub Issue #${issue.number}\n${issue.html_url}`
-    };
+      notes: `GitHub Issue #${issue.number}\n${issue.html_url}`,
+    }
 
-    console.log('Syncing issue to todo:', todo);
+    console.log('Syncing issue to todo:', todo)
 
-    return todo;
+    return todo
   }
 
   // ====================
@@ -228,10 +228,10 @@ class IntegrationService {
       const response = await fetch('/api/integrations/slack/oauth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code })
-      });
+        body: JSON.stringify({ code }),
+      })
 
-      const data = await response.json();
+      const data = await response.json()
 
       const connection = {
         provider: 'slack',
@@ -240,15 +240,15 @@ class IntegrationService {
         accessToken: data.access_token,
         webhookUrl: data.incoming_webhook.url,
         channel: data.incoming_webhook.channel,
-        connectedAt: new Date().toISOString()
-      };
+        connectedAt: new Date().toISOString(),
+      }
 
-      this.connections.set('slack', connection);
+      this.connections.set('slack', connection)
 
-      return connection;
+      return connection
     } catch (error) {
-      console.error('Slack connection error:', error);
-      throw new Error('Failed to connect Slack workspace');
+      console.error('Slack connection error:', error)
+      throw new Error('Failed to connect Slack workspace')
     }
   }
 
@@ -260,25 +260,25 @@ class IntegrationService {
    * @returns {Promise<Object>} Fragment data
    */
   async captureSlackThread(channelId, threadTs, dreamId) {
-    const connection = this.connections.get('slack');
+    const connection = this.connections.get('slack')
     if (!connection) {
-      throw new Error('Slack not connected');
+      throw new Error('Slack not connected')
     }
 
     // Fetch thread messages
     const response = await fetch(`https://slack.com/api/conversations.replies`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${connection.accessToken}`,
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${connection.accessToken}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         channel: channelId,
-        ts: threadTs
-      })
-    });
+        ts: threadTs,
+      }),
+    })
 
-    const { messages } = await response.json();
+    const { messages } = await response.json()
 
     const fragment = {
       title: `Slack Discussion: ${messages[0].text.substring(0, 50)}...`,
@@ -286,10 +286,10 @@ class IntegrationService {
       source: `Slack: #${channelId}`,
       url: `slack://channel?id=${channelId}&message=${threadTs}`,
       features: [],
-      code_snippets: []
-    };
+      code_snippets: [],
+    }
 
-    return fragment;
+    return fragment
   }
 
   /**
@@ -299,9 +299,9 @@ class IntegrationService {
    * @returns {Promise<void>}
    */
   async sendSlackNotification(message, options = {}) {
-    const connection = this.connections.get('slack');
+    const connection = this.connections.get('slack')
     if (!connection) {
-      throw new Error('Slack not connected');
+      throw new Error('Slack not connected')
     }
 
     await fetch(connection.webhookUrl, {
@@ -310,9 +310,9 @@ class IntegrationService {
       body: JSON.stringify({
         text: message,
         channel: options.channel || connection.channel,
-        ...options
-      })
-    });
+        ...options,
+      }),
+    })
   }
 
   // ====================
@@ -329,25 +329,25 @@ class IntegrationService {
       const response = await fetch('/api/integrations/google/oauth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, scope: 'calendar' })
-      });
+        body: JSON.stringify({ code, scope: 'calendar' }),
+      })
 
-      const data = await response.json();
+      const data = await response.json()
 
       const connection = {
         provider: 'google-calendar',
         accessToken: data.access_token,
         refreshToken: data.refresh_token,
-        expiresAt: Date.now() + (data.expires_in * 1000),
-        connectedAt: new Date().toISOString()
-      };
+        expiresAt: Date.now() + data.expires_in * 1000,
+        connectedAt: new Date().toISOString(),
+      }
 
-      this.connections.set('google-calendar', connection);
+      this.connections.set('google-calendar', connection)
 
-      return connection;
+      return connection
     } catch (error) {
-      console.error('Google Calendar connection error:', error);
-      throw new Error('Failed to connect Google Calendar');
+      console.error('Google Calendar connection error:', error)
+      throw new Error('Failed to connect Google Calendar')
     }
   }
 
@@ -358,35 +358,38 @@ class IntegrationService {
    * @returns {Promise<Object>} Calendar event
    */
   async syncTodoToCalendar(todo, dreamTitle) {
-    const connection = this.connections.get('google-calendar');
+    const connection = this.connections.get('google-calendar')
     if (!connection) {
-      throw new Error('Google Calendar not connected');
+      throw new Error('Google Calendar not connected')
     }
 
     const event = {
       summary: `[Dreamcatcher] ${todo.title}`,
       description: `Dream: ${dreamTitle}\nCategory: ${todo.category}\n\n${todo.notes || ''}`,
       start: {
-        date: todo.deadline
+        date: todo.deadline,
       },
       end: {
-        date: todo.deadline
+        date: todo.deadline,
       },
       reminders: {
-        useDefault: true
-      }
-    };
-
-    const response = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${connection.accessToken}`,
-        'Content-Type': 'application/json'
+        useDefault: true,
       },
-      body: JSON.stringify(event)
-    });
+    }
 
-    return response.json();
+    const response = await fetch(
+      'https://www.googleapis.com/calendar/v3/calendars/primary/events',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${connection.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(event),
+      }
+    )
+
+    return response.json()
   }
 
   // ====================
@@ -398,7 +401,7 @@ class IntegrationService {
    * @returns {Array} List of connections
    */
   getConnections() {
-    return Array.from(this.connections.values());
+    return Array.from(this.connections.values())
   }
 
   /**
@@ -406,7 +409,7 @@ class IntegrationService {
    * @param {string} provider - Provider name
    */
   disconnect(provider) {
-    this.connections.delete(provider);
+    this.connections.delete(provider)
   }
 
   /**
@@ -415,11 +418,11 @@ class IntegrationService {
    * @returns {boolean}
    */
   isConnected(provider) {
-    return this.connections.has(provider);
+    return this.connections.has(provider)
   }
 }
 
 // Singleton instance
-export const integrationService = new IntegrationService();
+export const integrationService = new IntegrationService()
 
-export default integrationService;
+export default integrationService

@@ -5,107 +5,106 @@
  * Uses AI to analyze dream journey and create narrative
  */
 
-import React, { useState, useEffect } from 'react';
-import { aiAssistant } from '../../services/ai-assistant';
-import { analyticsService } from '../../services/analytics';
+import React, { useState, useEffect } from 'react'
+import { aiAssistant } from '../../services/ai-assistant'
+import { analyticsService } from '../../services/analytics'
 
 const CASE_STUDY_TEMPLATE = {
   overview: {
     title: 'Overview',
     prompt: 'Provide a brief overview of this project',
-    icon: '📋'
+    icon: '📋',
   },
   problem: {
     title: 'Problem Statement',
     prompt: 'What problem were you solving?',
-    icon: '❓'
+    icon: '❓',
   },
   solution: {
     title: 'Solution',
     prompt: 'How did you solve it?',
-    icon: '💡'
+    icon: '💡',
   },
   process: {
     title: 'Process & Timeline',
     prompt: 'Describe the development process',
-    icon: '⚙️'
+    icon: '⚙️',
   },
   challenges: {
     title: 'Challenges',
     prompt: 'What challenges did you face?',
-    icon: '🚧'
+    icon: '🚧',
   },
   results: {
     title: 'Results & Impact',
     prompt: 'What were the outcomes?',
-    icon: '🎯'
+    icon: '🎯',
   },
   learnings: {
     title: 'Key Learnings',
     prompt: 'What did you learn?',
-    icon: '📚'
-  }
-};
+    icon: '📚',
+  },
+}
 
 const CaseStudyGenerator = ({ dream, onClose, onSave }) => {
-  const [caseStudy, setCaseStudy] = useState({});
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [generationProgress, setGenerationProgress] = useState(0);
-  const [currentSection, setCurrentSection] = useState(null);
+  const [caseStudy, setCaseStudy] = useState({})
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [generationProgress, setGenerationProgress] = useState(0)
+  const [currentSection, setCurrentSection] = useState(null)
 
   useEffect(() => {
     // Initialize with empty sections
-    const initial = {};
+    const initial = {}
     Object.keys(CASE_STUDY_TEMPLATE).forEach(key => {
-      initial[key] = '';
-    });
-    setCaseStudy(initial);
-  }, []);
+      initial[key] = ''
+    })
+    setCaseStudy(initial)
+  }, [])
 
   /**
    * Generate case study with AI
    */
   const handleGenerateAI = async () => {
-    setIsGenerating(true);
-    setGenerationProgress(0);
+    setIsGenerating(true)
+    setGenerationProgress(0)
 
-    const sections = Object.keys(CASE_STUDY_TEMPLATE);
-    const generated = {};
+    const sections = Object.keys(CASE_STUDY_TEMPLATE)
+    const generated = {}
 
     try {
       for (let i = 0; i < sections.length; i++) {
-        const sectionKey = sections[i];
-        const section = CASE_STUDY_TEMPLATE[sectionKey];
+        const sectionKey = sections[i]
+        const section = CASE_STUDY_TEMPLATE[sectionKey]
 
-        setCurrentSection(section.title);
-        setGenerationProgress(((i + 1) / sections.length) * 100);
+        setCurrentSection(section.title)
+        setGenerationProgress(((i + 1) / sections.length) * 100)
 
         // Generate content for this section
-        const content = await generateSection(sectionKey, section);
-        generated[sectionKey] = content;
+        const content = await generateSection(sectionKey, section)
+        generated[sectionKey] = content
 
         // Update state incrementally
-        setCaseStudy({ ...generated });
+        setCaseStudy({ ...generated })
       }
 
-      setCurrentSection(null);
-
+      setCurrentSection(null)
     } catch (error) {
-      console.error('Failed to generate case study:', error);
-      alert('Failed to generate case study. Please try again.');
+      console.error('Failed to generate case study:', error)
+      alert('Failed to generate case study. Please try again.')
     } finally {
-      setIsGenerating(false);
-      setGenerationProgress(0);
+      setIsGenerating(false)
+      setGenerationProgress(0)
     }
-  };
+  }
 
   /**
    * Generate content for a specific section
    */
   const generateSection = async (sectionKey, section) => {
-    const context = buildContext();
+    const context = buildContext()
 
-    let prompt = '';
+    let prompt = ''
 
     switch (sectionKey) {
       case 'overview':
@@ -116,8 +115,8 @@ Context:
 - Status: ${dream.status}
 - Tags: ${dream.tags?.join(', ')}
 - Fragments: ${context.fragmentCount}
-- Duration: ${context.duration} days`;
-        break;
+- Duration: ${context.duration} days`
+        break
 
       case 'problem':
         prompt = `Analyze the dream and fragments to identify the core problem being solved. Write 2-3 paragraphs explaining:
@@ -129,8 +128,11 @@ Dream: "${dream.title}"
 Description: ${dream.description}
 
 Recent fragments:
-${context.recentFragments.slice(0, 5).map(f => `- ${f.title}: ${f.content.substring(0, 200)}`).join('\n')}`;
-        break;
+${context.recentFragments
+  .slice(0, 5)
+  .map(f => `- ${f.title}: ${f.content.substring(0, 200)}`)
+  .join('\n')}`
+        break
 
       case 'solution':
         prompt = `Describe the solution that was built for "${dream.title}". Write 2-3 paragraphs covering:
@@ -139,8 +141,11 @@ ${context.recentFragments.slice(0, 5).map(f => `- ${f.title}: ${f.content.substr
 3. What makes it unique
 
 Context from fragments:
-${context.recentFragments.slice(0, 5).map(f => `- ${f.content.substring(0, 200)}`).join('\n')}`;
-        break;
+${context.recentFragments
+  .slice(0, 5)
+  .map(f => `- ${f.content.substring(0, 200)}`)
+  .join('\n')}`
+        break
 
       case 'process':
         prompt = `Create a timeline narrative of how "${dream.title}" was developed. Include:
@@ -150,15 +155,18 @@ ${context.recentFragments.slice(0, 5).map(f => `- ${f.content.substring(0, 200)}
 4. Timeline (started ${new Date(dream.created_at).toLocaleDateString()}, took ${context.duration} days)
 
 Use these fragments as reference:
-${context.recentFragments.map(f => `${new Date(f.created_at).toLocaleDateString()}: ${f.title}`).join('\n')}`;
-        break;
+${context.recentFragments.map(f => `${new Date(f.created_at).toLocaleDateString()}: ${f.title}`).join('\n')}`
+        break
 
       case 'challenges':
         prompt = `Based on the fragments and conversation history, identify 3-5 key challenges faced during "${dream.title}" and how they were overcome.
 
 Look for challenges in these fragments:
-${context.recentFragments.slice(0, 10).map(f => f.content.substring(0, 300)).join('\n\n')}`;
-        break;
+${context.recentFragments
+  .slice(0, 10)
+  .map(f => f.content.substring(0, 300))
+  .join('\n\n')}`
+        break
 
       case 'results':
         prompt = `Summarize the results and impact of "${dream.title}". Include:
@@ -169,8 +177,8 @@ ${context.recentFragments.slice(0, 10).map(f => f.content.substring(0, 300)).joi
 
 Status: ${dream.status}
 Completion: ${context.todoCompletion}% of tasks completed
-${dream.status === 'launched' ? 'Successfully launched!' : ''}`;
-        break;
+${dream.status === 'launched' ? 'Successfully launched!' : ''}`
+        break
 
       case 'learnings':
         prompt = `Extract 3-5 key learnings from the "${dream.title}" journey. Focus on:
@@ -180,45 +188,49 @@ ${dream.status === 'launched' ? 'Successfully launched!' : ''}`;
 4. Insights gained
 
 Analyze these fragments for learnings:
-${context.recentFragments.slice(0, 10).map(f => f.content.substring(0, 300)).join('\n\n')}`;
-        break;
+${context.recentFragments
+  .slice(0, 10)
+  .map(f => f.content.substring(0, 300))
+  .join('\n\n')}`
+        break
 
       default:
-        prompt = `${section.prompt} for the dream "${dream.title}". Write 2-3 paragraphs.`;
+        prompt = `${section.prompt} for the dream "${dream.title}". Write 2-3 paragraphs.`
     }
 
     const response = await aiAssistant.ask(prompt, {
       dreams: [dream],
       currentDream: dream,
-      recentFragments: dream.fragments
-    });
+      recentFragments: dream.fragments,
+    })
 
-    return response;
-  };
+    return response
+  }
 
   /**
    * Build context from dream data
    */
   const buildContext = () => {
-    const fragments = dream.fragments || [];
-    const todos = dream.todos || [];
+    const fragments = dream.fragments || []
+    const todos = dream.todos || []
 
     const duration = dream.created_at
       ? Math.floor((Date.now() - new Date(dream.created_at)) / (1000 * 60 * 60 * 24))
-      : 0;
+      : 0
 
-    const todoCompletion = todos.length > 0
-      ? Math.round((todos.filter(t => t.completed).length / todos.length) * 100)
-      : 0;
+    const todoCompletion =
+      todos.length > 0
+        ? Math.round((todos.filter(t => t.completed).length / todos.length) * 100)
+        : 0
 
     return {
       fragmentCount: fragments.length,
       recentFragments: fragments.slice(-20), // Last 20 fragments
       duration,
       todoCompletion,
-      tags: dream.tags || []
-    };
-  };
+      tags: dream.tags || [],
+    }
+  }
 
   /**
    * Handle manual edit
@@ -226,9 +238,9 @@ ${context.recentFragments.slice(0, 10).map(f => f.content.substring(0, 300)).joi
   const handleEdit = (sectionKey, content) => {
     setCaseStudy({
       ...caseStudy,
-      [sectionKey]: content
-    });
-  };
+      [sectionKey]: content,
+    })
+  }
 
   /**
    * Save case study
@@ -237,19 +249,21 @@ ${context.recentFragments.slice(0, 10).map(f => f.content.substring(0, 300)).joi
     onSave({
       ...caseStudy,
       generatedAt: new Date().toISOString(),
-      dreamId: dream.id
-    });
-  };
+      dreamId: dream.id,
+    })
+  }
 
   return (
     <div className="case-study-modal" onClick={onClose}>
-      <div className="case-study-content" onClick={(e) => e.stopPropagation()}>
+      <div className="case-study-content" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <div>
             <h2>📝 Case Study: {dream.title}</h2>
             <p>AI-powered case study generation</p>
           </div>
-          <button onClick={onClose} className="close-btn">×</button>
+          <button onClick={onClose} className="close-btn">
+            ×
+          </button>
         </div>
 
         <div className="modal-body">
@@ -266,10 +280,7 @@ ${context.recentFragments.slice(0, 10).map(f => f.content.substring(0, 300)).joi
             {isGenerating && (
               <div className="generation-progress">
                 <div className="progress-bar">
-                  <div
-                    className="progress-fill"
-                    style={{ width: `${generationProgress}%` }}
-                  />
+                  <div className="progress-fill" style={{ width: `${generationProgress}%` }} />
                 </div>
                 <p>Generating: {currentSection}...</p>
               </div>
@@ -287,7 +298,7 @@ ${context.recentFragments.slice(0, 10).map(f => f.content.substring(0, 300)).joi
 
                 <textarea
                   value={caseStudy[key] || ''}
-                  onChange={(e) => handleEdit(key, e.target.value)}
+                  onChange={e => handleEdit(key, e.target.value)}
                   placeholder={`${section.prompt}...`}
                   rows={6}
                   className="case-textarea"
@@ -311,7 +322,7 @@ ${context.recentFragments.slice(0, 10).map(f => f.content.substring(0, 300)).joi
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CaseStudyGenerator;
+export default CaseStudyGenerator

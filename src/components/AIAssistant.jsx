@@ -1,48 +1,48 @@
-import React, { useState } from 'react';
-import { Sparkles, Loader2, Tag, FileText, Lightbulb } from 'lucide-react';
-import { useAI } from '../hooks/useAI';
+import React, { useState } from 'react'
+import { Sparkles, Loader2, Tag, FileText, Lightbulb } from 'lucide-react'
+import { useAI } from '../hooks/useAI'
 
 /**
  * AI Assistant component for smart suggestions
  */
 export default function AIAssistant({ dream, onSuggestionsApplied, type = 'tags' }) {
-  const [loading, setLoading] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const { aiAvailable, getTagSuggestions, generateSummary, error } = useAI();
+  const [loading, setLoading] = useState(false)
+  const [suggestions, setSuggestions] = useState([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const { aiAvailable, getTagSuggestions, generateSummary, error } = useAI()
 
   const handleGetSuggestions = async () => {
-    setLoading(true);
-    setShowSuggestions(true);
+    setLoading(true)
+    setShowSuggestions(true)
 
     try {
       if (type === 'tags') {
-        const tags = await getTagSuggestions(dream);
-        setSuggestions(tags);
+        const tags = await getTagSuggestions(dream)
+        setSuggestions(tags)
       } else if (type === 'summary') {
-        const summary = await generateSummary(dream);
-        setSuggestions([summary]);
+        const summary = await generateSummary(dream)
+        setSuggestions([summary])
       }
     } catch (err) {
-      console.error('Error getting suggestions:', err);
+      console.error('Error getting suggestions:', err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleApplySuggestions = () => {
     if (onSuggestionsApplied) {
-      onSuggestionsApplied(suggestions);
+      onSuggestionsApplied(suggestions)
     }
-    setShowSuggestions(false);
-    setSuggestions([]);
-  };
+    setShowSuggestions(false)
+    setSuggestions([])
+  }
 
-  const handleApplySingle = (suggestion) => {
+  const handleApplySingle = suggestion => {
     if (onSuggestionsApplied) {
-      onSuggestionsApplied([suggestion]);
+      onSuggestionsApplied([suggestion])
     }
-  };
+  }
 
   if (!aiAvailable) {
     return (
@@ -50,7 +50,7 @@ export default function AIAssistant({ dream, onSuggestionsApplied, type = 'tags'
         <Sparkles className="w-4 h-4 mr-1" />
         AI suggestions unavailable (set VITE_OPENAI_API_KEY)
       </div>
-    );
+    )
   }
 
   return (
@@ -130,8 +130,8 @@ export default function AIAssistant({ dream, onSuggestionsApplied, type = 'tags'
             </button>
             <button
               onClick={() => {
-                setShowSuggestions(false);
-                setSuggestions([]);
+                setShowSuggestions(false)
+                setSuggestions([])
               }}
               className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-md text-sm"
             >
@@ -141,6 +141,5 @@ export default function AIAssistant({ dream, onSuggestionsApplied, type = 'tags'
         </div>
       )}
     </div>
-  );
+  )
 }
-

@@ -9,8 +9,8 @@
  */
 
 // Installation handler
-chrome.runtime.onInstalled.addListener((details) => {
-  console.log('[Dreamcatcher] Extension installed/updated', details.reason);
+chrome.runtime.onInstalled.addListener(details => {
+  console.log('[Dreamcatcher] Extension installed/updated', details.reason)
 
   if (details.reason === 'install') {
     // First-time installation
@@ -18,21 +18,21 @@ chrome.runtime.onInstalled.addListener((details) => {
       settings: {
         autoCapture: false,
         syncInterval: 30, // minutes
-        defaultDreamId: null
+        defaultDreamId: null,
       },
       offlineQueue: [],
-      dreams: []
-    });
+      dreams: [],
+    })
 
     // Open welcome page
     chrome.tabs.create({
-      url: 'https://dreamcatcher.app/extension/welcome'
-    });
+      url: 'https://dreamcatcher.app/extension/welcome',
+    })
   }
 
   // Create context menu
-  createContextMenu();
-});
+  createContextMenu()
+})
 
 /**
  * Create right-click context menu
@@ -42,8 +42,8 @@ function createContextMenu() {
     chrome.contextMenus.create({
       id: 'save-selection',
       title: 'Save to Dreamcatcher',
-      contexts: ['selection']
-    });
+      contexts: ['selection'],
+    })
 
     chrome.contextMenus.create({
       id: 'capture-conversation',
@@ -52,10 +52,10 @@ function createContextMenu() {
       documentUrlPatterns: [
         'https://chat.openai.com/*',
         'https://claude.ai/*',
-        'https://chat.anthropic.com/*'
-      ]
-    });
-  });
+        'https://chat.anthropic.com/*',
+      ],
+    })
+  })
 }
 
 /**
@@ -63,18 +63,18 @@ function createContextMenu() {
  */
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === 'save-selection') {
-    await handleSaveSelection(info.selectionText, tab);
+    await handleSaveSelection(info.selectionText, tab)
   } else if (info.menuItemId === 'capture-conversation') {
-    await handleCaptureConversation(tab);
+    await handleCaptureConversation(tab)
   }
-});
+})
 
 /**
  * Save selected text as fragment
  */
 async function handleSaveSelection(text, tab) {
   try {
-    const { offlineQueue = [] } = await chrome.storage.local.get(['offlineQueue']);
+    const { offlineQueue = [] } = await chrome.storage.local.get(['offlineQueue'])
 
     offlineQueue.push({
       id: `selection-${Date.now()}`,
@@ -82,21 +82,20 @@ async function handleSaveSelection(text, tab) {
       content: text,
       sourceUrl: tab.url,
       sourceTitle: tab.title,
-      timestamp: Date.now()
-    });
+      timestamp: Date.now(),
+    })
 
-    await chrome.storage.local.set({ offlineQueue });
+    await chrome.storage.local.set({ offlineQueue })
 
     // Show notification
     chrome.notifications.create({
       type: 'basic',
       iconUrl: 'icons/icon48.png',
       title: 'Dreamcatcher',
-      message: 'Selection saved! Open extension to organize.'
-    });
-
+      message: 'Selection saved! Open extension to organize.',
+    })
   } catch (error) {
-    console.error('[Dreamcatcher] Failed to save selection:', error);
+    console.error('[Dreamcatcher] Failed to save selection:', error)
   }
 }
 
@@ -106,83 +105,83 @@ async function handleSaveSelection(text, tab) {
 async function handleCaptureConversation(tab) {
   try {
     const response = await chrome.tabs.sendMessage(tab.id, {
-      action: 'extractConversation'
-    });
+      action: 'extractConversation',
+    })
 
     if (response && response.conversation) {
       await chrome.storage.local.set({
         pendingCapture: {
           conversation: response.conversation,
-          timestamp: Date.now()
-        }
-      });
+          timestamp: Date.now(),
+        },
+      })
 
       // Open popup
-      chrome.action.openPopup();
+      chrome.action.openPopup()
     }
-
   } catch (error) {
-    console.error('[Dreamcatcher] Failed to capture conversation:', error);
+    console.error('[Dreamcatcher] Failed to capture conversation:', error)
   }
 }
 
 /**
  * Keyboard shortcuts
  */
-chrome.commands.onCommand.addListener(async (command) => {
+chrome.commands.onCommand.addListener(async command => {
   if (command === 'quick-capture') {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    await handleCaptureConversation(tab);
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+    await handleCaptureConversation(tab)
   }
-});
+})
 
 /**
  * Periodic offline queue sync
  */
 async function syncOfflineQueue() {
   try {
-    const { authToken, offlineQueue = [] } = await chrome.storage.local.get(['authToken', 'offlineQueue']);
+    const { authToken, offlineQueue = [] } = await chrome.storage.local.get([
+      'authToken',
+      'offlineQueue',
+    ])
 
     if (!authToken || offlineQueue.length === 0) {
-      return;
+      return
     }
 
-    console.log(`[Dreamcatcher] Syncing ${offlineQueue.length} offline items...`);
+    console.log(`[Dreamcatcher] Syncing ${offlineQueue.length} offline items...`)
 
-    const syncedIds = [];
+    const syncedIds = []
 
     for (const item of offlineQueue) {
       try {
         // Attempt to sync item
         if (item.type === 'selection') {
-          await syncSelection(item, authToken);
+          await syncSelection(item, authToken)
         } else {
-          await syncConversation(item, authToken);
+          await syncConversation(item, authToken)
         }
 
-        syncedIds.push(item.id);
-
+        syncedIds.push(item.id)
       } catch (error) {
-        console.error('[Dreamcatcher] Failed to sync item:', item.id, error);
+        console.error('[Dreamcatcher] Failed to sync item:', item.id, error)
         // Keep in queue for next sync attempt
       }
     }
 
     // Remove synced items from queue
     if (syncedIds.length > 0) {
-      const remainingQueue = offlineQueue.filter(item => !syncedIds.includes(item.id));
-      await chrome.storage.local.set({ offlineQueue: remainingQueue });
+      const remainingQueue = offlineQueue.filter(item => !syncedIds.includes(item.id))
+      await chrome.storage.local.set({ offlineQueue: remainingQueue })
 
       chrome.notifications.create({
         type: 'basic',
         iconUrl: 'icons/icon48.png',
         title: 'Dreamcatcher Sync',
-        message: `Synced ${syncedIds.length} items. ${remainingQueue.length} remaining.`
-      });
+        message: `Synced ${syncedIds.length} items. ${remainingQueue.length} remaining.`,
+      })
     }
-
   } catch (error) {
-    console.error('[Dreamcatcher] Sync error:', error);
+    console.error('[Dreamcatcher] Sync error:', error)
   }
 }
 
@@ -193,24 +192,24 @@ async function syncSelection(item, authToken) {
   const response = await fetch('https://api.dreamcatcher.app/fragments', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${authToken}`,
-      'Content-Type': 'application/json'
+      Authorization: `Bearer ${authToken}`,
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       type: 'snippet',
       content: item.content,
       metadata: {
         sourceUrl: item.sourceUrl,
-        sourceTitle: item.sourceTitle
-      }
-    })
-  });
+        sourceTitle: item.sourceTitle,
+      },
+    }),
+  })
 
   if (!response.ok) {
-    throw new Error(`Sync failed: ${response.status}`);
+    throw new Error(`Sync failed: ${response.status}`)
   }
 
-  return response.json();
+  return response.json()
 }
 
 /**
@@ -218,36 +217,36 @@ async function syncSelection(item, authToken) {
  */
 async function syncConversation(item, authToken) {
   // Create dream if needed
-  let dreamId = item.dreamId;
+  let dreamId = item.dreamId
 
   if (!dreamId) {
     const dreamResponse = await fetch('https://api.dreamcatcher.app/dreams', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${authToken}`,
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         title: item.dreamTitle,
         tags: item.dreamTags,
-        status: 'in-progress'
-      })
-    });
+        status: 'in-progress',
+      }),
+    })
 
     if (!dreamResponse.ok) {
-      throw new Error(`Dream creation failed: ${dreamResponse.status}`);
+      throw new Error(`Dream creation failed: ${dreamResponse.status}`)
     }
 
-    const dream = await dreamResponse.json();
-    dreamId = dream.id;
+    const dream = await dreamResponse.json()
+    dreamId = dream.id
   }
 
   // Create fragment
   const fragmentResponse = await fetch(`https://api.dreamcatcher.app/dreams/${dreamId}/fragments`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${authToken}`,
-      'Content-Type': 'application/json'
+      Authorization: `Bearer ${authToken}`,
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       title: item.fragmentTitle,
@@ -256,30 +255,30 @@ async function syncConversation(item, authToken) {
       metadata: {
         platform: item.conversation.platform,
         messageCount: item.conversation.messages.length,
-        sourceUrl: item.conversation.url
-      }
-    })
-  });
+        sourceUrl: item.conversation.url,
+      },
+    }),
+  })
 
   if (!fragmentResponse.ok) {
-    throw new Error(`Fragment creation failed: ${fragmentResponse.status}`);
+    throw new Error(`Fragment creation failed: ${fragmentResponse.status}`)
   }
 
-  return fragmentResponse.json();
+  return fragmentResponse.json()
 }
 
 /**
  * Set up periodic sync alarm
  */
 chrome.alarms.create('syncOfflineQueue', {
-  periodInMinutes: 30
-});
+  periodInMinutes: 30,
+})
 
-chrome.alarms.onAlarm.addListener((alarm) => {
+chrome.alarms.onAlarm.addListener(alarm => {
   if (alarm.name === 'syncOfflineQueue') {
-    syncOfflineQueue();
+    syncOfflineQueue()
   }
-});
+})
 
 /**
  * Listen for network status changes
@@ -287,29 +286,31 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 chrome.runtime.onConnect.addListener(() => {
   // When popup opens, trigger sync if online
   if (navigator.onLine) {
-    syncOfflineQueue();
+    syncOfflineQueue()
   }
-});
+})
 
 /**
  * Message handler
  */
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'syncNow') {
-    syncOfflineQueue().then(() => {
-      sendResponse({ success: true });
-    }).catch(error => {
-      sendResponse({ success: false, error: error.message });
-    });
-    return true; // Keep channel open for async response
+    syncOfflineQueue()
+      .then(() => {
+        sendResponse({ success: true })
+      })
+      .catch(error => {
+        sendResponse({ success: false, error: error.message })
+      })
+    return true // Keep channel open for async response
   }
 
   if (message.action === 'getQueueStatus') {
     chrome.storage.local.get(['offlineQueue'], ({ offlineQueue = [] }) => {
-      sendResponse({ count: offlineQueue.length });
-    });
-    return true;
+      sendResponse({ count: offlineQueue.length })
+    })
+    return true
   }
-});
+})
 
-console.log('[Dreamcatcher] Background service worker ready');
+console.log('[Dreamcatcher] Background service worker ready')

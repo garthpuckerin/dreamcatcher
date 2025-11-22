@@ -5,21 +5,21 @@
  * Optimized for SEO and sharing
  */
 
-import React from 'react';
+import React from 'react'
 
 const PublicShowcase = ({ portfolio, isPreview = false }) => {
-  const { title, bio, dreams, theme, skills } = portfolio;
+  const { title, bio, dreams, theme, skills } = portfolio
 
   // Theme colors
   const themeColors = {
     minimal: { primary: '#1a202c', secondary: '#718096', accent: '#667eea', bg: '#ffffff' },
     vibrant: { primary: '#9333ea', secondary: '#ec4899', accent: '#f59e0b', bg: '#faf5ff' },
     professional: { primary: '#1e40af', secondary: '#64748b', accent: '#0891b2', bg: '#f8fafc' },
-    dark: { primary: '#f9fafb', secondary: '#9ca3af', accent: '#8b5cf6', bg: '#1a202c' }
-  };
+    dark: { primary: '#f9fafb', secondary: '#9ca3af', accent: '#8b5cf6', bg: '#1a202c' },
+  }
 
-  const colors = themeColors[theme] || themeColors.minimal;
-  const isDark = theme === 'dark';
+  const colors = themeColors[theme] || themeColors.minimal
+  const isDark = theme === 'dark'
 
   return (
     <div
@@ -30,7 +30,7 @@ const PublicShowcase = ({ portfolio, isPreview = false }) => {
         '--color-accent': colors.accent,
         '--color-bg': colors.bg,
         backgroundColor: colors.bg,
-        color: colors.primary
+        color: colors.primary,
       }}
     >
       {isPreview && (
@@ -69,7 +69,7 @@ const PublicShowcase = ({ portfolio, isPreview = false }) => {
                 <div
                   className="project-image"
                   style={{
-                    background: `linear-gradient(135deg, ${colors.accent} 0%, ${colors.primary} 100%)`
+                    background: `linear-gradient(135deg, ${colors.accent} 0%, ${colors.primary} 100%)`,
                   }}
                 >
                   <span className="project-number">#{index + 1}</span>
@@ -78,9 +78,7 @@ const PublicShowcase = ({ portfolio, isPreview = false }) => {
                 {/* Project Content */}
                 <div className="project-content">
                   <h3 className="project-title">{dream.title}</h3>
-                  <p className="project-description">
-                    {dream.description || 'A project I built'}
-                  </p>
+                  <p className="project-description">{dream.description || 'A project I built'}</p>
 
                   {dream.tags && (
                     <div className="project-tags">
@@ -97,21 +95,15 @@ const PublicShowcase = ({ portfolio, isPreview = false }) => {
                     <div className="case-study-preview">
                       <h4>📋 Overview</h4>
                       <p>{dream.caseStudy.overview?.substring(0, 200)}...</p>
-                      <button className="read-more-btn">
-                        Read Case Study →
-                      </button>
+                      <button className="read-more-btn">Read Case Study →</button>
                     </div>
                   )}
 
                   {/* Project Meta */}
                   <div className="project-meta">
-                    <span>
-                      {dream.fragments?.length || 0} fragments
-                    </span>
+                    <span>{dream.fragments?.length || 0} fragments</span>
                     <span>·</span>
-                    <span>
-                      {dream.todos?.filter(t => t.completed).length || 0} tasks completed
-                    </span>
+                    <span>{dream.todos?.filter(t => t.completed).length || 0} tasks completed</span>
                     <span>·</span>
                     <span className="project-status">
                       {dream.status === 'launched' ? '🚀 Launched' : '✅ Completed'}
@@ -140,7 +132,7 @@ const PublicShowcase = ({ portfolio, isPreview = false }) => {
         </p>
       </footer>
     </div>
-  );
-};
+  )
+}
 
-export default PublicShowcase;
+export default PublicShowcase

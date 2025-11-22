@@ -10,61 +10,59 @@
  * - Export to PDF
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import MilestoneMarker from './MilestoneMarker';
-import RetrospectiveForm from './RetrospectiveForm';
-import { analyticsService } from '../../services/analytics';
-import './timeline.css';
+import React, { useState, useEffect, useRef } from 'react'
+import MilestoneMarker from './MilestoneMarker'
+import RetrospectiveForm from './RetrospectiveForm'
+import { analyticsService } from '../../services/analytics'
+import './timeline.css'
 
 const TimelineView = ({ dream, fragments = [], onUpdate }) => {
-  const [milestones, setMilestones] = useState([]);
-  const [showRetrospective, setShowRetrospective] = useState(false);
-  const [selectedPeriod, setSelectedPeriod] = useState(null);
-  const [timelineData, setTimelineData] = useState([]);
-  const timelineRef = useRef(null);
+  const [milestones, setMilestones] = useState([])
+  const [showRetrospective, setShowRetrospective] = useState(false)
+  const [selectedPeriod, setSelectedPeriod] = useState(null)
+  const [timelineData, setTimelineData] = useState([])
+  const timelineRef = useRef(null)
 
   useEffect(() => {
     if (dream && fragments.length > 0) {
-      generateTimelineData();
-      detectMilestones();
+      generateTimelineData()
+      detectMilestones()
     }
-  }, [dream, fragments]);
+  }, [dream, fragments])
 
   /**
    * Generate timeline data grouped by date
    */
   const generateTimelineData = () => {
-    const grouped = {};
+    const grouped = {}
 
     // Group fragments by date
     fragments.forEach(fragment => {
-      const date = new Date(fragment.date || fragment.created_at).toISOString().split('T')[0];
+      const date = new Date(fragment.date || fragment.created_at).toISOString().split('T')[0]
 
       if (!grouped[date]) {
         grouped[date] = {
           date,
           fragments: [],
-          activity: 0
-        };
+          activity: 0,
+        }
       }
 
-      grouped[date].fragments.push(fragment);
-      grouped[date].activity += fragment.content.length;
-    });
+      grouped[date].fragments.push(fragment)
+      grouped[date].activity += fragment.content.length
+    })
 
     // Convert to array and sort
-    const timeline = Object.values(grouped).sort((a, b) =>
-      new Date(a.date) - new Date(b.date)
-    );
+    const timeline = Object.values(grouped).sort((a, b) => new Date(a.date) - new Date(b.date))
 
-    setTimelineData(timeline);
-  };
+    setTimelineData(timeline)
+  }
 
   /**
    * Auto-detect milestones from fragments and dream status
    */
   const detectMilestones = () => {
-    const detected = [];
+    const detected = []
 
     // Dream created milestone
     if (dream.created_at) {
@@ -74,17 +72,21 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
         date: dream.created_at,
         title: 'Dream Started',
         description: `Started working on "${dream.title}"`,
-        icon: '🎯'
-      });
+        icon: '🎯',
+      })
     }
 
     // Analyze fragments for milestone keywords
     fragments.forEach(fragment => {
-      const content = fragment.content.toLowerCase();
-      const date = fragment.date || fragment.created_at;
+      const content = fragment.content.toLowerCase()
+      const date = fragment.date || fragment.created_at
 
       // Launched
-      if (content.includes('launch') || content.includes('deployed') || content.includes('released')) {
+      if (
+        content.includes('launch') ||
+        content.includes('deployed') ||
+        content.includes('released')
+      ) {
         detected.push({
           id: `launch-${fragment.id}`,
           type: 'launched',
@@ -92,12 +94,16 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
           title: 'Launched',
           description: fragment.title,
           icon: '🚀',
-          fragmentId: fragment.id
-        });
+          fragmentId: fragment.id,
+        })
       }
 
       // Pivot
-      if (content.includes('pivot') || content.includes('changed direction') || content.includes('new approach')) {
+      if (
+        content.includes('pivot') ||
+        content.includes('changed direction') ||
+        content.includes('new approach')
+      ) {
         detected.push({
           id: `pivot-${fragment.id}`,
           type: 'pivoted',
@@ -105,12 +111,16 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
           title: 'Pivoted',
           description: fragment.title,
           icon: '🔄',
-          fragmentId: fragment.id
-        });
+          fragmentId: fragment.id,
+        })
       }
 
       // Milestone
-      if (content.includes('milestone') || content.includes('achieved') || content.includes('completed')) {
+      if (
+        content.includes('milestone') ||
+        content.includes('achieved') ||
+        content.includes('completed')
+      ) {
         detected.push({
           id: `milestone-${fragment.id}`,
           type: 'milestone',
@@ -118,8 +128,8 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
           title: 'Milestone Reached',
           description: fragment.title,
           icon: '🎉',
-          fragmentId: fragment.id
-        });
+          fragmentId: fragment.id,
+        })
       }
 
       // Problem/Blocker
@@ -131,10 +141,10 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
           title: 'Blocker Encountered',
           description: fragment.title,
           icon: '⚠️',
-          fragmentId: fragment.id
-        });
+          fragmentId: fragment.id,
+        })
       }
-    });
+    })
 
     // Dream completed milestone
     if (dream.status === 'completed' || dream.status === 'launched') {
@@ -144,31 +154,31 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
         date: dream.updated_at,
         title: 'Dream Completed',
         description: `Finished "${dream.title}"`,
-        icon: '✅'
-      });
+        icon: '✅',
+      })
     }
 
     // Sort by date
-    detected.sort((a, b) => new Date(a.date) - new Date(b.date));
+    detected.sort((a, b) => new Date(a.date) - new Date(b.date))
 
-    setMilestones(detected);
-  };
+    setMilestones(detected)
+  }
 
   /**
    * Calculate timeline position percentage
    */
-  const getTimelinePosition = (date) => {
-    if (timelineData.length === 0) return 0;
+  const getTimelinePosition = date => {
+    if (timelineData.length === 0) return 0
 
-    const firstDate = new Date(timelineData[0].date);
-    const lastDate = new Date(timelineData[timelineData.length - 1].date);
-    const currentDate = new Date(date);
+    const firstDate = new Date(timelineData[0].date)
+    const lastDate = new Date(timelineData[timelineData.length - 1].date)
+    const currentDate = new Date(date)
 
-    const totalDuration = lastDate - firstDate;
-    const currentPosition = currentDate - firstDate;
+    const totalDuration = lastDate - firstDate
+    const currentPosition = currentDate - firstDate
 
-    return totalDuration > 0 ? (currentPosition / totalDuration) * 100 : 0;
-  };
+    return totalDuration > 0 ? (currentPosition / totalDuration) * 100 : 0
+  }
 
   /**
    * Export timeline as PDF
@@ -181,52 +191,52 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
         id: dream.id,
         title: dream.title,
         status: dream.status,
-        created_at: dream.created_at
+        created_at: dream.created_at,
       },
       milestones,
       timelineData,
-      generatedAt: new Date().toISOString()
-    };
+      generatedAt: new Date().toISOString(),
+    }
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${dream.title.replace(/\s+/g, '-')}-timeline.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${dream.title.replace(/\s+/g, '-')}-timeline.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 
   /**
    * Trigger retrospective for a period
    */
-  const handleCreateRetrospective = (period) => {
-    setSelectedPeriod(period);
-    setShowRetrospective(true);
-  };
+  const handleCreateRetrospective = period => {
+    setSelectedPeriod(period)
+    setShowRetrospective(true)
+  }
 
   /**
    * Get activity intensity color
    */
-  const getActivityColor = (activity) => {
-    const max = Math.max(...timelineData.map(d => d.activity));
-    const intensity = activity / max;
+  const getActivityColor = activity => {
+    const max = Math.max(...timelineData.map(d => d.activity))
+    const intensity = activity / max
 
-    if (intensity > 0.8) return '#10b981'; // High activity
-    if (intensity > 0.5) return '#3b82f6'; // Medium activity
-    if (intensity > 0.2) return '#8b5cf6'; // Low activity
-    return '#e5e7eb'; // Minimal activity
-  };
+    if (intensity > 0.8) return '#10b981' // High activity
+    if (intensity > 0.5) return '#3b82f6' // Medium activity
+    if (intensity > 0.2) return '#8b5cf6' // Low activity
+    return '#e5e7eb' // Minimal activity
+  }
 
   /**
    * Get days since start
    */
   const getDaysSinceStart = () => {
-    if (!dream.created_at) return 0;
-    const start = new Date(dream.created_at);
-    const now = new Date();
-    return Math.floor((now - start) / (1000 * 60 * 60 * 24));
-  };
+    if (!dream.created_at) return 0
+    const start = new Date(dream.created_at)
+    const now = new Date()
+    return Math.floor((now - start) / (1000 * 60 * 60 * 24))
+  }
 
   return (
     <div className="timeline-view">
@@ -234,7 +244,8 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
         <div>
           <h2>📅 Timeline: {dream.title}</h2>
           <p className="timeline-meta">
-            {getDaysSinceStart()} days · {milestones.length} milestones · {fragments.length} fragments
+            {getDaysSinceStart()} days · {milestones.length} milestones · {fragments.length}{' '}
+            fragments
           </p>
         </div>
 
@@ -284,19 +295,19 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
             milestone={milestone}
             position={getTimelinePosition(milestone.date)}
             index={index}
-            onEdit={(updated) => {
-              const newMilestones = [...milestones];
-              newMilestones[index] = updated;
-              setMilestones(newMilestones);
+            onEdit={updated => {
+              const newMilestones = [...milestones]
+              newMilestones[index] = updated
+              setMilestones(newMilestones)
             }}
             onDelete={() => {
-              setMilestones(milestones.filter(m => m.id !== milestone.id));
+              setMilestones(milestones.filter(m => m.id !== milestone.id))
             }}
           />
         ))}
 
         {/* Timeline Points (fragments grouped by date) */}
-        {timelineData.map((day) => (
+        {timelineData.map(day => (
           <div
             key={day.date}
             className="timeline-point"
@@ -307,7 +318,7 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
             <div className="timeline-point-label">
               {new Date(day.date).toLocaleDateString('en-US', {
                 month: 'short',
-                day: 'numeric'
+                day: 'numeric',
               })}
             </div>
             <div className="timeline-point-details">
@@ -318,9 +329,7 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
                 </div>
               ))}
               {day.fragments.length > 3 && (
-                <div className="fragment-preview">
-                  +{day.fragments.length - 3} more
-                </div>
+                <div className="fragment-preview">+{day.fragments.length - 3} more</div>
               )}
             </div>
           </div>
@@ -337,7 +346,7 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
           </div>
         ) : (
           <div className="milestones-grid">
-            {milestones.map((milestone) => (
+            {milestones.map(milestone => (
               <div key={milestone.id} className={`milestone-card milestone-${milestone.type}`}>
                 <div className="milestone-icon">{milestone.icon}</div>
                 <div className="milestone-content">
@@ -347,7 +356,7 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
                     {new Date(milestone.date).toLocaleDateString('en-US', {
                       month: 'long',
                       day: 'numeric',
-                      year: 'numeric'
+                      year: 'numeric',
                     })}
                   </span>
                 </div>
@@ -364,15 +373,15 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
           fragments={fragments}
           period={selectedPeriod}
           onClose={() => setShowRetrospective(false)}
-          onSave={(retrospective) => {
-            console.log('Retrospective saved:', retrospective);
-            setShowRetrospective(false);
+          onSave={retrospective => {
+            console.log('Retrospective saved:', retrospective)
+            setShowRetrospective(false)
             // You would save this to the backend
           }}
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default TimelineView;
+export default TimelineView
