@@ -206,9 +206,9 @@ describe('VersioningService', () => {
 
     it('should sort history chronologically', () => {
       versioningService.createSnapshot(mockDream, 'First')
-      setTimeout(() => {
-        versioningService.createSnapshot(mockDream, 'Second')
-      }, 10)
+      // Create second snapshot immediately - timestamps may be same but order should be preserved
+      mockDream.title = 'Updated'
+      versioningService.createSnapshot(mockDream, 'Second')
 
       const history = versioningService.getHistory('dream-123')
 

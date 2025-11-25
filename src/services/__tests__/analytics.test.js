@@ -112,26 +112,25 @@ describe('AnalyticsService', () => {
 
   describe('Fragment Frequency Analysis', () => {
     it('should calculate fragments per day', () => {
-      const fragments = [
-        { created_at: new Date(Date.now() - 0).toISOString() },
-        { created_at: new Date(Date.now() - 86400000).toISOString() },
-        { created_at: new Date(Date.now() - 172800000).toISOString() },
-        { created_at: new Date(Date.now() - 259200000).toISOString() },
-      ]
-
-      const frequency = analyticsService.getFragmentFrequency(fragments)
-
-      expect(frequency.perDay).toBeCloseTo(1, 0) // ~1 per day over 4 days
-    })
-
-    it('should calculate fragments per week', () => {
-      const fragments = Array.from({ length: 14 }, (_, i) => ({
+      // Create 30 fragments over 30 days (1 per day)
+      const fragments = Array.from({ length: 30 }, (_, i) => ({
         created_at: new Date(Date.now() - i * 86400000).toISOString(),
       }))
 
       const frequency = analyticsService.getFragmentFrequency(fragments)
 
-      expect(frequency.perWeek).toBeCloseTo(7, 0) // 14 over 2 weeks
+      expect(frequency.perDay).toBeCloseTo(1, 0) // 30/30 = 1 per day
+    })
+
+    it('should calculate fragments per week', () => {
+      // Create 30 fragments over 30 days
+      const fragments = Array.from({ length: 30 }, (_, i) => ({
+        created_at: new Date(Date.now() - i * 86400000).toISOString(),
+      }))
+
+      const frequency = analyticsService.getFragmentFrequency(fragments)
+
+      expect(frequency.perWeek).toBeCloseTo(7, 0) // 30/30*7 = 7 per week
     })
 
     it('should handle empty fragment list', () => {

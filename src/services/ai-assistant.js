@@ -17,6 +17,15 @@ import { openai } from '../lib/ai'
 class AIAssistantService {
   constructor() {
     this.conversationHistory = []
+    // Expose openai instance for testing
+    this.openai = openai
+  }
+
+  /**
+   * Clear conversation history
+   */
+  clearHistory() {
+    this.conversationHistory = []
   }
 
   /**
@@ -26,6 +35,10 @@ class AIAssistantService {
    * @returns {Promise<string>} AI response
    */
   async ask(question, context = {}) {
+    if (!this.openai) {
+      throw new Error('AI features are not enabled. Set VITE_OPENAI_API_KEY in .env')
+    }
+
     const { dreams = [], currentDream = null, recentFragments = [] } = context
 
     const systemPrompt = `You are an intelligent project management assistant for Dreamcatcher,
@@ -54,7 +67,7 @@ Be concise, actionable, and specific.`
     ]
 
     try {
-      const response = await openai.chat.completions.create({
+      const response = await this.openai.chat.completions.create({
         model: 'gpt-4',
         messages,
         temperature: 0.7,
@@ -77,7 +90,7 @@ Be concise, actionable, and specific.`
       return answer
     } catch (error) {
       console.error('AI Assistant error:', error)
-      throw new Error('Failed to get AI response')
+      throw error
     }
   }
 
@@ -266,6 +279,10 @@ List any risks found with severity (low/medium/high) and mitigation suggestions.
    * @returns {Promise<Object>} Extracted action items, decisions, participants
    */
   async parseMeetingMinutes(content, dreamId = null) {
+    if (!this.openai) {
+      throw new Error('AI features are not enabled. Set VITE_OPENAI_API_KEY in .env')
+    }
+
     const prompt = `Parse these meeting notes and extract:
 
 1. Action items (who, what, when)
@@ -279,7 +296,7 @@ ${content}
 
 Format as structured data.`
 
-    const response = await openai.chat.completions.create({
+    const response = await this.openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
         {

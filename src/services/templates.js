@@ -5,11 +5,12 @@
 
 class TemplateService {
   constructor() {
-    this.templates = this.loadBuiltInTemplates()
+    this.templates = []
+    this.loadBuiltInTemplates()
   }
 
   loadBuiltInTemplates() {
-    return [
+    const builtIn = [
       {
         id: 'mvp-launch',
         name: 'MVP Launch Checklist',
@@ -57,6 +58,15 @@ class TemplateService {
         ],
       },
     ]
+    
+    // Add built-in templates to the templates array
+    builtIn.forEach(template => {
+      if (!this.templates.find(t => t.id === template.id)) {
+        this.templates.push(template)
+      }
+    })
+    
+    return this.templates
   }
 
   // Get all templates
@@ -84,39 +94,51 @@ class TemplateService {
       throw new Error('Template not found')
     }
 
+    // Increment usage counter
+    template.uses = (template.uses || 0) + 1
+
+    const dreamId = `dream-${Date.now()}`
     return {
       dream: {
         ...template.dream,
-        id: `dream-${Date.now()}`,
+        id: dreamId,
         created_at: new Date().toISOString(),
       },
       todos: template.todos.map((todo, i) => ({
         ...todo,
         id: `todo-${Date.now()}-${i}`,
         completed: false,
-        dream_id: `dream-${Date.now()}`,
+        dream_id: dreamId,
       })),
     }
   }
 
   // Create custom template
   createTemplate(dream, todos, metadata) {
+    // Validate required fields
+    if (!dream || !dream.title) {
+      throw new Error('Dream with title is required')
+    }
+    if (!metadata || !metadata.name) {
+      throw new Error('Template name is required')
+    }
+
     const template = {
       id: `template-${Date.now()}`,
       name: metadata.name,
-      description: metadata.description,
-      category: metadata.category,
+      description: metadata.description || '',
+      category: metadata.category || 'project',
       author: metadata.author,
       price: metadata.price || 0,
       rating: 0,
       uses: 0,
       dream: {
         title: dream.title,
-        description: dream.description,
-        status: dream.status,
-        tags: dream.tags,
+        description: dream.description || '',
+        status: dream.status || 'idea',
+        tags: dream.tags || [],
       },
-      todos: todos.map(t => ({
+      todos: (todos || []).map(t => ({
         title: t.title,
         category: t.category,
         notes: t.notes,

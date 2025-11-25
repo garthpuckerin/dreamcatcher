@@ -3,15 +3,24 @@
  * Git-inspired versioning for dreams and ideas
  */
 
+// Counter for unique IDs
+let snapshotCounter = 0
+
 class VersioningService {
   constructor() {
     this.snapshots = new Map()
   }
 
+  // Generate unique ID
+  generateUniqueId(prefix) {
+    snapshotCounter++
+    return `${prefix}-${Date.now()}-${snapshotCounter}-${Math.random().toString(36).substr(2, 9)}`
+  }
+
   // Create snapshot of dream
   createSnapshot(dream, message = '') {
     const snapshot = {
-      id: `snapshot-${Date.now()}`,
+      id: this.generateUniqueId('snapshot'),
       dreamId: dream.id,
       message: message || `Snapshot at ${new Date().toLocaleString()}`,
       timestamp: new Date().toISOString(),
@@ -33,7 +42,7 @@ class VersioningService {
     return this.snapshots.get(dreamId) || []
   }
 
-  // Get specific snapshot
+  // Get specific snapshot - throws error if not found
   getSnapshot(snapshotId) {
     for (const snapshots of this.snapshots.values()) {
       const snapshot = snapshots.find(s => s.id === snapshotId)
@@ -41,15 +50,12 @@ class VersioningService {
         return snapshot
       }
     }
-    return null
+    throw new Error('Snapshot not found')
   }
 
   // Restore dream from snapshot
   restoreDream(snapshotId) {
     const snapshot = this.getSnapshot(snapshotId)
-    if (!snapshot) {
-      throw new Error('Snapshot not found')
-    }
 
     return {
       ...snapshot.data,
@@ -63,15 +69,16 @@ class VersioningService {
     const s1 = this.getSnapshot(snapshotId1)
     const s2 = this.getSnapshot(snapshotId2)
 
-    if (!s1 || !s2) {
-      throw new Error('Snapshot not found')
-    }
-
     const changes = []
 
+    // Get all keys from both snapshots
+    const allKeys = new Set([...Object.keys(s1.data), ...Object.keys(s2.data)])
+
     // Compare fields
-    Object.keys(s2.data).forEach(key => {
-      if (JSON.stringify(s1.data[key]) !== JSON.stringify(s2.data[key])) {
+    allKeys.forEach(key => {
+      const val1 = JSON.stringify(s1.data[key])
+      const val2 = JSON.stringify(s2.data[key])
+      if (val1 !== val2) {
         changes.push({
           field: key,
           before: s1.data[key],
@@ -123,7 +130,7 @@ class VersioningService {
     const latest = snapshots[snapshots.length - 1]
     const branch = {
       ...latest.data,
-      id: `${dreamId}-branch-${Date.now()}`,
+      id: this.generateUniqueId(`${dreamId}-branch`),
       branchName,
       branchedFrom: latest.id,
       branchedAt: new Date().toISOString(),

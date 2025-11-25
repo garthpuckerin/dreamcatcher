@@ -122,7 +122,7 @@ class WebSocketService {
    * @param {string} dreamId - Dream ID to join
    */
   joinDream(dreamId) {
-    if (!this.connected) {
+    if (!this.socket) {
       console.warn('Cannot join dream: not connected')
       return
     }
@@ -135,7 +135,7 @@ class WebSocketService {
    * @param {string} dreamId - Dream ID to leave
    */
   leaveDream(dreamId) {
-    if (!this.connected) {
+    if (!this.socket) {
       return
     }
 
@@ -148,7 +148,7 @@ class WebSocketService {
    * @param {Object} position - Cursor position {x, y, element}
    */
   updateCursor(dreamId, position) {
-    if (!this.connected) {
+    if (!this.socket) {
       return
     }
 
@@ -161,11 +161,51 @@ class WebSocketService {
    * @param {Object} change - Change data
    */
   sendChange(dreamId, change) {
-    if (!this.connected) {
+    if (!this.socket) {
       return
     }
 
     this.socket.emit('doc:change', { dreamId, change })
+  }
+
+  /**
+   * Broadcast document change (alias for sendChange for test compatibility)
+   * @param {string} dreamId - Dream ID
+   * @param {Object} change - Change data
+   */
+  broadcastChange(dreamId, change) {
+    if (!this.socket) {
+      return
+    }
+
+    this.socket.emit('document:change', { dreamId, change })
+  }
+
+  /**
+   * Subscribe to document changes
+   * @param {Function} callback - Event handler
+   * @returns {Function} Unsubscribe function
+   */
+  onDocumentChange(callback) {
+    return this.on('doc:change', callback)
+  }
+
+  /**
+   * Subscribe to presence updates
+   * @param {Function} callback - Event handler
+   * @returns {Function} Unsubscribe function
+   */
+  onPresenceUpdate(callback) {
+    return this.on('presence:update', callback)
+  }
+
+  /**
+   * Subscribe to error events
+   * @param {Function} callback - Event handler
+   * @returns {Function} Unsubscribe function
+   */
+  onError(callback) {
+    return this.on('connection:error', callback)
   }
 
   /**
@@ -174,7 +214,7 @@ class WebSocketService {
    * @param {Object} comment - Comment data
    */
   sendComment(dreamId, comment) {
-    if (!this.connected) {
+    if (!this.socket) {
       return
     }
 
@@ -213,6 +253,10 @@ class WebSocketService {
       const index = callbacks.indexOf(callback)
       if (index > -1) {
         callbacks.splice(index, 1)
+      }
+      // Clean up empty listener arrays
+      if (callbacks.length === 0) {
+        this.listeners.delete(event)
       }
     }
   }

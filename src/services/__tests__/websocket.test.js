@@ -24,6 +24,11 @@ vi.mock('socket.io-client', () => ({
 describe('WebSocketService', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    // Reset websocketService state
+    websocketService.socket = null
+    websocketService.connected = false
+    websocketService.presenceData.clear()
+    websocketService.listeners.clear()
   })
 
   describe('Connection Management', () => {

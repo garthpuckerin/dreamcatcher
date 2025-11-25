@@ -5,21 +5,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { aiAssistant } from '../ai-assistant'
 
-// Mock OpenAI
-vi.mock('openai', () => ({
-  default: vi.fn(() => ({
-    chat: {
-      completions: {
-        create: vi.fn(),
-      },
+// Create mock OpenAI instance
+const mockCreate = vi.fn()
+const mockOpenAI = {
+  chat: {
+    completions: {
+      create: mockCreate,
     },
-  })),
-}))
+  },
+}
 
 describe('AIAssistantService', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     aiAssistant.conversationHistory = []
+    // Inject mock openai for testing
+    aiAssistant.openai = mockOpenAI
   })
 
   describe('Conversational AI', () => {
@@ -28,7 +29,7 @@ describe('AIAssistantService', () => {
         choices: [{ message: { content: 'You should focus on the MVP features first.' } }],
       }
 
-      vi.spyOn(aiAssistant.openai.chat.completions, 'create').mockResolvedValue(mockResponse)
+      mockCreate.mockResolvedValue(mockResponse)
 
       const result = await aiAssistant.ask('What should I work on next?', {
         dreams: [{ title: 'Build MVP', status: 'in-progress' }],
@@ -43,7 +44,7 @@ describe('AIAssistantService', () => {
         choices: [{ message: { content: 'Response' } }],
       }
 
-      vi.spyOn(aiAssistant.openai.chat.completions, 'create').mockResolvedValue(mockResponse)
+      mockCreate.mockResolvedValue(mockResponse)
 
       await aiAssistant.ask('First question')
       await aiAssistant.ask('Follow up')
@@ -74,11 +75,11 @@ describe('AIAssistantService', () => {
         choices: [{ message: { content: 'Focus on Launch MVP - it has an upcoming deadline.' } }],
       }
 
-      vi.spyOn(aiAssistant.openai.chat.completions, 'create').mockResolvedValue(mockResponse)
+      mockCreate.mockResolvedValue(mockResponse)
 
       const result = await aiAssistant.prioritizeTasks(dreams)
 
-      expect(result).toContain('Launch MVP')
+      expect(result.recommendation).toContain('Launch MVP')
     })
   })
 
@@ -98,7 +99,7 @@ describe('AIAssistantService', () => {
         ],
       }
 
-      vi.spyOn(aiAssistant.openai.chat.completions, 'create').mockResolvedValue(mockResponse)
+      mockCreate.mockResolvedValue(mockResponse)
 
       const result = await aiAssistant.generateProgressSummary(dream, 'week')
 
@@ -108,22 +109,22 @@ describe('AIAssistantService', () => {
 
   describe('Similar Projects', () => {
     it('should find similar projects', async () => {
-      const currentDream = { title: 'E-commerce site', tags: ['web', 'react', 'shop'] }
+      const currentDream = { id: 'dream-1', title: 'E-commerce site', tags: ['web', 'react', 'shop'] }
       const allDreams = [
-        { title: 'Blog platform', tags: ['web', 'react'] },
-        { title: 'Mobile game', tags: ['mobile', 'unity'] },
-        { title: 'Online store', tags: ['web', 'shop', 'vue'] },
+        { id: 'dream-2', title: 'Blog platform', tags: ['web', 'react'] },
+        { id: 'dream-3', title: 'Mobile game', tags: ['mobile', 'unity'] },
+        { id: 'dream-4', title: 'Online store', tags: ['web', 'shop', 'vue'] },
       ]
 
       const mockResponse = {
         choices: [{ message: { content: 'Similar: Blog platform, Online store' } }],
       }
 
-      vi.spyOn(aiAssistant.openai.chat.completions, 'create').mockResolvedValue(mockResponse)
+      mockCreate.mockResolvedValue(mockResponse)
 
       const result = await aiAssistant.findSimilarProjects(currentDream, allDreams)
 
-      expect(result).toContain('Similar')
+      expect(result.similar).toContain('Similar')
     })
   })
 
@@ -144,12 +145,12 @@ describe('AIAssistantService', () => {
         ],
       }
 
-      vi.spyOn(aiAssistant.openai.chat.completions, 'create').mockResolvedValue(mockResponse)
+      mockCreate.mockResolvedValue(mockResponse)
 
       const result = await aiAssistant.breakdownTasks(dream)
 
-      expect(result).toContain('Design mockup')
-      expect(result).toContain('Deploy')
+      expect(result.tasks).toContain('Design mockup')
+      expect(result.tasks).toContain('Deploy')
     })
   })
 
@@ -158,9 +159,9 @@ describe('AIAssistantService', () => {
       const dream = {
         title: 'Simple CRUD app',
         fragments: [
-          { content: 'Adding real-time chat feature' },
-          { content: 'Building AI recommendation engine' },
-          { content: 'Implementing blockchain integration' },
+          { title: 'Chat feature', content: 'Adding real-time chat feature' },
+          { title: 'AI engine', content: 'Building AI recommendation engine' },
+          { title: 'Blockchain', content: 'Implementing blockchain integration' },
         ],
       }
 
@@ -175,11 +176,11 @@ describe('AIAssistantService', () => {
         ],
       }
 
-      vi.spyOn(aiAssistant.openai.chat.completions, 'create').mockResolvedValue(mockResponse)
+      mockCreate.mockResolvedValue(mockResponse)
 
       const result = await aiAssistant.detectRisks(dream)
 
-      expect(result).toContain('Scope creep')
+      expect(result.analysis).toContain('Scope creep')
     })
   })
 
@@ -206,20 +207,20 @@ describe('AIAssistantService', () => {
         ],
       }
 
-      vi.spyOn(aiAssistant.openai.chat.completions, 'create').mockResolvedValue(mockResponse)
+      mockCreate.mockResolvedValue(mockResponse)
 
       const result = await aiAssistant.parseMeetingMinutes(content, 'dream-123')
 
-      expect(result).toContain('John')
-      expect(result).toContain('landing page')
+      expect(result.parsed).toContain('John')
+      expect(result.parsed).toContain('landing page')
     })
   })
 
   describe('Code Analysis', () => {
     it('should analyze code snippets for features', async () => {
       const fragments = [
-        { content: '```javascript\nfunction authenticate(user) { ... }\n```' },
-        { content: '```python\ndef send_email(to, subject): ...\n```' },
+        { code_snippets: ['function authenticate(user) { ... }'] },
+        { code_snippets: ['def send_email(to, subject): ...'] },
       ]
 
       const mockResponse = {
@@ -233,20 +234,18 @@ describe('AIAssistantService', () => {
         ],
       }
 
-      vi.spyOn(aiAssistant.openai.chat.completions, 'create').mockResolvedValue(mockResponse)
+      mockCreate.mockResolvedValue(mockResponse)
 
       const result = await aiAssistant.analyzeCodeSnippets(fragments)
 
-      expect(result).toContain('Authentication')
-      expect(result).toContain('Email')
+      expect(result.analysis).toContain('Authentication')
+      expect(result.analysis).toContain('Email')
     })
   })
 
   describe('Error Handling', () => {
     it('should handle API errors gracefully', async () => {
-      vi.spyOn(aiAssistant.openai.chat.completions, 'create').mockRejectedValue(
-        new Error('API rate limit exceeded')
-      )
+      mockCreate.mockRejectedValue(new Error('API rate limit exceeded'))
 
       await expect(aiAssistant.ask('Test question')).rejects.toThrow('API rate limit exceeded')
     })
@@ -256,7 +255,7 @@ describe('AIAssistantService', () => {
         choices: [{ message: { content: 'Response without context' } }],
       }
 
-      vi.spyOn(aiAssistant.openai.chat.completions, 'create').mockResolvedValue(mockResponse)
+      mockCreate.mockResolvedValue(mockResponse)
 
       const result = await aiAssistant.ask('Question', {})
 

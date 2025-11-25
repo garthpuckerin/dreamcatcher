@@ -33,7 +33,7 @@ class AnalyticsService {
     const completedDreams = dreams.filter(d => d.status === 'completed' || d.status === 'launched')
 
     if (completedDreams.length === 0) {
-      return { average: 0, fastest: 0, slowest: 0 }
+      return { average: 0, fastest: 0, slowest: 0, count: 0 }
     }
 
     const velocities = completedDreams.map(d => {
@@ -100,7 +100,8 @@ class AnalyticsService {
     const byFeature = {}
 
     aiEvents.forEach(e => {
-      const feature = e.event.split(':')[1]
+      // Use the feature from properties if available, otherwise use event suffix
+      const feature = e.properties?.feature || e.event.split(':')[1]
       byFeature[feature] = (byFeature[feature] || 0) + 1
     })
 
