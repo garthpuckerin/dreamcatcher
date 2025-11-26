@@ -31,3 +31,6 @@ Thumbs.db
 .env.local
 .env.production
 .vercel
+
+# Coverage reports
+coverage/
