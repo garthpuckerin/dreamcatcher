@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Sparkles, Loader2, Tag, FileText, Lightbulb } from 'lucide-react'
+import { Sparkles, Loader2, Tag, FileText } from 'lucide-react'
 import { useAI } from '../hooks/useAI'
 
 /**

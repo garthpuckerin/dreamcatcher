@@ -310,7 +310,7 @@ export function Auth() {
                   />
                 </div>
                 <p className="mt-2 text-sm text-gray-400">
-                  We'll send you a link to reset your password
+                  We&apos;ll send you a link to reset your password
                 </p>
               </div>
 
@@ -335,7 +335,7 @@ export function Auth() {
           <div className="mt-6 pt-6 border-t border-gray-700 text-center text-sm">
             {mode === 'signin' && (
               <p className="text-gray-400">
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <button
                   onClick={() => switchMode('signup')}
                   className="text-blue-400 hover:text-blue-300 font-medium"

@@ -165,7 +165,7 @@ function generateId() {
 }
 
 // Show notification
-function showNotification(message, type) {
+function showNotification(message, _type) {
   chrome.notifications.create({
     type: 'basic',
     iconUrl: 'icons/icon48.png',

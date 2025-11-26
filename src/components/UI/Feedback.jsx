@@ -3,11 +3,11 @@ import React from 'react'
 /**
  * Error display for API/async errors
  */
-export function ErrorMessage({ 
+export function ErrorMessage({
   title = 'Something went wrong',
   message,
   onRetry,
-  variant = 'default'
+  variant = 'default',
 }) {
   const variants = {
     default: 'bg-red-900/20 border-red-500/50 text-red-200',
@@ -41,19 +41,12 @@ export function ErrorMessage({
 /**
  * Empty state display
  */
-export function EmptyState({
-  icon = '📭',
-  title = 'Nothing here yet',
-  description,
-  action
-}) {
+export function EmptyState({ icon = '📭', title = 'Nothing here yet', description, action }) {
   return (
     <div className="text-center py-12 px-4">
       <span className="text-5xl mb-4 block">{icon}</span>
       <h3 className="text-xl font-semibold text-slate-200 mb-2">{title}</h3>
-      {description && (
-        <p className="text-slate-400 mb-6 max-w-md mx-auto">{description}</p>
-      )}
+      {description && <p className="text-slate-400 mb-6 max-w-md mx-auto">{description}</p>}
       {action && (
         <button
           onClick={action.onClick}
@@ -89,7 +82,7 @@ export function OfflineIndicator() {
 
   return (
     <div className="fixed top-0 left-0 right-0 bg-yellow-600 text-yellow-100 text-center py-2 text-sm font-medium z-50">
-      📡 You're offline. Some features may not work.
+      📡 You&apos;re offline. Some features may not work.
     </div>
   )
 }
@@ -120,10 +113,10 @@ export function AIUnavailable({ reason = 'API key not configured' }) {
   )
 }
 
-export default { 
-  ErrorMessage, 
-  EmptyState, 
-  OfflineIndicator, 
-  NetworkError, 
-  AIUnavailable 
+export default {
+  ErrorMessage,
+  EmptyState,
+  OfflineIndicator,
+  NetworkError,
+  AIUnavailable,
 }

@@ -11,20 +11,13 @@ import {
   Calendar,
   Layers,
   Grid3x3,
-  SortAsc,
-  Filter,
   Home,
   Clock,
   CheckSquare,
   ListTodo,
-  Briefcase,
   FileText,
   AlertCircle,
-  TrendingUp,
-  Sparkles,
 } from 'lucide-react'
-import DocumentUpload from './components/DocumentUpload'
-import AIAssistant from './components/AIAssistant'
 import { useAI } from './hooks/useAI'
 
 export default function Dreamcatcher({ initialDreams = null, supabaseOperations = null }) {
@@ -47,7 +40,7 @@ export default function Dreamcatcher({ initialDreams = null, supabaseOperations 
   const useSupabase = supabaseOperations !== null
 
   // Initialize AI features hook
-  const { aiAvailable, performSemanticSearch } = useAI()
+  const { aiAvailable: _aiAvailable, performSemanticSearch: _performSemanticSearch } = useAI()
 
   // Update dreams when initialDreams changes (Supabase real-time updates)
   useEffect(() => {
@@ -60,6 +53,7 @@ export default function Dreamcatcher({ initialDreams = null, supabaseOperations 
     if (!useSupabase) {
       loadDreams()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [useSupabase])
 
   const loadDreams = () => {
@@ -359,7 +353,7 @@ export default function Dreamcatcher({ initialDreams = null, supabaseOperations 
     { value: 'personal', label: 'Personal', color: '#64748b', icon: '👤' },
   ]
 
-  const taskCategories = [
+  const _taskCategories = [
     { value: 'coding', label: 'Coding', color: '#3b82f6', icon: '💻' },
     { value: 'admin', label: 'Admin', color: '#64748b', icon: '📋' },
     { value: 'design', label: 'Design', color: '#8b5cf6', icon: '🎨' },
@@ -1385,7 +1379,7 @@ function SummaryView({ dream, statuses }) {
     { value: 'personal', label: 'Personal', color: '#64748b', icon: '👤' },
   ]
 
-  const taskCategories = [
+  const _taskCategories2 = [
     { value: 'coding', label: 'Coding', color: '#3b82f6', icon: '💻' },
     { value: 'admin', label: 'Admin', color: '#64748b', icon: '📋' },
     { value: 'design', label: 'Design', color: '#8b5cf6', icon: '🎨' },
@@ -2338,7 +2332,7 @@ function TimelineView({ dream, onSelectFragment }) {
           background: '#334155',
         }}
       />
-      {sortedFragments.map((fragment, i) => (
+      {sortedFragments.map((fragment, _i) => (
         <div key={fragment.id} style={{ marginBottom: '2rem', position: 'relative' }}>
           <div
             style={{

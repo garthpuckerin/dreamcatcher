@@ -98,7 +98,7 @@ class VersioningService {
   // Delete snapshot
   deleteSnapshot(snapshotId) {
     for (const [dreamId, snapshots] of this.snapshots.entries()) {
-      const index = snapshots.findIndex((s) => s.id === snapshotId)
+      const index = snapshots.findIndex(s => s.id === snapshotId)
       if (index !== -1) {
         snapshots.splice(index, 1)
         if (snapshots.length === 0) {

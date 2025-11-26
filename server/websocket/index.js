@@ -292,7 +292,7 @@ function getUserName(userId) {
 /**
  * Helper: Persist document change to database
  */
-async function persistChange(dreamId, userId, change) {
+async function persistChange(dreamId, _userId, _change) {
   // In production, save to database
   // Example: await db.documentChanges.create({ dreamId, userId, change, timestamp: Date.now() })
   console.log(`[DB] Persisting change for dream ${dreamId}`)

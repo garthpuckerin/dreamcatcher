@@ -7,7 +7,7 @@
 
 import React, { useState } from 'react'
 
-const MilestoneMarker = ({ milestone, position, index, onEdit, onDelete }) => {
+const MilestoneMarker = ({ milestone, position, index: _index, onEdit, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editData, setEditData] = useState(milestone)
   const [showTooltip, setShowTooltip] = useState(false)

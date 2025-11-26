@@ -8,14 +8,14 @@ export function Spinner({ size = 'md', color = 'primary', className = '' }) {
     sm: 'w-4 h-4 border-2',
     md: 'w-8 h-8 border-3',
     lg: 'w-12 h-12 border-4',
-    xl: 'w-16 h-16 border-4'
+    xl: 'w-16 h-16 border-4',
   }
 
   const colors = {
     primary: 'border-blue-500',
     secondary: 'border-gray-400',
     white: 'border-white',
-    success: 'border-green-500'
+    success: 'border-green-500',
   }
 
   return (
@@ -83,14 +83,14 @@ export function LoadingButton({
  */
 export function Skeleton({ className = '', variant = 'text', width, height }) {
   const baseClass = 'animate-pulse bg-slate-700 rounded'
-  
+
   const variants = {
     text: 'h-4 w-full',
     title: 'h-6 w-3/4',
     avatar: 'h-10 w-10 rounded-full',
     thumbnail: 'h-24 w-24 rounded-lg',
     card: 'h-32 w-full rounded-xl',
-    button: 'h-10 w-24 rounded-lg'
+    button: 'h-10 w-24 rounded-lg',
   }
 
   const style = {}
@@ -147,5 +147,5 @@ export default {
   LoadingButton,
   Skeleton,
   DreamCardSkeleton,
-  DreamListSkeleton
+  DreamListSkeleton,
 }

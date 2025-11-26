@@ -5,9 +5,9 @@ async function handler(req, res) {
   const errors = validateBody(req.body, {
     title: { type: 'string', maxLength: 500 },
     description: { type: 'string', maxLength: 5000 },
-    existingTags: { type: 'array', maxItems: 100 }
+    existingTags: { type: 'array', maxItems: 100 },
   })
-  
+
   if (errors) {
     return errorResponse(res, 400, 'Validation failed', errors)
   }

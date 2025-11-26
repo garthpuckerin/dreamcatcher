@@ -16,13 +16,14 @@ import VelocityChart from './VelocityChart'
 import TrendsChart from './TrendsChart'
 import './analytics.css'
 
-const DashboardView = ({ user, dreams, fragments }) => {
+const DashboardView = ({ user: _user, dreams, fragments }) => {
   const [metrics, setMetrics] = useState(null)
   const [timeRange, setTimeRange] = useState('30') // days
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     loadMetrics()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dreams, fragments, timeRange])
 
   /**
@@ -246,8 +247,8 @@ const DashboardView = ({ user, dreams, fragments }) => {
               <div className="insight-content">
                 <strong>High Activity!</strong>
                 <p>
-                  You're capturing {metrics.fragmentFrequency.perDay.toFixed(1)} fragments per day.
-                  Keep it up!
+                  You&apos;re capturing {metrics.fragmentFrequency.perDay.toFixed(1)} fragments per
+                  day. Keep it up!
                 </p>
               </div>
             </div>
@@ -260,7 +261,7 @@ const DashboardView = ({ user, dreams, fragments }) => {
                 <strong>Fast Execution</strong>
                 <p>
                   Your average dream completion time is {metrics.velocity.average.toFixed(0)} days.
-                  You're moving quickly!
+                  You&apos;re moving quickly!
                 </p>
               </div>
             </div>

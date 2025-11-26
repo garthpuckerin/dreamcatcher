@@ -19,7 +19,7 @@ const PublicShowcase = ({ portfolio, isPreview = false }) => {
   }
 
   const colors = themeColors[theme] || themeColors.minimal
-  const isDark = theme === 'dark'
+  const _isDark = theme === 'dark'
 
   return (
     <div

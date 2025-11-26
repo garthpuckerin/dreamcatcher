@@ -8,7 +8,6 @@ import {
   X,
   Upload,
   Download,
-  Calendar,
   Layers,
   ChevronRight,
   ChevronDown,
@@ -29,6 +28,7 @@ export default function Dreamcatcher() {
   useEffect(() => {
     // Load from localStorage or browser extension storage
     loadDreams()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const loadDreams = () => {
@@ -133,7 +133,7 @@ export default function Dreamcatcher() {
     { value: 'abandoned', label: 'Abandoned', color: '#ef4444' },
   ]
 
-  const allTags = [...new Set(dreams.flatMap(dream => dream.tags))]
+  const _allTags = [...new Set(dreams.flatMap(dream => dream.tags))]
 
   const filteredDreams = dreams.filter(dream => {
     const matchesSearch =
@@ -252,7 +252,7 @@ export default function Dreamcatcher() {
     return Array.from(features)
   }
 
-  const getConsolidatedNotes = dream => {
+  const _getConsolidatedNotes = dream => {
     return dream.fragments.map(f => f.content).join('\n\n---\n\n')
   }
 
@@ -922,7 +922,7 @@ function TimelineView({ dream, onSelectFragment }) {
           background: '#334155',
         }}
       />
-      {sortedFragments.map((fragment, i) => (
+      {sortedFragments.map((fragment, _i) => (
         <div key={fragment.id} style={{ marginBottom: '2rem', position: 'relative' }}>
           <div
             style={{

@@ -4,7 +4,7 @@
 
   let captureButton = null
   let selectedText = ''
-  let isCapturing = false
+  let _isCapturing = false
   let currentModal = null
   let pipelineOSConfig = null
 

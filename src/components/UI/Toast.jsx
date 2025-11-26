@@ -3,13 +3,7 @@ import React from 'react'
 /**
  * Toast notification component
  */
-export function Toast({ 
-  message, 
-  type = 'info', 
-  onClose, 
-  duration = 5000,
-  action 
-}) {
+export function Toast({ message, type = 'info', onClose, duration = 5000, action }) {
   const [visible, setVisible] = React.useState(true)
 
   React.useEffect(() => {
@@ -81,14 +75,8 @@ export function ToastContainer({ toasts, removeToast }) {
   return (
     <div className="fixed bottom-4 right-4 space-y-2 z-50">
       {toasts.map((toast, index) => (
-        <div
-          key={toast.id}
-          style={{ transform: `translateY(-${index * 10}px)` }}
-        >
-          <Toast
-            {...toast}
-            onClose={() => removeToast(toast.id)}
-          />
+        <div key={toast.id} style={{ transform: `translateY(-${index * 10}px)` }}>
+          <Toast {...toast} onClose={() => removeToast(toast.id)} />
         </div>
       ))}
     </div>
@@ -107,7 +95,7 @@ export function useToast() {
     return id
   }, [])
 
-  const removeToast = React.useCallback((id) => {
+  const removeToast = React.useCallback(id => {
     setToasts(prev => prev.filter(t => t.id !== id))
   }, [])
 

@@ -58,14 +58,14 @@ class TemplateService {
         ],
       },
     ]
-    
+
     // Add built-in templates to the templates array
     builtIn.forEach(template => {
       if (!this.templates.find(t => t.id === template.id)) {
         this.templates.push(template)
       }
     })
-    
+
     return this.templates
   }
 

@@ -199,7 +199,7 @@ class IntegrationService {
    * @param {Object} repository - Repository data
    * @param {string} action - Issue action
    */
-  async syncIssueToTodo(issue, repository, action) {
+  async syncIssueToTodo(issue, _repository, _action) {
     const todo = {
       title: issue.title,
       description: issue.body,
@@ -259,7 +259,7 @@ class IntegrationService {
    * @param {string} dreamId - Dream to attach to
    * @returns {Promise<Object>} Fragment data
    */
-  async captureSlackThread(channelId, threadTs, dreamId) {
+  async captureSlackThread(channelId, threadTs, _dreamId) {
     const connection = this.connections.get('slack')
     if (!connection) {
       throw new Error('Slack not connected')

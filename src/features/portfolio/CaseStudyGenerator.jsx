@@ -7,7 +7,6 @@
 
 import React, { useState, useEffect } from 'react'
 import { aiAssistant } from '../../services/ai-assistant'
-import { analyticsService } from '../../services/analytics'
 
 const CASE_STUDY_TEMPLATE = {
   overview: {

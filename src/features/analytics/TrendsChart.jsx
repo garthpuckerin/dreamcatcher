@@ -76,7 +76,7 @@ const TrendsChart = ({ data }) => {
         {/* X-axis labels (dates) */}
         {data
           .filter((_, i) => i % Math.ceil(data.length / 6) === 0)
-          .map((d, i, arr) => {
+          .map((d, i, _arr) => {
             const index = data.indexOf(d)
             const x = xScale(index)
             const date = new Date(d.date)

@@ -4,9 +4,9 @@ import { withMiddleware, sanitizeString, validateBody, errorResponse } from '../
 async function handler(req, res) {
   const errors = validateBody(req.body, {
     content: { required: true, type: 'string', maxLength: 50000 },
-    filename: { type: 'string', maxLength: 255 }
+    filename: { type: 'string', maxLength: 255 },
   })
-  
+
   if (errors) {
     return errorResponse(res, 400, 'Validation failed', errors)
   }
@@ -40,7 +40,7 @@ Extract and return a JSON object with:
   })
 
   const responseContent = completion.choices[0]?.message?.content?.trim()
-  
+
   let parsed
   try {
     const jsonMatch = responseContent.match(/\{[\s\S]*\}/)
@@ -52,7 +52,7 @@ Extract and return a JSON object with:
       tasks: [],
       tags: [],
       deadlines: [],
-      priority: 'medium'
+      priority: 'medium',
     }
   }
 

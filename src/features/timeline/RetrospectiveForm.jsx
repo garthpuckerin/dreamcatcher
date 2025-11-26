@@ -49,6 +49,7 @@ const RetrospectiveForm = ({ dream, fragments, period, onClose, onSave }) => {
 
     // Generate metrics for the period
     calculateMetrics()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [format, dream, fragments, period])
 
   /**
@@ -101,7 +102,7 @@ const RetrospectiveForm = ({ dream, fragments, period, onClose, onSave }) => {
   /**
    * Generate prompt for AI based on section
    */
-  const generatePromptForSection = (section, formatName) => {
+  const generatePromptForSection = (section, _formatName) => {
     const sectionPrompts = {
       Start: `Based on my dream "${dream.title}" and recent activity, what should I START doing? Suggest 3-5 actionable items.`,
       Stop: `What should I STOP doing that's not helping progress on "${dream.title}"? List 3-5 things.`,
@@ -168,9 +169,9 @@ const RetrospectiveForm = ({ dream, fragments, period, onClose, onSave }) => {
   }
 
   /**
-   * Use AI suggestion
+   * Apply AI suggestion
    */
-  const useSuggestion = (section, suggestion) => {
+  const applySuggestion = (section, suggestion) => {
     addItem(section, suggestion)
   }
 
@@ -262,7 +263,10 @@ const RetrospectiveForm = ({ dream, fragments, period, onClose, onSave }) => {
                   {aiSuggestions[section].map((suggestion, i) => (
                     <div key={i} className="suggestion-item">
                       <span>{suggestion}</span>
-                      <button onClick={() => useSuggestion(section, suggestion)} className="btn-sm">
+                      <button
+                        onClick={() => applySuggestion(section, suggestion)}
+                        className="btn-sm"
+                      >
                         + Add
                       </button>
                     </div>

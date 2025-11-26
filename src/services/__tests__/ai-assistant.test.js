@@ -109,7 +109,11 @@ describe('AIAssistantService', () => {
 
   describe('Similar Projects', () => {
     it('should find similar projects', async () => {
-      const currentDream = { id: 'dream-1', title: 'E-commerce site', tags: ['web', 'react', 'shop'] }
+      const currentDream = {
+        id: 'dream-1',
+        title: 'E-commerce site',
+        tags: ['web', 'react', 'shop'],
+      }
       const allDreams = [
         { id: 'dream-2', title: 'Blog platform', tags: ['web', 'react'] },
         { id: 'dream-3', title: 'Mobile game', tags: ['mobile', 'unity'] },

@@ -2,13 +2,14 @@
 
 **Version:** 2.5.0  
 **Status:** Production Ready 🚀  
-**Live Demo:** [dreamcatcher.vercel.app](https://dreamcatcher-4idsn9j4w-blackpanther7413s-projects.vercel.app)
+**Live Demo:** [dreamcatcher.vercel.app](https://dreamcatcher-5e875fzf0-blackpanther7413s-projects.vercel.app)
 
 > AI-powered dream and goal tracking with smart organization, versioning, and real-time collaboration.
 
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![Tests](https://img.shields.io/badge/tests-117%20passing-brightgreen)
-![License](https://img.shields.io/badge/license-MIT-blue)
+[![CI/CD Pipeline](https://github.com/garthpuckerin/dreamcatcher/actions/workflows/ci.yml/badge.svg)](https://github.com/garthpuckerin/dreamcatcher/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-117%20passing-brightgreen)](https://github.com/garthpuckerin/dreamcatcher)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 
 ---
 

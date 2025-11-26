@@ -13,10 +13,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import MilestoneMarker from './MilestoneMarker'
 import RetrospectiveForm from './RetrospectiveForm'
-import { analyticsService } from '../../services/analytics'
 import './timeline.css'
 
-const TimelineView = ({ dream, fragments = [], onUpdate }) => {
+const TimelineView = ({ dream, fragments = [], onUpdate: _onUpdate }) => {
   const [milestones, setMilestones] = useState([])
   const [showRetrospective, setShowRetrospective] = useState(false)
   const [selectedPeriod, setSelectedPeriod] = useState(null)
@@ -28,6 +27,7 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
       generateTimelineData()
       detectMilestones()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dream, fragments])
 
   /**
@@ -263,7 +263,7 @@ const TimelineView = ({ dream, fragments = [], onUpdate }) => {
       <div className="activity-heatmap">
         <h3>Activity Heatmap</h3>
         <div className="heatmap-grid">
-          {timelineData.map((day, index) => (
+          {timelineData.map((day, _index) => (
             <div
               key={day.date}
               className="heatmap-cell"

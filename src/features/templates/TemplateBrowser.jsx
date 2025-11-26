@@ -33,6 +33,7 @@ const TemplateBrowser = ({ onApplyTemplate }) => {
 
   useEffect(() => {
     filterAndSortTemplates()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [templates, searchQuery, selectedCategory, sortBy])
 
   /**

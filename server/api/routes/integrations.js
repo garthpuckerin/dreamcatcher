@@ -327,14 +327,14 @@ router.delete('/:id', authenticate, async (req, res) => {
  * Helper: Handle GitHub push event
  */
 async function handleGitHubPush(userId, payload) {
-  const { commits, repository } = payload
+  const { commits, repository, db } = payload
 
   for (const commit of commits) {
     // Find or create dream for this repo
-    const dream = await findOrCreateDreamForRepo(userId, repository)
+    const dream = await findOrCreateDreamForRepo(userId, repository, db)
 
     // Create fragment from commit
-    await req.db.fragments.create({
+    await db.fragments.create({
       dreamId: dream.id,
       userId,
       title: commit.message.split('\n')[0],
@@ -356,12 +356,12 @@ async function handleGitHubPush(userId, payload) {
  * Helper: Handle GitHub PR event
  */
 async function handleGitHubPR(userId, payload) {
-  const { pull_request, repository, action } = payload
+  const { pull_request, repository, action, db } = payload
 
   if (action === 'opened' || action === 'closed') {
-    const dream = await findOrCreateDreamForRepo(userId, repository)
+    const dream = await findOrCreateDreamForRepo(userId, repository, db)
 
-    await req.db.fragments.create({
+    await db.fragments.create({
       dreamId: dream.id,
       userId,
       title: `PR #${pull_request.number}: ${pull_request.title}`,
@@ -381,13 +381,13 @@ async function handleGitHubPR(userId, payload) {
  * Helper: Handle GitHub issue event
  */
 async function handleGitHubIssue(userId, payload) {
-  const { issue, repository, action } = payload
+  const { issue, repository, action, db } = payload
 
   if (action === 'opened') {
-    const dream = await findOrCreateDreamForRepo(userId, repository)
+    const dream = await findOrCreateDreamForRepo(userId, repository, db)
 
     // Create todo from issue
-    await req.db.todos.create({
+    await db.todos.create({
       dreamId: dream.id,
       userId,
       title: issue.title,
@@ -404,8 +404,8 @@ async function handleGitHubIssue(userId, payload) {
 /**
  * Helper: Find or create dream for repository
  */
-async function findOrCreateDreamForRepo(userId, repository) {
-  const [dream] = await req.db.dreams.findOrCreate({
+async function findOrCreateDreamForRepo(userId, repository, db) {
+  const [dream] = await db.dreams.findOrCreate({
     where: {
       userId,
       externalId: `github:${repository.id}`,

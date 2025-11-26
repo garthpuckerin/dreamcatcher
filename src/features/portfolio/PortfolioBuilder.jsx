@@ -45,6 +45,7 @@ const PortfolioBuilder = ({ user, dreams }) => {
 
   useEffect(() => {
     loadPortfolio()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
   /**
@@ -115,7 +116,7 @@ const PortfolioBuilder = ({ user, dreams }) => {
   /**
    * Update dream display order
    */
-  const reorderDreams = (fromIndex, toIndex) => {
+  const _reorderDreams = (fromIndex, toIndex) => {
     const updated = [...selectedDreams]
     const [moved] = updated.splice(fromIndex, 1)
     updated.splice(toIndex, 0, moved)
@@ -374,7 +375,7 @@ const PortfolioBuilder = ({ user, dreams }) => {
               <p>Drag to reorder how dreams appear in your portfolio</p>
 
               <div className="selected-dreams-list">
-                {selectedDreams.map((dream, index) => (
+                {selectedDreams.map((dream, _index) => (
                   <div key={dream.id} className="selected-dream-item">
                     <div className="drag-handle">⋮⋮</div>
                     <div className="dream-info">

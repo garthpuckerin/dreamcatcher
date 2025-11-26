@@ -6,9 +6,9 @@ async function handler(req, res) {
     title: { type: 'string', maxLength: 500 },
     description: { type: 'string', maxLength: 5000 },
     tasks: { type: 'array', maxItems: 100 },
-    type: { type: 'string', maxLength: 20 }
+    type: { type: 'string', maxLength: 20 },
   })
-  
+
   if (errors) {
     return errorResponse(res, 400, 'Validation failed', errors)
   }
@@ -21,9 +21,11 @@ async function handler(req, res) {
 
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
-  const tasksText = tasks.slice(0, 50).map(t => 
-    `- ${sanitizeString(t.text, 200)} (${t.completed ? 'done' : 'pending'})`
-  ).join('\n') || 'None'
+  const tasksText =
+    tasks
+      .slice(0, 50)
+      .map(t => `- ${sanitizeString(t.text, 200)} (${t.completed ? 'done' : 'pending'})`)
+      .join('\n') || 'None'
 
   let prompt
   if (type === 'highlights') {
@@ -59,7 +61,10 @@ Focus on: current status, main objectives, and any blockers.`
     try {
       highlights = JSON.parse(content)
     } catch {
-      highlights = content.split('\n').filter(line => line.trim()).slice(0, 5)
+      highlights = content
+        .split('\n')
+        .filter(line => line.trim())
+        .slice(0, 5)
     }
     return res.status(200).json({ highlights })
   }

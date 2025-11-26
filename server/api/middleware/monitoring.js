@@ -28,7 +28,7 @@ function initSentry(app) {
       profilesSampleRate: parseFloat(process.env.SENTRY_PROFILES_SAMPLE_RATE || '0.1'),
       // Ignore common errors
       ignoreErrors: ['ECONNRESET', 'EPIPE', 'ECANCELED', 'ERR_STREAM_PREMATURE_CLOSE'],
-      beforeSend(event, hint) {
+      beforeSend(event, _hint) {
         // Filter out sensitive data
         if (event.request) {
           delete event.request.cookies

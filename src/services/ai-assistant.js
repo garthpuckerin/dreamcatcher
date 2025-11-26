@@ -109,7 +109,7 @@ Be concise, actionable, and specific.`
       }
     }
 
-    const context = {
+    const _context = {
       dreams: activeDreams.map(d => ({
         id: d.id,
         title: d.title,
@@ -346,7 +346,7 @@ Format as structured data.`
 4. Potential improvements
 
 Code snippets:
-${codeExamples.map((code, i) => `\`\`\`\n${code}\n\`\`\``).join('\n\n')}
+${codeExamples.map((code, _i) => `\`\`\`\n${code}\n\`\`\``).join('\n\n')}
 
 Provide concise analysis.`
 

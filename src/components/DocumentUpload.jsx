@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { Upload, FileText, Loader2, X, CheckCircle, AlertCircle } from 'lucide-react'
+import { Upload, FileText, Loader2, CheckCircle, AlertCircle } from 'lucide-react'
 import { useDocuments } from '../hooks/useDocuments'
 import { useAuth } from '../hooks/useAuth'
 
@@ -8,7 +8,7 @@ export default function DocumentUpload({ dreamId, onDocumentParsed }) {
   const [uploadStatus, setUploadStatus] = useState(null) // null, 'uploading', 'parsing', 'success', 'error'
   const [statusMessage, setStatusMessage] = useState('')
   const fileInputRef = useRef(null)
-  const { uploadAndParseDocument, uploading, parsing, error } = useDocuments()
+  const { uploadAndParseDocument, uploading, parsing, error: _error } = useDocuments()
   const { user } = useAuth()
 
   const handleDrag = e => {

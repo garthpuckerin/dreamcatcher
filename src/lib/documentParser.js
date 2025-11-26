@@ -71,7 +71,7 @@ async function parseDocxFile(file) {
  * Note: pdf-parse doesn't work in browser, so we'll use a simplified approach
  * In production, this should be handled by a backend service
  */
-async function parsePdfFile(file) {
+async function parsePdfFile(_file) {
   // For now, we'll return an error message
   // In production, implement backend PDF parsing
   throw new Error('PDF parsing requires backend service. Please convert to TXT or DOCX format.')
