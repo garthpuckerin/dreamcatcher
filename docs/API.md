@@ -1,6 +1,185 @@
 # API Documentation
 
-## Hooks
+## Serverless API Endpoints
+
+Dreamcatcher exposes serverless API endpoints via Vercel for AI-powered features.
+
+### Base URL
+```
+Production: https://dreamcatcher-*.vercel.app/api
+```
+
+### Rate Limiting
+
+All AI endpoints are rate-limited:
+- **Default:** 20 requests per minute per IP
+- **Parse Document:** 10 requests per minute (higher cost)
+
+Rate limit headers are returned with each response:
+```
+X-RateLimit-Remaining: 15
+X-RateLimit-Reset: 45
+```
+
+---
+
+### POST /api/ai/suggest-tags
+
+Generate AI-suggested tags for a dream.
+
+**Request Body:**
+```json
+{
+  "title": "Build a mobile app",
+  "description": "React Native app for dream tracking",
+  "existingTags": ["mobile", "react", "productivity"]
+}
+```
+
+**Response:**
+```json
+{
+  "tags": ["mobile", "react-native", "app-development", "tracking"]
+}
+```
+
+**Validation:**
+| Field | Type | Max Length | Required |
+|-------|------|------------|----------|
+| `title` | string | 500 | No* |
+| `description` | string | 5000 | No* |
+| `existingTags` | array | 100 items | No |
+
+*At least one of `title` or `description` is required.
+
+---
+
+### POST /api/ai/generate-summary
+
+Generate an AI summary for a dream with fragments.
+
+**Request Body:**
+```json
+{
+  "dream": {
+    "title": "SaaS Platform",
+    "description": "Building a B2B platform",
+    "status": "in-progress"
+  },
+  "fragments": [
+    { "title": "MVP Scope", "content": "Core features defined..." },
+    { "title": "Tech Stack", "content": "React, Node, PostgreSQL..." }
+  ],
+  "todos": [
+    { "title": "Set up CI/CD", "completed": false }
+  ]
+}
+```
+
+**Response:**
+```json
+{
+  "summary": "SaaS Platform is a B2B project currently in progress. Key developments include MVP scope definition with core features and tech stack selection (React, Node, PostgreSQL). 1 task remaining: Set up CI/CD."
+}
+```
+
+---
+
+### POST /api/ai/parse-document
+
+Parse document content and extract structured data.
+
+**Rate Limit:** 10 requests/minute
+
+**Request Body:**
+```json
+{
+  "content": "Meeting notes from product review...",
+  "type": "meeting",
+  "context": {
+    "dreamTitle": "Q4 Product Launch"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "parsed": {
+    "summary": "Product review meeting discussed launch timeline",
+    "keyPoints": ["Launch date: Dec 15", "Beta feedback positive"],
+    "actionItems": ["Finalize pricing", "Update landing page"],
+    "tags": ["product", "launch", "q4"]
+  }
+}
+```
+
+---
+
+### POST /api/ai/semantic-search
+
+Search across dreams and fragments using semantic similarity.
+
+**Request Body:**
+```json
+{
+  "query": "mobile app development",
+  "dreams": [...],
+  "fragments": [...],
+  "limit": 10
+}
+```
+
+**Response:**
+```json
+{
+  "results": [
+    { "type": "dream", "id": "abc123", "title": "React Native App", "score": 0.92 },
+    { "type": "fragment", "id": "def456", "title": "App Architecture", "score": 0.85 }
+  ]
+}
+```
+
+---
+
+### GET /api/health
+
+Health check endpoint.
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "timestamp": "2025-11-25T12:00:00.000Z",
+  "version": "2.5.0"
+}
+```
+
+---
+
+### Error Responses
+
+All endpoints return consistent error responses:
+
+```json
+{
+  "error": "Validation failed",
+  "details": ["title exceeds maximum length of 500"]
+}
+```
+
+**Status Codes:**
+| Code | Description |
+|------|-------------|
+| 200 | Success |
+| 400 | Bad Request - Invalid input |
+| 405 | Method Not Allowed |
+| 429 | Too Many Requests - Rate limited |
+| 500 | Internal Server Error |
+
+---
+
+## React Hooks
 
 ### useAuth
 

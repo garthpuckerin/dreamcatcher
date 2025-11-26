@@ -2,7 +2,7 @@
 
 **Version:** 2.5.0  
 **Status:** Production Ready 🚀  
-**Live Demo:** [dreamcatcher.vercel.app](https://dreamcatcher-5e875fzf0-blackpanther7413s-projects.vercel.app)
+**Live Demo:** [dreamcatcher.vercel.app](https://dreamcatcher-axecz6uyn-blackpanther7413s-projects.vercel.app)
 
 > AI-powered dream and goal tracking with smart organization, versioning, and real-time collaboration.
 
