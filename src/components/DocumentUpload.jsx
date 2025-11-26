@@ -1,72 +1,74 @@
-import React, { useState, useRef } from 'react';
-import { Upload, FileText, Loader2, X, CheckCircle, AlertCircle } from 'lucide-react';
-import { useDocuments } from '../hooks/useDocuments';
-import { useAuth } from '../hooks/useAuth';
+import React, { useState, useRef } from 'react'
+import { Upload, FileText, Loader2, CheckCircle, AlertCircle } from 'lucide-react'
+import { useDocuments } from '../hooks/useDocuments'
+import { useAuth } from '../hooks/useAuth'
 
 export default function DocumentUpload({ dreamId, onDocumentParsed }) {
-  const [dragActive, setDragActive] = useState(false);
-  const [uploadStatus, setUploadStatus] = useState(null); // null, 'uploading', 'parsing', 'success', 'error'
-  const [statusMessage, setStatusMessage] = useState('');
-  const fileInputRef = useRef(null);
-  const { uploadAndParseDocument, uploading, parsing, error } = useDocuments();
-  const { user } = useAuth();
+  const [dragActive, setDragActive] = useState(false)
+  const [uploadStatus, setUploadStatus] = useState(null) // null, 'uploading', 'parsing', 'success', 'error'
+  const [statusMessage, setStatusMessage] = useState('')
+  const fileInputRef = useRef(null)
+  const { uploadAndParseDocument, uploading, parsing, error: _error } = useDocuments()
+  const { user } = useAuth()
 
-  const handleDrag = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleDrag = e => {
+    e.preventDefault()
+    e.stopPropagation()
     if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true);
+      setDragActive(true)
     } else if (e.type === 'dragleave') {
-      setDragActive(false);
+      setDragActive(false)
     }
-  };
+  }
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
+  const handleDrop = e => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0]);
+      handleFile(e.dataTransfer.files[0])
     }
-  };
+  }
 
-  const handleChange = (e) => {
-    e.preventDefault();
+  const handleChange = e => {
+    e.preventDefault()
     if (e.target.files && e.target.files[0]) {
-      handleFile(e.target.files[0]);
+      handleFile(e.target.files[0])
     }
-  };
+  }
 
-  const handleFile = async (file) => {
-    setUploadStatus('uploading');
-    setStatusMessage(`Uploading ${file.name}...`);
+  const handleFile = async file => {
+    setUploadStatus('uploading')
+    setStatusMessage(`Uploading ${file.name}...`)
 
     try {
-      const result = await uploadAndParseDocument(file, dreamId, user?.id);
-      
-      setUploadStatus('success');
-      setStatusMessage(`Successfully parsed ${file.name} - found ${result.parsed.todos?.length || 0} tasks`);
+      const result = await uploadAndParseDocument(file, dreamId, user?.id)
+
+      setUploadStatus('success')
+      setStatusMessage(
+        `Successfully parsed ${file.name} - found ${result.parsed.todos?.length || 0} tasks`
+      )
 
       // Notify parent component
       if (onDocumentParsed) {
-        onDocumentParsed(result);
+        onDocumentParsed(result)
       }
 
       // Reset after 3 seconds
       setTimeout(() => {
-        setUploadStatus(null);
-        setStatusMessage('');
-      }, 3000);
+        setUploadStatus(null)
+        setStatusMessage('')
+      }, 3000)
     } catch (err) {
-      setUploadStatus('error');
-      setStatusMessage(err.message);
+      setUploadStatus('error')
+      setStatusMessage(err.message)
     }
-  };
+  }
 
   const onButtonClick = () => {
-    fileInputRef.current?.click();
-  };
+    fileInputRef.current?.click()
+  }
 
   return (
     <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
@@ -77,9 +79,7 @@ export default function DocumentUpload({ dreamId, onDocumentParsed }) {
 
       <div
         className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-          dragActive
-            ? 'border-blue-500 bg-blue-900/20'
-            : 'border-gray-600 hover:border-gray-500'
+          dragActive ? 'border-blue-500 bg-blue-900/20' : 'border-gray-600 hover:border-gray-500'
         } ${uploadStatus === 'uploading' || uploadStatus === 'parsing' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
@@ -99,12 +99,8 @@ export default function DocumentUpload({ dreamId, onDocumentParsed }) {
         {!uploadStatus && (
           <>
             <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-300 mb-2">
-              Drop a document here or click to browse
-            </p>
-            <p className="text-sm text-gray-500">
-              Supports: TXT, MD, DOCX, PDF (max 10MB)
-            </p>
+            <p className="text-gray-300 mb-2">Drop a document here or click to browse</p>
+            <p className="text-sm text-gray-500">Supports: TXT, MD, DOCX, PDF (max 10MB)</p>
           </>
         )}
 
@@ -136,10 +132,10 @@ export default function DocumentUpload({ dreamId, onDocumentParsed }) {
             <p className="text-gray-300 mb-2">Upload failed</p>
             <p className="text-sm text-red-400">{statusMessage}</p>
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setUploadStatus(null);
-                setStatusMessage('');
+              onClick={e => {
+                e.stopPropagation()
+                setUploadStatus(null)
+                setStatusMessage('')
               }}
               className="mt-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-md text-sm"
             >
@@ -161,6 +157,5 @@ export default function DocumentUpload({ dreamId, onDocumentParsed }) {
         </ul>
       </div>
     </div>
-  );
+  )
 }
-

@@ -1,6 +1,6 @@
 /**
  * useAuth Hook
- * 
+ *
  * Custom React hook for managing authentication with Supabase
  * Handles sign in, sign up, sign out, and session management
  */
@@ -25,7 +25,7 @@ export function useAuth() {
 
     // Listen for auth changes
     const {
-      data: { subscription }
+      data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
       setUser(session?.user ?? null)
@@ -48,8 +48,8 @@ export function useAuth() {
         password,
         options: {
           data: metadata,
-          emailRedirectTo: window.location.origin
-        }
+          emailRedirectTo: window.location.origin,
+        },
       })
 
       if (signUpError) throw signUpError
@@ -59,14 +59,14 @@ export function useAuth() {
         return {
           user: data.user,
           requiresConfirmation: true,
-          message: 'Please check your email to confirm your account.'
+          message: 'Please check your email to confirm your account.',
         }
       }
 
       return {
         user: data.user,
         session: data.session,
-        requiresConfirmation: false
+        requiresConfirmation: false,
       }
     } catch (err) {
       console.error('Sign up error:', err)
@@ -87,14 +87,14 @@ export function useAuth() {
 
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
       })
 
       if (signInError) throw signInError
 
       return {
         user: data.user,
-        session: data.session
+        session: data.session,
       }
     } catch (err) {
       console.error('Sign in error:', err)
@@ -108,7 +108,7 @@ export function useAuth() {
   // ============================================
   // SIGN IN WITH PROVIDER (OAuth)
   // ============================================
-  const signInWithProvider = useCallback(async (provider) => {
+  const signInWithProvider = useCallback(async provider => {
     try {
       setLoading(true)
       setError(null)
@@ -116,8 +116,8 @@ export function useAuth() {
       const { data, error: providerError } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: window.location.origin
-        }
+          redirectTo: window.location.origin,
+        },
       })
 
       if (providerError) throw providerError
@@ -158,19 +158,19 @@ export function useAuth() {
   // ============================================
   // PASSWORD RESET
   // ============================================
-  const resetPassword = useCallback(async (email) => {
+  const resetPassword = useCallback(async email => {
     try {
       setLoading(true)
       setError(null)
 
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`
+        redirectTo: `${window.location.origin}/reset-password`,
       })
 
       if (resetError) throw resetError
 
       return {
-        message: 'Password reset email sent. Please check your inbox.'
+        message: 'Password reset email sent. Please check your inbox.',
       }
     } catch (err) {
       console.error('Password reset error:', err)
@@ -184,20 +184,20 @@ export function useAuth() {
   // ============================================
   // UPDATE PASSWORD
   // ============================================
-  const updatePassword = useCallback(async (newPassword) => {
+  const updatePassword = useCallback(async newPassword => {
     try {
       setLoading(true)
       setError(null)
 
       const { data, error: updateError } = await supabase.auth.updateUser({
-        password: newPassword
+        password: newPassword,
       })
 
       if (updateError) throw updateError
 
       return {
         user: data.user,
-        message: 'Password updated successfully!'
+        message: 'Password updated successfully!',
       }
     } catch (err) {
       console.error('Update password error:', err)
@@ -211,20 +211,20 @@ export function useAuth() {
   // ============================================
   // UPDATE USER METADATA
   // ============================================
-  const updateUser = useCallback(async (updates) => {
+  const updateUser = useCallback(async updates => {
     try {
       setLoading(true)
       setError(null)
 
       const { data, error: updateError } = await supabase.auth.updateUser({
-        data: updates
+        data: updates,
       })
 
       if (updateError) throw updateError
 
       return {
         user: data.user,
-        message: 'Profile updated successfully!'
+        message: 'Profile updated successfully!',
       }
     } catch (err) {
       console.error('Update user error:', err)
@@ -259,10 +259,10 @@ export function useAuth() {
     try {
       const { data, error: refreshError } = await supabase.auth.refreshSession()
       if (refreshError) throw refreshError
-      
+
       setSession(data.session)
       setUser(data.session?.user ?? null)
-      
+
       return data.session
     } catch (err) {
       console.error('Refresh session error:', err)
@@ -276,27 +276,26 @@ export function useAuth() {
     session,
     loading,
     error,
-    
+
     // Authentication methods
     signUp,
     signIn,
     signInWithProvider,
     signOut,
-    
+
     // Password management
     resetPassword,
     updatePassword,
-    
+
     // User management
     updateUser,
-    
+
     // Utility
     isAuthenticated,
     getUserEmail,
     getUserMetadata,
-    refreshSession
+    refreshSession,
   }
 }
 
 export default useAuth
-

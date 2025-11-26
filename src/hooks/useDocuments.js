@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { supabase } from '../lib/supabase';
-import { parseDocumentFile, validateDocument, getFileMetadata } from '../lib/documentParser';
-import { useAI } from './useAI';
+import { useState } from 'react'
+import { supabase } from '../lib/supabase'
+import { parseDocumentFile, validateDocument, getFileMetadata } from '../lib/documentParser'
+import { useAI } from './useAI'
 
 /**
  * Custom hook for document management
  */
 export function useDocuments() {
-  const [uploading, setUploading] = useState(false);
-  const [parsing, setParsing] = useState(false);
-  const [error, setError] = useState(null);
-  const { parseDocumentContent } = useAI();
+  const [uploading, setUploading] = useState(false)
+  const [parsing, setParsing] = useState(false)
+  const [error, setError] = useState(null)
+  const { parseDocumentContent } = useAI()
 
   /**
    * Upload and parse a document
@@ -21,44 +21,44 @@ export function useDocuments() {
    */
   const uploadAndParseDocument = async (file, dreamId, userId = null) => {
     // Validate file
-    const validation = validateDocument(file);
+    const validation = validateDocument(file)
     if (!validation.valid) {
-      setError(validation.error);
-      throw new Error(validation.error);
+      setError(validation.error)
+      throw new Error(validation.error)
     }
 
-    setUploading(true);
-    setError(null);
+    setUploading(true)
+    setError(null)
 
     try {
       // 1. Extract text from document
-      const text = await parseDocumentFile(file);
-      
+      const text = await parseDocumentFile(file)
+
       // 2. Get file metadata
-      const metadata = getFileMetadata(file);
+      const metadata = getFileMetadata(file)
 
       // 3. Upload to Supabase Storage (if configured)
-      let fileUrl = null;
+      let fileUrl = null
       if (supabase && userId) {
         try {
-          const fileName = `${userId}/${dreamId}/${Date.now()}_${file.name}`;
+          const fileName = `${userId}/${dreamId}/${Date.now()}_${file.name}`
           const { data, error: uploadError } = await supabase.storage
             .from('dream-documents')
-            .upload(fileName, file);
+            .upload(fileName, file)
 
           if (uploadError) {
-            console.warn('Storage upload failed, continuing with local:', uploadError);
+            console.warn('Storage upload failed, continuing with local:', uploadError)
           } else {
-            fileUrl = data.path;
+            fileUrl = data.path
           }
         } catch (storageError) {
-          console.warn('Storage not configured:', storageError);
+          console.warn('Storage not configured:', storageError)
         }
       }
 
       // 4. Parse document with AI
-      setParsing(true);
-      const parsed = await parseDocumentContent(text, file.name);
+      setParsing(true)
+      const parsed = await parseDocumentContent(text, file.name)
 
       // 5. Create document record
       const documentRecord = {
@@ -72,8 +72,8 @@ export function useDocuments() {
         parsed_deadlines: parsed.todos?.filter(t => t.deadline).length || 0,
         parsed_at: parsed.parsedAt,
         // Store parsed content for non-Supabase mode
-        _localParsed: parsed
-      };
+        _localParsed: parsed,
+      }
 
       // 6. Save to Supabase (if configured)
       if (supabase && userId) {
@@ -81,80 +81,74 @@ export function useDocuments() {
           const { data, error: dbError } = await supabase
             .from('documents')
             .insert([documentRecord])
-            .select();
+            .select()
 
           if (dbError) {
-            console.warn('Database insert failed:', dbError);
+            console.warn('Database insert failed:', dbError)
           } else {
-            documentRecord.id = data[0].id;
+            documentRecord.id = data[0].id
           }
         } catch (dbError) {
-          console.warn('Database not configured:', dbError);
+          console.warn('Database not configured:', dbError)
         }
       } else {
         // Generate local ID
-        documentRecord.id = `local-${Date.now()}`;
+        documentRecord.id = `local-${Date.now()}`
       }
 
       return {
         document: documentRecord,
         parsed: parsed,
-        text: text // Include raw text for reference
-      };
+        text: text, // Include raw text for reference
+      }
     } catch (err) {
-      console.error('Error uploading/parsing document:', err);
-      setError(err.message);
-      throw err;
+      console.error('Error uploading/parsing document:', err)
+      setError(err.message)
+      throw err
     } finally {
-      setUploading(false);
-      setParsing(false);
+      setUploading(false)
+      setParsing(false)
     }
-  };
+  }
 
   /**
    * Delete a document
    */
   const deleteDocument = async (documentId, filePath, userId = null) => {
-    setError(null);
+    setError(null)
 
     try {
       // Delete from Supabase Storage (if configured)
       if (supabase && userId && !filePath.startsWith('local/')) {
         try {
-          await supabase.storage
-            .from('dream-documents')
-            .remove([filePath]);
+          await supabase.storage.from('dream-documents').remove([filePath])
         } catch (storageError) {
-          console.warn('Storage deletion failed:', storageError);
+          console.warn('Storage deletion failed:', storageError)
         }
       }
 
       // Delete from database (if configured)
       if (supabase && userId) {
         try {
-          await supabase
-            .from('documents')
-            .delete()
-            .eq('id', documentId);
+          await supabase.from('documents').delete().eq('id', documentId)
         } catch (dbError) {
-          console.warn('Database deletion failed:', dbError);
+          console.warn('Database deletion failed:', dbError)
         }
       }
 
-      return true;
+      return true
     } catch (err) {
-      console.error('Error deleting document:', err);
-      setError(err.message);
-      throw err;
+      console.error('Error deleting document:', err)
+      setError(err.message)
+      throw err
     }
-  };
+  }
 
   return {
     uploading,
     parsing,
     error,
     uploadAndParseDocument,
-    deleteDocument
-  };
+    deleteDocument,
+  }
 }
-

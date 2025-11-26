@@ -1,0 +1,617 @@
+/**
+ * Timeline Styles
+ */
+
+.timeline-view {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
+.timeline-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 8px 0;
+}
+
+.timeline-meta {
+  font-size: 14px;
+  color: #718096;
+  margin: 0;
+}
+
+.timeline-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Activity Heatmap */
+.activity-heatmap {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.activity-heatmap h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 16px 0;
+}
+
+.heatmap-grid {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.heatmap-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.5);
+}
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #718096;
+}
+
+.legend-boxes {
+  display: flex;
+  gap: 2px;
+}
+
+.legend-boxes div {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+/* Main Timeline */
+.timeline-container {
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  padding: 60px 40px;
+  margin-bottom: 32px;
+  min-height: 200px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-line {
+  position: absolute;
+  top: 80px;
+  left: 40px;
+  right: 40px;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 2px;
+}
+
+/* Timeline Points */
+.timeline-point {
+  position: absolute;
+  top: 80px;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.timeline-point-dot {
+  width: 12px;
+  height: 12px;
+  background: white;
+  border: 3px solid #667eea;
+  border-radius: 50%;
+  margin: 0 auto;
+  transform: translateY(-50%);
+  transition: all 0.2s;
+}
+
+.timeline-point:hover .timeline-point-dot {
+  transform: translateY(-50%) scale(1.5);
+  background: #667eea;
+}
+
+.timeline-point-label {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: #718096;
+  white-space: nowrap;
+}
+
+.timeline-point-details {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 200px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.timeline-point:hover .timeline-point-details {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.fragment-preview {
+  font-size: 12px;
+  color: #4a5568;
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Milestone Markers */
+.milestone-marker {
+  position: absolute;
+  top: 30px;
+  transform: translateX(-50%);
+  cursor: pointer;
+  z-index: 5;
+}
+
+.milestone-marker-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+}
+
+.milestone-marker:hover .milestone-marker-icon {
+  transform: scale(1.2);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.milestone-marker-line {
+  width: 2px;
+  height: 20px;
+  background: currentColor;
+  margin: 0 auto;
+  opacity: 0.5;
+}
+
+/* Milestone Tooltip */
+.milestone-tooltip {
+  position: absolute;
+  top: -150px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  min-width: 250px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  z-index: 20;
+}
+
+.tooltip-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tooltip-icon {
+  font-size: 20px;
+}
+
+.tooltip-header strong {
+  font-size: 16px;
+  color: #1a202c;
+}
+
+.milestone-tooltip p {
+  font-size: 14px;
+  color: #4a5568;
+  margin: 8px 0;
+}
+
+.tooltip-meta {
+  font-size: 12px;
+  color: #718096;
+  margin-top: 8px;
+}
+
+.tooltip-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tooltip-actions button {
+  flex: 1;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #f7fafc;
+  color: #4a5568;
+  transition: all 0.2s;
+}
+
+.tooltip-actions button:hover {
+  background: #edf2f7;
+}
+
+.tooltip-actions .btn-danger {
+  background: #fee;
+  color: #e53e3e;
+}
+
+.tooltip-actions .btn-danger:hover {
+  background: #fdd;
+}
+
+/* Milestones List */
+.milestones-list {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.milestones-list h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 16px 0;
+}
+
+.milestones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.milestone-card {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  border: 2px solid;
+  transition: all 0.2s;
+}
+
+.milestone-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.milestone-started {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.milestone-launched {
+  border-color: #10b981;
+  background: #ecfdf5;
+}
+
+.milestone-pivoted {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.milestone-milestone {
+  border-color: #8b5cf6;
+  background: #f5f3ff;
+}
+
+.milestone-blocker {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.milestone-completed {
+  border-color: #14b8a6;
+  background: #f0fdfa;
+}
+
+.milestone-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.milestone-content h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a202c;
+  margin: 0 0 4px 0;
+}
+
+.milestone-content p {
+  font-size: 14px;
+  color: #4a5568;
+  margin: 0 0 8px 0;
+}
+
+.milestone-date {
+  font-size: 12px;
+  color: #718096;
+}
+
+/* Retrospective Modal */
+.retrospective-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.retrospective-content {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 1000px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.retrospective-content .modal-header {
+  padding: 24px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.retrospective-content h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 4px 0;
+}
+
+.retrospective-content .modal-header p {
+  font-size: 14px;
+  color: #718096;
+  margin: 0;
+}
+
+.format-selection {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.format-selection label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 8px;
+}
+
+.format-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.format-btn {
+  padding: 8px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  color: #4a5568;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.format-btn:hover {
+  border-color: #667eea;
+}
+
+.format-btn.active {
+  border-color: #667eea;
+  background: #667eea;
+  color: white;
+}
+
+.ai-generation {
+  padding: 16px 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.metrics-summary {
+  padding: 20px 24px;
+  background: #f7fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.metrics-summary h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 12px 0;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.metric-card {
+  text-align: center;
+}
+
+.metric-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #667eea;
+}
+
+.metric-label {
+  font-size: 12px;
+  color: #718096;
+  margin-top: 4px;
+}
+
+.retrospective-sections {
+  padding: 24px;
+}
+
+.retro-section {
+  margin-bottom: 32px;
+}
+
+.retro-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 16px 0;
+}
+
+.ai-suggestions {
+  background: #fffbeb;
+  border: 1px solid #fbbf24;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.suggestions-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #92400e;
+  margin: 0 0 8px 0;
+}
+
+.suggestion-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background: white;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #4a5568;
+}
+
+.items-list {
+  margin-bottom: 12px;
+}
+
+.retro-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f7fafc;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.item-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.votes {
+  font-size: 12px;
+  color: #667eea;
+  font-weight: 600;
+}
+
+.item-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.add-item input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.add-item input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.modal-footer {
+  padding: 20px 24px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #718096;
+}
+
+.empty-state p {
+  margin: 8px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .timeline-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .milestones-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .retrospective-content {
+    width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+}

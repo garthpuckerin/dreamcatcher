@@ -1,6 +1,6 @@
 /**
  * Auth Component
- * 
+ *
  * Beautiful authentication UI for Dreamcatcher
  * Supports sign in, sign up, and password reset
  */
@@ -11,7 +11,7 @@ import { Loader2, Mail, Lock, User, AlertCircle, CheckCircle } from 'lucide-reac
 
 export function Auth() {
   const { signIn, signUp, resetPassword, loading, error } = useAuth()
-  
+
   const [mode, setMode] = useState('signin') // 'signin', 'signup', 'reset'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -21,7 +21,7 @@ export function Auth() {
   const [successMessage, setSuccessMessage] = useState('')
 
   // Handle sign in
-  const handleSignIn = async (e) => {
+  const handleSignIn = async e => {
     e.preventDefault()
     setLocalError('')
     setSuccessMessage('')
@@ -40,7 +40,7 @@ export function Auth() {
   }
 
   // Handle sign up
-  const handleSignUp = async (e) => {
+  const handleSignUp = async e => {
     e.preventDefault()
     setLocalError('')
     setSuccessMessage('')
@@ -62,7 +62,7 @@ export function Auth() {
 
     try {
       const result = await signUp(email, password, {
-        display_name: displayName || email.split('@')[0]
+        display_name: displayName || email.split('@')[0],
       })
 
       if (result.requiresConfirmation) {
@@ -78,7 +78,7 @@ export function Auth() {
   }
 
   // Handle password reset
-  const handleResetPassword = async (e) => {
+  const handleResetPassword = async e => {
     e.preventDefault()
     setLocalError('')
     setSuccessMessage('')
@@ -98,7 +98,7 @@ export function Auth() {
   }
 
   // Reset form when switching modes
-  const switchMode = (newMode) => {
+  const switchMode = newMode => {
     setMode(newMode)
     setLocalError('')
     setSuccessMessage('')
@@ -144,15 +144,13 @@ export function Auth() {
           {mode === 'signin' && (
             <form onSubmit={handleSignIn} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Email
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                   <input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={e => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     className="w-full pl-10 pr-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
@@ -162,15 +160,13 @@ export function Auth() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Password
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                   <input
                     type="password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={e => setPassword(e.target.value)}
                     placeholder="••••••••"
                     className="w-full pl-10 pr-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
@@ -219,7 +215,7 @@ export function Auth() {
                   <input
                     type="text"
                     value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
+                    onChange={e => setDisplayName(e.target.value)}
                     placeholder="Your Name"
                     className="w-full pl-10 pr-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
@@ -229,15 +225,13 @@ export function Auth() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Email
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                   <input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={e => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     className="w-full pl-10 pr-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
@@ -247,15 +241,13 @@ export function Auth() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Password
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                   <input
                     type="password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={e => setPassword(e.target.value)}
                     placeholder="••••••••"
                     className="w-full pl-10 pr-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
@@ -274,7 +266,7 @@ export function Auth() {
                   <input
                     type="password"
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={e => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
                     className="w-full pl-10 pr-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
@@ -304,15 +296,13 @@ export function Auth() {
           {mode === 'reset' && (
             <form onSubmit={handleResetPassword} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Email
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                   <input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={e => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     className="w-full pl-10 pr-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
@@ -320,7 +310,7 @@ export function Auth() {
                   />
                 </div>
                 <p className="mt-2 text-sm text-gray-400">
-                  We'll send you a link to reset your password
+                  We&apos;ll send you a link to reset your password
                 </p>
               </div>
 
@@ -345,7 +335,7 @@ export function Auth() {
           <div className="mt-6 pt-6 border-t border-gray-700 text-center text-sm">
             {mode === 'signin' && (
               <p className="text-gray-400">
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <button
                   onClick={() => switchMode('signup')}
                   className="text-blue-400 hover:text-blue-300 font-medium"
@@ -380,4 +370,3 @@ export function Auth() {
 }
 
 export default Auth
-

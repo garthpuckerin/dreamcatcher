@@ -1,11 +1,11 @@
 /**
  * Dreamcatcher.jsx - Main Application Component
- * 
+ *
  * Supabase-powered version using hooks for data management
  * Version: 2.3.0
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { LogOut, User, Loader2 } from 'lucide-react'
 
 // Import the full UI from App_new (we'll integrate it progressively)
@@ -69,18 +69,15 @@ export default function Dreamcatcher({ auth, dreamsData }) {
           {showUserMenu && (
             <>
               {/* Backdrop */}
-              <div 
-                className="fixed inset-0" 
-                onClick={() => setShowUserMenu(false)}
-              />
-              
+              <div className="fixed inset-0" onClick={() => setShowUserMenu(false)} />
+
               {/* Menu */}
               <div className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-lg border border-gray-700 shadow-xl overflow-hidden">
                 <div className="p-4 border-b border-gray-700">
                   <p className="text-sm text-gray-400">Signed in as</p>
                   <p className="text-sm font-medium text-white truncate">{auth.getUserEmail()}</p>
                 </div>
-                
+
                 <div className="p-2">
                   <button
                     onClick={handleSignOut}
@@ -97,7 +94,7 @@ export default function Dreamcatcher({ auth, dreamsData }) {
       </div>
 
       {/* Main App - Pass Supabase data to the UI */}
-      <DreamcatcherUI 
+      <DreamcatcherUI
         initialDreams={dreamsData.dreams}
         supabaseOperations={{
           createDream: dreamsData.createDream,
@@ -111,10 +108,9 @@ export default function Dreamcatcher({ auth, dreamsData }) {
           deleteTodo: dreamsData.deleteTodo,
           toggleTodo: dreamsData.toggleTodo,
           trackDreamAccess: dreamsData.trackDreamAccess,
-          getRecentDreams: dreamsData.getRecentDreams
+          getRecentDreams: dreamsData.getRecentDreams,
         }}
       />
     </div>
   )
 }
-

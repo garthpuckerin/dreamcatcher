@@ -1,28 +1,28 @@
 // content.js - PipelineOS Integration Version
-(function() {
-  'use strict';
+;(function () {
+  'use strict'
 
-  let captureButton = null;
-  let selectedText = '';
-  let isCapturing = false;
-  let currentModal = null;
-  let pipelineOSConfig = null;
+  let captureButton = null
+  let selectedText = ''
+  let _isCapturing = false
+  let currentModal = null
+  let pipelineOSConfig = null
 
   // Initialize PipelineOS connection
   async function initializePipelineOS() {
     try {
-      const result = await chrome.storage.local.get(['pipelineOSConfig']);
-      pipelineOSConfig = result.pipelineOSConfig;
-      
+      const result = await chrome.storage.local.get(['pipelineOSConfig'])
+      pipelineOSConfig = result.pipelineOSConfig
+
       if (pipelineOSConfig && pipelineOSConfig.enabled) {
-        console.log('🔗 PipelineOS integration enabled');
-        updateUIForPipelineOS();
+        console.log('🔗 PipelineOS integration enabled')
+        updateUIForPipelineOS()
       } else {
-        console.log('📝 Standalone Dreamcatcher mode');
-        updateUIForStandalone();
+        console.log('📝 Standalone Dreamcatcher mode')
+        updateUIForStandalone()
       }
     } catch (error) {
-      console.error('Failed to initialize PipelineOS:', error);
+      console.error('Failed to initialize PipelineOS:', error)
     }
   }
 
@@ -34,7 +34,7 @@
           <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
         </svg>
         <span>PipelineOS</span>
-      `;
+      `
     }
   }
 
@@ -45,16 +45,16 @@
           <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
         </svg>
         <span>Dreamcatcher</span>
-      `;
+      `
     }
   }
 
   // Enhanced capture modal for PipelineOS
   function openCaptureModal() {
-    if (currentModal) return;
+    if (currentModal) return
 
-    const modal = document.createElement('div');
-    modal.className = 'dreamcatcher-modal-overlay';
+    const modal = document.createElement('div')
+    modal.className = 'dreamcatcher-modal-overlay'
     modal.innerHTML = `
       <div class="dreamcatcher-modal">
         <div class="dreamcatcher-modal-header">
@@ -82,7 +82,9 @@
             <input type="text" id="projectName" placeholder="Auto-detected project name">
           </div>
 
-          ${pipelineOSConfig ? `
+          ${
+            pipelineOSConfig
+              ? `
             <div class="dreamcatcher-pipelineos-section">
               <label>
                 <input type="checkbox" id="sendToPipelineOS" checked>
@@ -103,7 +105,9 @@
                 </label>
               </div>
             </div>
-          ` : ''}
+          `
+              : ''
+          }
 
           <div class="dreamcatcher-actions">
             <button class="dreamcatcher-btn dreamcatcher-btn-cancel">Cancel</button>
@@ -113,71 +117,71 @@
           </div>
         </div>
       </div>
-    `;
+    `
 
     // Event listeners
-    modal.querySelector('.dreamcatcher-modal-close').addEventListener('click', closeModal);
-    modal.querySelector('.dreamcatcher-btn-cancel').addEventListener('click', closeModal);
-    modal.querySelector('.dreamcatcher-btn-capture').addEventListener('click', handleCapture);
+    modal.querySelector('.dreamcatcher-modal-close').addEventListener('click', closeModal)
+    modal.querySelector('.dreamcatcher-btn-cancel').addEventListener('click', closeModal)
+    modal.querySelector('.dreamcatcher-btn-capture').addEventListener('click', handleCapture)
 
-    document.body.appendChild(modal);
-    currentModal = modal;
+    document.body.appendChild(modal)
+    currentModal = modal
 
     // Auto-detect project name
-    autoDetectProjectName();
+    autoDetectProjectName()
   }
 
   // Auto-detect project name from conversation
   function autoDetectProjectName() {
-    const projectNameInput = document.getElementById('projectName');
-    if (!projectNameInput) return;
+    const projectNameInput = document.getElementById('projectName')
+    if (!projectNameInput) return
 
-    const conversation = extractConversation('all');
-    const projectName = detectProjectName(conversation);
-    
+    const conversation = extractConversation('all')
+    const projectName = detectProjectName(conversation)
+
     if (projectName) {
-      projectNameInput.value = projectName;
+      projectNameInput.value = projectName
     }
   }
 
   // Enhanced capture handler
   async function handleCapture() {
-    const captureMode = document.querySelector('input[name="captureMode"]:checked').value;
-    const projectName = document.getElementById('projectName').value;
-    
+    const captureMode = document.querySelector('input[name="captureMode"]:checked').value
+    const projectName = document.getElementById('projectName').value
+
     if (!projectName.trim()) {
-      alert('Please enter a project name');
-      return;
+      alert('Please enter a project name')
+      return
     }
 
-    const conversation = extractConversation(captureMode);
+    const conversation = extractConversation(captureMode)
     const fragmentData = {
       dreamName: projectName,
       fragmentTitle: generateFragmentTitle(conversation),
       content: conversation,
       source: platform,
       url: window.location.href,
-      mode: captureMode
-    };
+      mode: captureMode,
+    }
 
     try {
       if (pipelineOSConfig && document.getElementById('sendToPipelineOS').checked) {
         // Send to PipelineOS
-        await sendToPipelineOS(fragmentData);
-        showNotification('✅ Captured and sent to PipelineOS!', 'success');
+        await sendToPipelineOS(fragmentData)
+        showNotification('✅ Captured and sent to PipelineOS!', 'success')
       } else {
         // Local capture (standalone mode)
         await chrome.runtime.sendMessage({
           action: 'capture',
-          data: fragmentData
-        });
-        showNotification('✅ Dream captured!', 'success');
+          data: fragmentData,
+        })
+        showNotification('✅ Dream captured!', 'success')
       }
-      
-      closeModal();
+
+      closeModal()
     } catch (error) {
-      console.error('Capture error:', error);
-      showNotification('❌ Capture failed: ' + error.message, 'error');
+      console.error('Capture error:', error)
+      showNotification('❌ Capture failed: ' + error.message, 'error')
     }
   }
 
@@ -186,8 +190,8 @@
     const pipelineOSOptions = {
       createProject: document.getElementById('createProject').checked,
       createTickets: document.getElementById('createTickets').checked,
-      assignAgents: document.getElementById('assignAgents').checked
-    };
+      assignAgents: document.getElementById('assignAgents').checked,
+    }
 
     const payload = {
       dream: {
@@ -195,103 +199,105 @@
         description: 'Captured from ' + data.source,
         status: 'idea',
         tags: ['browser-capture', data.source],
-        fragments: [{
-          title: data.fragmentTitle,
-          content: data.content,
-          source: data.source,
-          url: data.url,
-          features: extractFeatures(data.content),
-          codeSnippets: extractCodeSnippets(data.content)
-        }],
-        pipelineOSOptions: pipelineOSOptions
-      }
-    };
+        fragments: [
+          {
+            title: data.fragmentTitle,
+            content: data.content,
+            source: data.source,
+            url: data.url,
+            features: extractFeatures(data.content),
+            codeSnippets: extractCodeSnippets(data.content),
+          },
+        ],
+        pipelineOSOptions: pipelineOSOptions,
+      },
+    }
 
     const response = await fetch(`${pipelineOSConfig.apiUrl}/api/v1/dreamcatcher/import`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${pipelineOSConfig.apiKey}`,
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${pipelineOSConfig.apiKey}`,
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(payload)
-    });
+      body: JSON.stringify(payload),
+    })
 
     if (!response.ok) {
-      throw new Error(`PipelineOS API error: ${response.status}`);
+      throw new Error(`PipelineOS API error: ${response.status}`)
     }
 
-    return await response.json();
+    return await response.json()
   }
 
   // Create floating capture button
   function createCaptureButton() {
-    if (captureButton) return;
+    if (captureButton) return
 
-    captureButton = document.createElement('div');
-    captureButton.className = 'dreamcatcher-capture-button';
+    captureButton = document.createElement('div')
+    captureButton.className = 'dreamcatcher-capture-button'
     captureButton.innerHTML = `
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
       </svg>
       <span>Dreamcatcher</span>
-    `;
+    `
 
-    captureButton.addEventListener('click', openCaptureModal);
-    document.body.appendChild(captureButton);
+    captureButton.addEventListener('click', openCaptureModal)
+    document.body.appendChild(captureButton)
   }
 
   // Close modal
   function closeModal() {
     if (currentModal) {
-      currentModal.remove();
-      currentModal = null;
+      currentModal.remove()
+      currentModal = null
     }
   }
 
   // Extract conversation content
   function extractConversation(mode) {
-    let content = '';
-    
+    let content = ''
+
     if (mode === 'selected' && selectedText) {
-      content = selectedText;
+      content = selectedText
     } else if (mode === 'last5') {
-      content = extractLastMessages(5);
+      content = extractLastMessages(5)
     } else {
-      content = extractFullConversation();
+      content = extractFullConversation()
     }
-    
-    return content;
+
+    return content
   }
 
   // Extract full conversation
   function extractFullConversation() {
-    const messages = document.querySelectorAll('[data-message-id], .message, .conversation-turn');
-    let conversation = '';
-    
+    const messages = document.querySelectorAll('[data-message-id], .message, .conversation-turn')
+    let conversation = ''
+
     messages.forEach(message => {
-      const text = message.textContent.trim();
+      const text = message.textContent.trim()
       if (text) {
-        conversation += text + '\n\n';
+        conversation += text + '\n\n'
       }
-    });
-    
-    return conversation.trim();
+    })
+
+    return conversation.trim()
   }
 
   // Extract last N messages
   function extractLastMessages(count) {
-    const messages = document.querySelectorAll('[data-message-id], .message, .conversation-turn');
-    const lastMessages = Array.from(messages).slice(-count);
-    let conversation = '';
-    
+    const messages = document.querySelectorAll('[data-message-id], .message, .conversation-turn')
+    const lastMessages = Array.from(messages).slice(-count)
+    let conversation = ''
+
     lastMessages.forEach(message => {
-      const text = message.textContent.trim();
+      const text = message.textContent.trim()
       if (text) {
-        conversation += text + '\n\n';
+        conversation += text + '\n\n'
       }
-    });
-    
-    return conversation.trim();
+    })
+
+    return conversation.trim()
   }
 
   // Detect project name from conversation
@@ -300,103 +306,98 @@
     const patterns = [
       /(?:create|build|develop|make)\s+(?:a\s+)?([a-zA-Z0-9\s-]+?)(?:\s+(?:app|website|tool|system|platform))/i,
       /(?:project|app|website|tool|system|platform)\s+(?:called|named|is)\s+([a-zA-Z0-9\s-]+)/i,
-      /^([a-zA-Z0-9\s-]+?)(?:\s+(?:app|website|tool|system|platform))/i
-    ];
-    
+      /^([a-zA-Z0-9\s-]+?)(?:\s+(?:app|website|tool|system|platform))/i,
+    ]
+
     for (const pattern of patterns) {
-      const match = conversation.match(pattern);
+      const match = conversation.match(pattern)
       if (match && match[1]) {
-        return match[1].trim();
+        return match[1].trim()
       }
     }
-    
-    return '';
+
+    return ''
   }
 
   // Generate fragment title
   function generateFragmentTitle(conversation) {
-    const lines = conversation.split('\n').filter(line => line.trim());
+    const lines = conversation.split('\n').filter(line => line.trim())
     if (lines.length > 0) {
-      const firstLine = lines[0].trim();
-      return firstLine.length > 50 ? firstLine.substring(0, 50) + '...' : firstLine;
+      const firstLine = lines[0].trim()
+      return firstLine.length > 50 ? firstLine.substring(0, 50) + '...' : firstLine
     }
-    return 'Captured Conversation';
+    return 'Captured Conversation'
   }
 
   // Extract features from content
   function extractFeatures(content) {
-    const features = [];
+    const features = []
     const featurePatterns = [
       /(?:feature|function|capability):\s*([^\n]+)/gi,
       /(?:should|needs? to|must)\s+([^\n]+)/gi,
-      /(?:implement|add|create)\s+([^\n]+)/gi
-    ];
-    
+      /(?:implement|add|create)\s+([^\n]+)/gi,
+    ]
+
     featurePatterns.forEach(pattern => {
-      const matches = content.matchAll(pattern);
+      const matches = content.matchAll(pattern)
       for (const match of matches) {
         if (match[1]) {
-          features.push(match[1].trim());
+          features.push(match[1].trim())
         }
       }
-    });
-    
-    return [...new Set(features)]; // Remove duplicates
+    })
+
+    return [...new Set(features)] // Remove duplicates
   }
 
   // Extract code snippets
   function extractCodeSnippets(content) {
-    const codeSnippets = [];
-    const codePatterns = [
-      /```[\s\S]*?```/g,
-      /`[^`]+`/g,
-      /<code>[\s\S]*?<\/code>/g
-    ];
-    
+    const codeSnippets = []
+    const codePatterns = [/```[\s\S]*?```/g, /`[^`]+`/g, /<code>[\s\S]*?<\/code>/g]
+
     codePatterns.forEach(pattern => {
-      const matches = content.matchAll(pattern);
+      const matches = content.matchAll(pattern)
       for (const match of matches) {
         if (match[0]) {
-          codeSnippets.push(match[0].trim());
+          codeSnippets.push(match[0].trim())
         }
       }
-    });
-    
-    return [...new Set(codeSnippets)]; // Remove duplicates
+    })
+
+    return [...new Set(codeSnippets)] // Remove duplicates
   }
 
   // Show notification
   function showNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.className = `dreamcatcher-notification dreamcatcher-notification-${type}`;
-    notification.textContent = message;
-    
-    document.body.appendChild(notification);
-    
+    const notification = document.createElement('div')
+    notification.className = `dreamcatcher-notification dreamcatcher-notification-${type}`
+    notification.textContent = message
+
+    document.body.appendChild(notification)
+
     setTimeout(() => {
-      notification.remove();
-    }, 3000);
+      notification.remove()
+    }, 3000)
   }
 
   // Detect platform
-  const platform = window.location.hostname.includes('openai.com') ? 'chatgpt' : 'claude';
+  const platform = window.location.hostname.includes('openai.com') ? 'chatgpt' : 'claude'
 
   // Initialize
-  initializePipelineOS();
-  createCaptureButton();
+  initializePipelineOS()
+  createCaptureButton()
 
   // Handle text selection
   document.addEventListener('mouseup', () => {
-    const selection = window.getSelection();
-    selectedText = selection.toString().trim();
-  });
+    const selection = window.getSelection()
+    selectedText = selection.toString().trim()
+  })
 
   // Handle keyboard shortcuts
-  document.addEventListener('keydown', (e) => {
+  document.addEventListener('keydown', e => {
     if (e.ctrlKey && e.shiftKey && e.key === 'C') {
-      e.preventDefault();
-      openCaptureModal();
+      e.preventDefault()
+      openCaptureModal()
     }
-  });
-
-})();
+  })
+})()

@@ -3,7 +3,7 @@
  * Handles different file types and extracts text content
  */
 
-import mammoth from 'mammoth';
+import mammoth from 'mammoth'
 
 /**
  * Parse different document types and extract text
@@ -11,21 +11,21 @@ import mammoth from 'mammoth';
  * @returns {Promise<string>} - Extracted text content
  */
 export async function parseDocumentFile(file) {
-  const fileType = file.name.split('.').pop().toLowerCase();
+  const fileType = file.name.split('.').pop().toLowerCase()
 
   switch (fileType) {
     case 'txt':
     case 'md':
-      return parseTextFile(file);
-    
+      return parseTextFile(file)
+
     case 'docx':
-      return parseDocxFile(file);
-    
+      return parseDocxFile(file)
+
     case 'pdf':
-      return parsePdfFile(file);
-    
+      return parsePdfFile(file)
+
     default:
-      throw new Error(`Unsupported file type: ${fileType}`);
+      throw new Error(`Unsupported file type: ${fileType}`)
   }
 }
 
@@ -34,18 +34,18 @@ export async function parseDocumentFile(file) {
  */
 async function parseTextFile(file) {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    
-    reader.onload = (e) => {
-      resolve(e.target.result);
-    };
-    
+    const reader = new FileReader()
+
+    reader.onload = e => {
+      resolve(e.target.result)
+    }
+
     reader.onerror = () => {
-      reject(new Error('Failed to read text file'));
-    };
-    
-    reader.readAsText(file);
-  });
+      reject(new Error('Failed to read text file'))
+    }
+
+    reader.readAsText(file)
+  })
 }
 
 /**
@@ -53,16 +53,16 @@ async function parseTextFile(file) {
  */
 async function parseDocxFile(file) {
   try {
-    const arrayBuffer = await file.arrayBuffer();
-    const result = await mammoth.extractRawText({ arrayBuffer });
-    
+    const arrayBuffer = await file.arrayBuffer()
+    const result = await mammoth.extractRawText({ arrayBuffer })
+
     if (result.messages.length > 0) {
-      console.warn('DOCX parsing warnings:', result.messages);
+      console.warn('DOCX parsing warnings:', result.messages)
     }
-    
-    return result.value;
+
+    return result.value
   } catch (error) {
-    throw new Error(`Failed to parse DOCX: ${error.message}`);
+    throw new Error(`Failed to parse DOCX: ${error.message}`)
   }
 }
 
@@ -71,10 +71,10 @@ async function parseDocxFile(file) {
  * Note: pdf-parse doesn't work in browser, so we'll use a simplified approach
  * In production, this should be handled by a backend service
  */
-async function parsePdfFile(file) {
+async function parsePdfFile(_file) {
   // For now, we'll return an error message
   // In production, implement backend PDF parsing
-  throw new Error('PDF parsing requires backend service. Please convert to TXT or DOCX format.');
+  throw new Error('PDF parsing requires backend service. Please convert to TXT or DOCX format.')
 }
 
 /**
@@ -83,25 +83,25 @@ async function parsePdfFile(file) {
  * @returns {Object} - Validation result
  */
 export function validateDocument(file) {
-  const maxSize = 10 * 1024 * 1024; // 10MB
-  const allowedTypes = ['txt', 'md', 'docx', 'pdf'];
-  const fileType = file.name.split('.').pop().toLowerCase();
+  const maxSize = 10 * 1024 * 1024 // 10MB
+  const allowedTypes = ['txt', 'md', 'docx', 'pdf']
+  const fileType = file.name.split('.').pop().toLowerCase()
 
   if (!allowedTypes.includes(fileType)) {
     return {
       valid: false,
-      error: `Unsupported file type. Allowed: ${allowedTypes.join(', ')}`
-    };
+      error: `Unsupported file type. Allowed: ${allowedTypes.join(', ')}`,
+    }
   }
 
   if (file.size > maxSize) {
     return {
       valid: false,
-      error: `File too large. Maximum size: 10MB`
-    };
+      error: `File too large. Maximum size: 10MB`,
+    }
   }
 
-  return { valid: true };
+  return { valid: true }
 }
 
 /**
@@ -113,7 +113,6 @@ export function getFileMetadata(file) {
     size: file.size,
     type: file.type,
     extension: file.name.split('.').pop().toLowerCase(),
-    lastModified: new Date(file.lastModified).toISOString()
-  };
+    lastModified: new Date(file.lastModified).toISOString(),
+  }
 }
-

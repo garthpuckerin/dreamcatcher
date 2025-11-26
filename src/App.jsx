@@ -1,6 +1,6 @@
 /**
  * App.jsx - Main Application Entry Point
- * 
+ *
  * Handles authentication and routing between Auth and Dreamcatcher components
  * Version: 2.3.0 with Supabase integration
  */
@@ -14,17 +14,8 @@ import Dreamcatcher from './Dreamcatcher'
 import DreamcatcherUI from './App_new'
 import { Loader2 } from 'lucide-react'
 
-export default function App() {
-  // Check if Supabase is configured
-  const isSupabaseConfigured = supabase !== null
-
-  // If Supabase is not configured, run in LocalStorage mode
-  if (!isSupabaseConfigured) {
-    console.log('🔵 Running in LocalStorage mode (no authentication)')
-    return <DreamcatcherUI />
-  }
-
-  // Supabase mode - use hooks
+// Wrapper component for Supabase mode
+function SupabaseApp() {
   const auth = useAuth()
   const dreamsData = useDreams()
 
@@ -40,17 +31,25 @@ export default function App() {
     )
   }
 
-  // Show auth screen if not authenticated
-  if (!auth.isAuthenticated()) {
+  // If not authenticated, show auth screen
+  if (!auth.user) {
     return <Auth />
   }
 
-  // Show main app with Supabase integration
-  return (
-    <Dreamcatcher 
-      auth={auth}
-      dreamsData={dreamsData}
-    />
-  )
+  // Authenticated - show main app
+  return <Dreamcatcher user={auth.user} signOut={auth.signOut} {...dreamsData} />
 }
 
+export default function App() {
+  // Check if Supabase is configured
+  const isSupabaseConfigured = supabase !== null
+
+  // If Supabase is not configured, run in LocalStorage mode
+  if (!isSupabaseConfigured) {
+    console.log('🔵 Running in LocalStorage mode (no authentication)')
+    return <DreamcatcherUI />
+  }
+
+  // Supabase mode - use dedicated component
+  return <SupabaseApp />
+}

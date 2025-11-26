@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import {
   isAIAvailable,
   generateDreamSummary,
@@ -6,121 +6,121 @@ import {
   suggestTags,
   detectProjectNames,
   parseDocument,
-  semanticSearch
-} from '../lib/ai';
+  semanticSearch,
+} from '../lib/ai'
 
 /**
  * Custom hook for AI operations
  */
 export function useAI() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const aiAvailable = isAIAvailable();
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const aiAvailable = isAIAvailable()
 
-  const generateSummary = async (dream) => {
+  const generateSummary = async dream => {
     if (!aiAvailable) {
-      setError('AI features not available. Set VITE_OPENAI_API_KEY in .env.local');
-      return null;
+      setError('AI features not available. Set VITE_OPENAI_API_KEY in .env.local')
+      return null
     }
 
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
-      const summary = await generateDreamSummary(dream);
-      return summary;
+      const summary = await generateDreamSummary(dream)
+      return summary
     } catch (err) {
-      console.error('Error generating summary:', err);
-      setError(err.message);
-      return null;
+      console.error('Error generating summary:', err)
+      setError(err.message)
+      return null
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  const getFragmentHighlights = async (fragment) => {
-    if (!aiAvailable) return [];
+  const getFragmentHighlights = async fragment => {
+    if (!aiAvailable) return []
 
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
-      const highlights = await extractFragmentHighlights(fragment);
-      return highlights;
+      const highlights = await extractFragmentHighlights(fragment)
+      return highlights
     } catch (err) {
-      console.error('Error extracting highlights:', err);
-      setError(err.message);
-      return [];
+      console.error('Error extracting highlights:', err)
+      setError(err.message)
+      return []
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  const getTagSuggestions = async (dream) => {
-    if (!aiAvailable) return [];
+  const getTagSuggestions = async dream => {
+    if (!aiAvailable) return []
 
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
-      const tags = await suggestTags(dream);
-      return tags;
+      const tags = await suggestTags(dream)
+      return tags
     } catch (err) {
-      console.error('Error suggesting tags:', err);
-      setError(err.message);
-      return [];
+      console.error('Error suggesting tags:', err)
+      setError(err.message)
+      return []
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  const detectProjects = async (content) => {
-    if (!aiAvailable) return [];
+  const detectProjects = async content => {
+    if (!aiAvailable) return []
 
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
-      const projects = await detectProjectNames(content);
-      return projects;
+      const projects = await detectProjectNames(content)
+      return projects
     } catch (err) {
-      console.error('Error detecting projects:', err);
-      setError(err.message);
-      return [];
+      console.error('Error detecting projects:', err)
+      setError(err.message)
+      return []
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const parseDocumentContent = async (text, fileName) => {
     if (!aiAvailable) {
-      throw new Error('AI features not available');
+      throw new Error('AI features not available')
     }
 
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
-      const parsed = await parseDocument(text, fileName);
-      return parsed;
+      const parsed = await parseDocument(text, fileName)
+      return parsed
     } catch (err) {
-      console.error('Error parsing document:', err);
-      setError(err.message);
-      throw err;
+      console.error('Error parsing document:', err)
+      setError(err.message)
+      throw err
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const performSemanticSearch = async (query, dreams) => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
-      const results = await semanticSearch(query, dreams);
-      return results;
+      const results = await semanticSearch(query, dreams)
+      return results
     } catch (err) {
-      console.error('Error in semantic search:', err);
-      setError(err.message);
-      return [];
+      console.error('Error in semantic search:', err)
+      setError(err.message)
+      return []
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return {
     aiAvailable,
@@ -131,7 +131,6 @@ export function useAI() {
     getTagSuggestions,
     detectProjects,
     parseDocumentContent,
-    performSemanticSearch
-  };
+    performSemanticSearch,
+  }
 }
-
