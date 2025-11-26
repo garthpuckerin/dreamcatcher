@@ -49,30 +49,39 @@ This roadmap outlines the development plan for Dreamcatcher's evolution from per
 
 ### Feature 2: Browser Extension 🚧 (MCP-Ready)
 **Priority**: P0 (Key differentiator)
-**Effort**: 2 weeks
-**Value**: Solves #1 pain point - losing ChatGPT conversations
+**Effort**: 3 weeks
+**Value**: Solves #1 pain point - losing AI conversations
 **Inspiration**: Mimir's MCP protocol integration
 
+**Supported Platforms**:
+- [ ] **ChatGPT** (chat.openai.com)
+- [ ] **Claude** (claude.ai)
+- [ ] **Gemini** (gemini.google.com)
+- [ ] **GitHub Copilot Chat** (VS Code, github.com/copilot)
+- [ ] **Perplexity** (perplexity.ai) - future
+- [ ] **Grok** (x.com/grok) - future
+
 **Components**:
-- [ ] Chrome extension manifest
-- [ ] ChatGPT conversation capture
-- [ ] Claude conversation capture
+- [ ] Chrome extension manifest v3
+- [ ] Unified conversation parser (adapters per platform)
 - [ ] One-click save to dream
 - [ ] Auto-project detection
-- [ ] Offline queue
+- [ ] Offline queue with sync
+- [ ] Context menu "Save selection to Dreamcatcher"
 
 **🆕 MCP Protocol Integration**:
 - [ ] **Model Context Protocol support** - Standard interface for AI tools
-  - Direct integration with Claude Desktop, ChatGPT
+  - Direct integration with Claude Desktop, ChatGPT, Copilot
   - Expose Dreamcatcher as MCP server
   - AI assistants can query/update dreams directly
 - [ ] **Bidirectional sync** - AI can read context, user can save responses
 
 **Technical Stack**:
-- Chrome Extensions API
-- Content scripts for chat UIs
+- Chrome Extensions API (Manifest V3)
+- Content scripts with platform-specific selectors
 - Background service worker
 - **MCP JSON-RPC transport** for AI tool integration
+- Adapter pattern for multi-platform support
 
 ### Feature 3: Payment Integration
 **Priority**: P0 (Revenue required)
