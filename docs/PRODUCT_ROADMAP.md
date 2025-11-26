@@ -47,10 +47,11 @@ This roadmap outlines the development plan for Dreamcatcher's evolution from per
 - Redis for pub/sub and presence
 - Operational Transform for conflict resolution
 
-### Feature 2: Browser Extension 🚧
+### Feature 2: Browser Extension 🚧 (MCP-Ready)
 **Priority**: P0 (Key differentiator)
 **Effort**: 2 weeks
 **Value**: Solves #1 pain point - losing ChatGPT conversations
+**Inspiration**: Mimir's MCP protocol integration
 
 **Components**:
 - [ ] Chrome extension manifest
@@ -60,10 +61,18 @@ This roadmap outlines the development plan for Dreamcatcher's evolution from per
 - [ ] Auto-project detection
 - [ ] Offline queue
 
+**🆕 MCP Protocol Integration**:
+- [ ] **Model Context Protocol support** - Standard interface for AI tools
+  - Direct integration with Claude Desktop, ChatGPT
+  - Expose Dreamcatcher as MCP server
+  - AI assistants can query/update dreams directly
+- [ ] **Bidirectional sync** - AI can read context, user can save responses
+
 **Technical Stack**:
 - Chrome Extensions API
 - Content scripts for chat UIs
 - Background service worker
+- **MCP JSON-RPC transport** for AI tool integration
 
 ### Feature 3: Payment Integration
 **Priority**: P0 (Revenue required)
@@ -83,16 +92,17 @@ This roadmap outlines the development plan for Dreamcatcher's evolution from per
 ## Phase 3: Power User Features (Month 6-9)
 **Goal**: Increase retention and ACV
 
-### Feature 4: Advanced AI Features 🚧
+### Feature 4: Advanced AI Features 🚧 (Graph-RAG Enhanced)
 **Priority**: P1 (Justifies Pro tier)
-**Effort**: 4 weeks
+**Effort**: 5 weeks
 **Value**: Primary value prop for paid users
+**Inspiration**: Mimir's Graph-RAG architecture for relationship-aware AI
 
 **Components**:
 - [ ] AI Project Manager assistant
-  - "What should I work on next?"
+  - "What should I work on next?" (priority + dependency analysis)
   - "Summarize progress this week"
-  - "Find similar past projects"
+  - "Find similar past projects" (semantic similarity)
 - [ ] Automatic task breakdown
   - Dream → Epic → Stories → Tasks
 - [ ] Risk detection from fragments
@@ -101,11 +111,26 @@ This roadmap outlines the development plan for Dreamcatcher's evolution from per
   - Upload recording → action items
 - [ ] Code snippet analysis
 
+**🆕 Graph-RAG Enhancements**:
+- [ ] **Semantic Search** - Find fragments by meaning, not just keywords
+  - Vector embeddings stored in Supabase pgvector
+  - "Find all conversations about authentication" works semantically
+- [ ] **Relationship Traversal** - Multi-hop queries across dreams/fragments
+  - "What decisions led to this outcome?"
+  - "Show me everything connected to Project X"
+- [ ] **Auto-Relationship Detection** - AI suggests links between fragments
+  - "This fragment seems related to Dream Y"
+  - Similarity threshold-based suggestions
+- [ ] **Cross-Dream Pattern Recognition**
+  - "What patterns led to successful launches?"
+  - "Which approaches failed before?"
+
 **Technical Stack**:
 - OpenAI GPT-4 for complex reasoning
-- Fine-tuned models for specific tasks
-- Vector database for semantic search
-- Embeddings for similarity matching
+- **Supabase pgvector** for embeddings (no Neo4j needed)
+- OpenAI text-embedding-3-small for vectorization
+- Similarity search with cosine distance
+- Agent preamble patterns (inspired by Mimir's PM/Worker/QC)
 
 ### Feature 5: Timeline & Retrospectives 🚧
 **Priority**: P1 (High engagement)
@@ -165,10 +190,11 @@ This roadmap outlines the development plan for Dreamcatcher's evolution from per
 - [ ] Activity feed per dream
 - [ ] Team analytics dashboard
 
-### Feature 8: Integration Ecosystem 🚧
+### Feature 8: Integration Ecosystem 🚧 (Knowledge Graph)
 **Priority**: P1 (Workflow completion)
-**Effort**: 4 weeks (1 week per integration)
+**Effort**: 5 weeks (1 week per integration + knowledge graph)
 **Value**: Becomes central hub
+**Inspiration**: Mimir's relationship-aware integrations
 
 **Integrations**:
 - [ ] GitHub
@@ -186,11 +212,23 @@ This roadmap outlines the development plan for Dreamcatcher's evolution from per
   - Deadline sync
   - Meeting capture
 
+**🆕 Knowledge Graph Layer**:
+- [ ] **Unified relationship model** - All entities connected
+  - Dreams ↔ Fragments ↔ Todos ↔ External (commits, issues, messages)
+  - Query: "Show me everything that touched this feature"
+- [ ] **Automatic linking** - AI detects connections
+  - PR mentions "auth" → links to Auth dream
+  - Slack thread about "deploy" → links to DevOps dream
+- [ ] **Traversal queries** - Multi-hop exploration
+  - "What was discussed before this commit?"
+  - "Who worked on related tasks?"
+
 **Technical Stack**:
 - OAuth 2.0 for authentication
 - Webhooks for real-time updates
 - Queue system for async processing
 - API wrappers for each service
+- **Supabase foreign keys + pgvector** for relationship graph
 
 ### Feature 9: Mobile Apps
 **Priority**: P1 (Accessibility)
@@ -417,6 +455,30 @@ This roadmap outlines the development plan for Dreamcatcher's evolution from per
 4. **Enterprise**: Self-hosted or managed only?
 5. **Integrations**: Build vs third-party platform (Zapier)?
 6. **Internationalization**: When to add multi-language support?
+7. **Graph Storage**: Supabase pgvector sufficient or need dedicated graph DB later?
+8. **MCP Adoption**: When does MCP become mainstream enough to prioritize?
+
+---
+
+## Architecture Notes (Graph-RAG Strategy)
+
+### Why Not Full Graph Database?
+- Supabase already provides relational + vector search (pgvector)
+- Neo4j adds operational complexity without proportional value
+- Foreign keys + embeddings achieve 80% of graph benefits
+- Can migrate to dedicated graph DB if scale demands
+
+### Embedding Strategy
+- Store embeddings for: dream titles/descriptions, fragment content, todo titles
+- Use OpenAI text-embedding-3-small (1536 dimensions)
+- Similarity threshold: 0.8 for auto-suggestions, 0.6 for search results
+- Batch embedding on create/update, async background job
+
+### Agent Patterns (Inspired by Mimir)
+- **PM Agent**: Task prioritization, dependency analysis, "what next?"
+- **Worker Agent**: Execute specific tasks (summarize, extract, generate)
+- **QC Agent**: Validate outputs, check quality, request retries
+- Start with single-agent, add orchestration as complexity grows
 
 ---
 
@@ -426,4 +488,5 @@ This roadmap balances user needs, technical feasibility, and business objectives
 
 **Next Review**: End of Month 3
 **Owner**: Product Team
-**Last Updated**: 2025-11-17
+**Last Updated**: 2025-11-25
+**Inspiration**: [Mimir](https://github.com/orneryd/mimir) Graph-RAG patterns
