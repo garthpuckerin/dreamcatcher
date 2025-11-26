@@ -1,8 +1,14 @@
 # Dreamcatcher
 
-**Version:** 2.0.0  
-**Status:** Dual-Track Strategy (PipelineOS Integration + Standalone Freemium)  
-**Purpose:** AI conversation capture and organization platform
+**Version:** 2.5.0  
+**Status:** Production Ready 🚀  
+**Live Demo:** [dreamcatcher.vercel.app](https://dreamcatcher-4idsn9j4w-blackpanther7413s-projects.vercel.app)
+
+> AI-powered dream and goal tracking with smart organization, versioning, and real-time collaboration.
+
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-117%20passing-brightgreen)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
 ---
 
